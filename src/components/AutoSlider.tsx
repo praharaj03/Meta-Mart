@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 
 const AutoSlider = () => {
   const slides = [
-    { id: 1, src: "/bg.jpg", alt: "First Slide" },
-    { id: 2, src: "/slider.avif", alt: "Second Slide" },
-    { id: 3, src: "/bg.jpg", alt: "Third Slide" },
+    { id: 1, src: "https://images.pexels.com/photos/3965545/pexels-photo-3965545.jpeg?auto=compress&cs=tinysrgb&w=1600", alt: "Shopping" },
+    { id: 2, src: "https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=1600", alt: "Fashion" },
+    { id: 3, src: "https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg?auto=compress&cs=tinysrgb&w=1600", alt: "Products" },
   ];
 
   const [current, setCurrent] = useState(0);
@@ -28,11 +27,9 @@ const AutoSlider = () => {
       >
         {slides.map((slide) => (
           <div key={slide.id} className="w-full flex-shrink-0">
-            <Image
+            <img
               src={slide.src}
               alt={slide.alt}
-              width={1800}
-              height={900}
               className="w-full h-80 object-cover"
             />
           </div>

@@ -16,7 +16,7 @@ const Page = () => {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30 z-10"></div>
         <img
-          src="bg.jpg"
+          src="https://images.pexels.com/photos/3965545/pexels-photo-3965545.jpeg?auto=compress&cs=tinysrgb&w=1600"
           alt="Hero Background"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -65,11 +65,16 @@ const Page = () => {
                 className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100"
               >
                 <div className="relative overflow-hidden bg-gray-100">
-                  <Image
-                    src="/card.png"
+                  <img
+                    src={[
+                      'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/325876/pexels-photo-325876.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/1667088/pexels-photo-1667088.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=600',
+                    ][item - 1]}
                     alt={`Product ${item}`}
-                    width={400}
-                    height={300}
                     className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -117,11 +122,13 @@ const Page = () => {
                 className="group bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-blue-100"
               >
                 <div className="relative overflow-hidden">
-                  <Image
-                    src="/card.png"
+                  <img
+                    src={[
+                      'https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600',
+                      'https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=600',
+                    ][item - 1]}
                     alt={`Best Seller ${item}`}
-                    width={400}
-                    height={300}
                     className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute top-4 left-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-bold">
