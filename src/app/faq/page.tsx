@@ -114,7 +114,7 @@ const FAQPage = () => {
               <h3>Still have questions?</h3>
               <p>Our support team is here to help you 24/7</p>
               <div className="cta-buttons">
-                <button className="btn-primary">
+                <button className="btn-primary" onClick={() => alert('🚀 Live Chat coming soon! Stay tuned.')}>
                   <span>💬</span>
                   Live Chat
                 </button>
