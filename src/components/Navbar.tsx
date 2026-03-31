@@ -29,7 +29,7 @@ const Navbar = () => {
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
     // Handle search logic here
@@ -78,7 +78,7 @@ const Navbar = () => {
             </svg>
           </button>
           {isSignedIn ? (
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           ) : (
             <SignInButton mode="redirect">
               <button className="flex items-center space-x-1 hover:bg-white/20 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">

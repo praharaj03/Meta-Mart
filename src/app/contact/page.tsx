@@ -210,7 +210,7 @@ const ContactPage = () => {
                   <textarea
                     id="message"
                     name="message"
-                    rows="6"
+                    rows={6}
                     value={formData.message}
                     onChange={handleChange}
                     required
