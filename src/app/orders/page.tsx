@@ -48,8 +48,8 @@ function SpendingChart({ orders }: { orders: Order[] }) {
     <div style={{ background: 'white', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: '32px' }}>
       <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1e293b', marginBottom: '24px' }}>📊 Monthly Spending</h2>
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '140px' }}>
-        {last6.map(({ month, total }) => (
-          <div key={month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+        {last6.map(({ month, total }, i) => (
+          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
             <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>${total.toFixed(0)}</span>
             <div style={{ width: '100%', height: `${(total / max) * 100}px`, minHeight: '4px', background: 'linear-gradient(180deg,#3b82f6,#9333ea)', borderRadius: '6px 6px 0 0', transition: 'height 0.6s ease' }} />
             <span style={{ fontSize: '12px', color: '#94a3b8' }}>{month}</span>
