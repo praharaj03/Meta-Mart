@@ -21,8 +21,8 @@
 
 .container{
     position: relative;
-    width: 950px;
-    height: 620px;
+    width: 850px;
+    height: 550px;
     background: #fff;
     margin: 20px;
     border-radius: 30px;
@@ -50,13 +50,11 @@ form{ width: 100%; }
     background: #fff;
     display: flex;
     align-items: center;
-    justify-content: center;
     color: #333;
     text-align: center;
-    padding: 20px;
+    padding: 40px;
     z-index: 1;
     transition: .6s ease-in-out 1.2s, visibility 0s 1s;
-    overflow-y: auto;
 }
 
     .container.active .form-box{ right: 50%; }
