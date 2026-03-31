@@ -203,6 +203,11 @@ This project is open source under the [MIT License](./LICENSE).
 
 Made with ❤️ by [Abhisek Praharaj](https://github.com/praharaj03)
 
+[![GitHub](https://img.shields.io/badge/GitHub-praharaj03-181717?style=flat-square&logo=github)](https://github.com/praharaj03)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-praharajabhisek-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/praharajabhisek)
+[![Twitter](https://img.shields.io/badge/Twitter-praharaj25-1DA1F2?style=flat-square&logo=x)](https://x.com/praharaj25)
+[![Instagram](https://img.shields.io/badge/Instagram-blank__canvas03-E4405F?style=flat-square&logo=instagram)](https://instagram.com/blank_canvas03)
+
 ⭐ Star this repo if you found it helpful!
 
 </div>

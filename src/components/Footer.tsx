@@ -27,9 +27,9 @@ const Footer = () => {
             <div className="flex space-x-4 pt-4">
               {/* Social Media Links */}
               {[
-                { name: "Facebook", img: "/fb.png", href: "https://facebook.com" },
-                { name: "X", img: "/x.png", href: "https://x.com" },
-                { name: "Instagram", img: "/insta.png", href: "https://instagram.com" },
+                { name: "Facebook", img: "/fb.png", href: "https://linkedin.com/in/praharajabhisek" },
+                { name: "X", img: "/x.png", href: "https://x.com/praharaj25" },
+                { name: "Instagram", img: "/insta.png", href: "https://instagram.com/blank_canvas03" },
                 { name: "Mail", img: "/mail.png", href: "mailto:support@metamart.com" },
               ].map((social) => (
                 <Link
