@@ -6,10 +6,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '../../context/CartContext';
 
-declare global {
-  interface Window { Razorpay: any; }
-}
-
 export default function CheckoutPage() {
   const { items, clearCart } = useCart();
   const router = useRouter();
@@ -27,49 +23,31 @@ export default function CheckoutPage() {
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (items.length === 0) return;
     setLoading(true);
+
+    // Save pending order to localStorage before redirecting
+    const pendingOrder = {
+      id: `ORD${Date.now()}`,
+      items,
+      total,
+      address: `${form.address}, ${form.city} - ${form.pincode}`,
+      name: form.name,
+      email: form.email,
+      date: new Date().toISOString(),
+      status: 'confirmed',
+    };
+    localStorage.setItem('mm_pending_order', JSON.stringify(pendingOrder));
 
     const res = await fetch('/api/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: total }),
+      body: JSON.stringify({ items, address: form }),
     });
-    const order = await res.json();
 
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    document.body.appendChild(script);
-
-    script.onload = () => {
-      const rzp = new window.Razorpay({
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
-        name: 'Meta Mart',
-        description: 'Order Payment',
-        order_id: order.id,
-        prefill: { name: form.name, email: form.email, contact: form.phone },
-        theme: { color: '#3b82f6' },
-        handler: () => {
-          const newOrder = {
-            id: `ORD${Date.now()}`,
-            items,
-            total,
-            address: `${form.address}, ${form.city} - ${form.pincode}`,
-            name: form.name,
-            email: form.email,
-            date: new Date().toISOString(),
-            status: 'confirmed',
-          };
-          const existing = JSON.parse(localStorage.getItem('mm_orders') || '[]');
-          localStorage.setItem('mm_orders', JSON.stringify([newOrder, ...existing]));
-          clearCart();
-          router.push('/orders');
-        },
-      });
-      rzp.open();
-      setLoading(false);
-    };
+    const { url } = await res.json();
+    clearCart();
+    window.location.href = url;
   };
 
   return (
@@ -90,7 +68,7 @@ export default function CheckoutPage() {
               { name: 'phone', placeholder: 'Phone Number', type: 'tel' },
               { name: 'address', placeholder: 'Street Address', type: 'text' },
               { name: 'city', placeholder: 'City', type: 'text' },
-              { name: 'pincode', placeholder: 'PIN Code', type: 'text' },
+              { name: 'pincode', placeholder: 'PIN / ZIP Code', type: 'text' },
             ].map(f => (
               <input
                 key={f.name}
@@ -127,11 +105,11 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={loading || items.length === 0}
-              style={{ width: '100%', padding: '16px', background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', border: 'none', borderRadius: '14px', fontSize: '16px', fontWeight: 700, cursor: 'pointer' }}
+              style={{ width: '100%', padding: '16px', background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', border: 'none', borderRadius: '14px', fontSize: '16px', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
             >
-              {loading ? 'Processing...' : `Pay $${total.toFixed(2)}`}
+              {loading ? 'Redirecting to Stripe...' : `Pay $${total.toFixed(2)}`}
             </button>
-            <p style={{ textAlign: 'center', fontSize: '12px', color: '#94a3b8', marginTop: '12px' }}>🔒 Secured by Razorpay</p>
+            <p style={{ textAlign: 'center', fontSize: '12px', color: '#94a3b8', marginTop: '12px' }}>🔒 Secured by Stripe</p>
           </div>
         </form>
       </div>

@@ -65,6 +65,13 @@ export default function OrdersPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
+    // Save pending order if redirected from Stripe success
+    const pending = localStorage.getItem('mm_pending_order');
+    if (pending) {
+      const existing = JSON.parse(localStorage.getItem('mm_orders') || '[]');
+      localStorage.setItem('mm_orders', JSON.stringify([JSON.parse(pending), ...existing]));
+      localStorage.removeItem('mm_pending_order');
+    }
     setOrders(JSON.parse(localStorage.getItem('mm_orders') || '[]'));
   }, []);
 
