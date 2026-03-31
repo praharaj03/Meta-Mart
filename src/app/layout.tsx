@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from '../context/CartContext';
 import LoadingScreen from '../components/LoadingScreen';
 import { useState, useEffect } from 'react';
+import { ClerkProvider } from '@clerk/nextjs';
 
 export default function RootLayout({
   children,
@@ -17,6 +18,7 @@ export default function RootLayout({
   }, []);
 
   return (
+    <ClerkProvider>
     <html lang="en" className="scroll-smooth">
       <body>
         <CartProvider>
@@ -25,5 +27,6 @@ export default function RootLayout({
         </CartProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }

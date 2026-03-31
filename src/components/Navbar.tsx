@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useCart } from '../context/CartContext'
+import { SignedIn, SignedOut, UserButton, SignInButton }  from '@clerk/nextjs'
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -71,13 +72,20 @@ const Navbar = () => {
               <path d="m21 21-4.35-4.35"/>
             </svg>
           </button>
-          <Link href="/login" className="flex items-center space-x-1 hover:bg-white/20 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
-            <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <span className="text-sm font-semibold text-gray-900 font-inter">Login</span>
-          </Link>
+          <SignedOut>
+            <SignInButton mode="redirect">
+              <button className="flex items-center space-x-1 hover:bg-white/20 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
+                <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span className="text-sm font-semibold text-gray-900 font-inter">Login</span>
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
           <Link href="/cart" className="relative p-2 hover:bg-white/20 rounded-full transition-all duration-300 hover:scale-110">
             <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <circle cx="8" cy="21" r="1"/>
