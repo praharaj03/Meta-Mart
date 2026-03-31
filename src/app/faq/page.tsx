@@ -118,10 +118,10 @@ const FAQPage = () => {
                   <span>💬</span>
                   Live Chat
                 </button>
-                <button className="btn-secondary">
+                <a href="mailto:devopspraharaj25@gmail.com" className="btn-secondary">
                   <span>📧</span>
                   Email Us
-                </button>
+                </a>
               </div>
             </div>
           </div>
