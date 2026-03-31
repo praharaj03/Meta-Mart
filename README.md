@@ -12,11 +12,11 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-38BDF8?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 [![Clerk](https://img.shields.io/badge/Clerk-Auth-6C47FF?style=for-the-badge&logo=clerk)](https://clerk.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?style=for-the-badge&logo=stripe)](https://stripe.com/)
-[![Vercel](https://img.shields.io/badge/Deployed-Vercel-000000?style=for-the-badge&logo=vercel)](https://meta-mart-o8hkggjdj-praharaj25.vercel.app/)
+[![Vercel](https://img.shields.io/badge/Deployed-Vercel-000000?style=for-the-badge&logo=vercel)](https://meta-mart-sable.vercel.app/)
 
 <br/>
 
-> **🌐 Live Demo → [meta-mart-o8hkggjdj-praharaj25.vercel.app](https://meta-mart-o8hkggjdj-praharaj25.vercel.app/)**
+> **🌐 Live Demo → [meta-mart-sable.vercel.app](https://meta-mart-sable.vercel.app/)**
 
 <br/>
 
