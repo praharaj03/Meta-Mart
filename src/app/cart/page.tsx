@@ -5,10 +5,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { useCart } from '../../context/CartContext';
 
 const CartPage = () => {
   const { items: cartItems, updateQuantity, removeItem } = useCart();
+  const router = useRouter();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = subtotal > 100 ? 0 : 15;
@@ -146,7 +148,7 @@ const CartPage = () => {
                   <button className="promo-btn">Apply</button>
                 </div>
 
-                <button className="checkout-btn">
+                <button className="checkout-btn" onClick={() => router.push('/checkout')}>
                   <span>Proceed to Checkout</span>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M5 12h14" stroke="currentColor" strokeWidth="2"/>

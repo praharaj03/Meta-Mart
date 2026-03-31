@@ -54,6 +54,9 @@ const Navbar = () => {
           <Link href="/contact" className="font-semibold text-gray-900 hover:text-blue-600 transition-all duration-300 hover:scale-105">
             Contact
           </Link>
+          <Link href="/orders" className="font-semibold text-gray-900 hover:text-blue-600 transition-all duration-300 hover:scale-105">
+            Orders
+          </Link>
         </nav>
 
         {/* Center Logo */}
