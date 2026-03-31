@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import emailjs from "@emailjs/browser";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -19,10 +20,29 @@ const ContactPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission here
+    setStatus('sending');
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: 'devopspraharaj25@gmail.com',
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -197,8 +217,14 @@ const ContactPage = () => {
                   ></textarea>
                 </div>
 
-                <button type="submit" className="submit-btn">
-                  <span>Send Message</span>
+                {status === 'success' && (
+                  <p style={{ color: '#10b981', fontWeight: 600, marginBottom: '16px', textAlign: 'center' }}>✅ Message sent successfully!</p>
+                )}
+                {status === 'error' && (
+                  <p style={{ color: '#ef4444', fontWeight: 600, marginBottom: '16px', textAlign: 'center' }}>❌ Failed to send. Please try again.</p>
+                )}
+                <button type="submit" className="submit-btn" disabled={status === 'sending'}>
+                  <span>{status === 'sending' ? 'Sending...' : 'Send Message'}</span>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2"/>
                     <polygon points="22,2 15,22 11,13 2,9 22,2" stroke="currentColor" strokeWidth="2"/>
