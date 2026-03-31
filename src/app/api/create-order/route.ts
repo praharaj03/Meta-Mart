@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
       quantity: item.quantity,
     })),
     metadata: { address: address.address, name: address.name, email: address.email },
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/orders?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout`,
+    success_url: `${req.headers.get('origin')}/orders?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${req.headers.get('origin')}/checkout`,
   });
 
   return NextResponse.json({ url: session.url });

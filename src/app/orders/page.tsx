@@ -90,36 +90,6 @@ function Confetti({ active }: { active: boolean }) {
   return <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 9999 }} />;
 }
 
-function SpendingChart({ orders }: { orders: Order[] }) {
-  const [animated, setAnimated] = useState(false);
-  useEffect(() => { setTimeout(() => setAnimated(true), 300); }, []);
-  const last6 = Array.from({ length: 6 }, (_, i) => {
-    const d = new Date();
-    d.setMonth(d.getMonth() - (5 - i));
-    const month = d.toLocaleString('default', { month: 'short' });
-    const total = orders.filter(o => new Date(o.date).getMonth() === d.getMonth() && new Date(o.date).getFullYear() === d.getFullYear()).reduce((s, o) => s + o.total, 0);
-    return { month, total };
-  });
-  const max = Math.max(...last6.map(m => m.total), 1);
-  return (
-    <div style={{ background: 'white', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', marginBottom: '28px', border: '1px solid rgba(59,130,246,0.08)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>📊 Monthly Spending</h2>
-        <span style={{ fontSize: '13px', color: '#94a3b8' }}>Last 6 months</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: '150px' }}>
-        {last6.map(({ month, total }, i) => (
-          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>{total > 0 ? `$${total.toFixed(0)}` : ''}</span>
-            <div style={{ width: '100%', height: animated ? `${Math.max((total / max) * 120, 4)}px` : '4px', background: total > 0 ? 'linear-gradient(180deg,#3b82f6,#9333ea)' : '#e5e7eb', borderRadius: '6px 6px 0 0', transition: 'height 0.8s cubic-bezier(0.34,1.56,0.64,1)', transitionDelay: `${i * 80}ms` }} />
-            <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>{month}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -177,7 +147,6 @@ export default function OrdersPage() {
           </div>
         ) : (
           <>
-            <SpendingChart orders={orders} />
             {orders.map((order, idx) => {
               const step = getStep(order.date);
               const isOpen = expanded === order.id;
