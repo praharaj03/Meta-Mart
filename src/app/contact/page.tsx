@@ -78,7 +78,7 @@ const ContactPage = () => {
             
             {/* Contact Info */}
             <div className="contact-info">
-              <h2 className="info-title">Let's Connect</h2>
+              <h2 className="info-title">Let&apos;s Connect</h2>
               <p className="info-subtitle">
                 Ready to start your journey with Meta Mart? We&apos;re here to help.
               </p>
