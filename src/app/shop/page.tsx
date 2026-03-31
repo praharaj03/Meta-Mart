@@ -84,7 +84,7 @@ export default function ShopPage() {
   const [toast, setToast] = useState<{show: boolean, message: string}>({show: false, message: ''});
   const { addToCart } = useCart();
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: typeof products[0]) => {
     addToCart({
       id: product.id,
       name: product.name,

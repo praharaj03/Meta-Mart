@@ -28,7 +28,8 @@ function getArrival(date: string) {
 
 function playConfirmSound() {
   try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioCtx = (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext);
+    const ctx = new AudioCtx();
     const notes = [523, 659, 784, 1047];
     notes.forEach((freq, i) => {
       const osc = ctx.createOscillator();

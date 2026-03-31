@@ -99,7 +99,7 @@ export default function CheckoutPage() {
                   name={f.name}
                   type={f.type}
                   placeholder={f.placeholder}
-                  value={(form as any)[f.name]}
+                  value={form[f.name as keyof typeof form]}
                   onChange={e => setForm({ ...form, [e.target.name]: e.target.value })}
                   onFocus={() => setFocused(f.name)}
                   onBlur={() => setFocused('')}

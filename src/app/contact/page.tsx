@@ -66,7 +66,7 @@ const ContactPage = () => {
             Contact Us
           </h1>
           <p className="contact-subtitle">
-            We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </div>
       </section>
@@ -80,7 +80,7 @@ const ContactPage = () => {
             <div className="contact-info">
               <h2 className="info-title">Let's Connect</h2>
               <p className="info-subtitle">
-                Ready to start your journey with Meta Mart? We're here to help.
+                Ready to start your journey with Meta Mart? We&apos;re here to help.
               </p>
               
               <div className="contact-methods">
