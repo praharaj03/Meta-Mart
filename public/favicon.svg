@@ -1,10 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#3b82f6"/>
       <stop offset="100%" style="stop-color:#9333ea"/>
     </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="8" fill="url(#g)"/>
-  <text x="50%" y="22" font-family="Arial,sans-serif" font-size="18" font-weight="900" fill="white" text-anchor="middle">M</text>
+
+  <!-- Background rounded square -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- Shine overlay -->
+  <rect width="64" height="64" rx="14" fill="url(#shine)"/>
+
+  <!-- Shopping bag icon -->
+  <!-- Bag body -->
+  <path d="M18 26h28l-3 22H21L18 26z" fill="white" opacity="0.95"/>
+  <!-- Bag handle -->
+  <path d="M24 26c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.95"/>
+  <!-- MM text inside bag -->
+  <text x="32" y="43" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="url(#bg)" text-anchor="middle" letter-spacing="-0.5">MM</text>
 </svg>

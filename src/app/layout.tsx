@@ -35,11 +35,9 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: '/apple-touch-icon.png',
+    icon: { url: '/favicon.svg', type: 'image/svg+xml' },
+    apple: '/logo.png',
+    shortcut: '/favicon.svg',
   },
   manifest: '/site.webmanifest',
   robots: {
