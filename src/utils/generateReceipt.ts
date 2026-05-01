@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 
-interface OrderItem { id: number; name: string; price: number; image: string; quantity: number; }
+interface OrderItem { id: number | string; name: string; price: number; image: string; quantity: number; }
 interface Order { id: string; items: OrderItem[]; total: number; address: string; name: string; email: string; date: string; status: string; }
 
 export function generateReceipt(order: Order): jsPDF {

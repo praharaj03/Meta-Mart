@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '../../context/CartContext';
 import Link from 'next/link';
+import { useUser } from '@clerk/nextjs';
 
 const fields = [
   { name: 'name', placeholder: 'Full Name', type: 'text', icon: '👤' },
@@ -114,6 +115,7 @@ export default function CheckoutPage() {
     },
   ];
 
+  const { user } = useUser();
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const shipping = subtotal > 100 ? 0 : 15;
   const tax = subtotal * 0.08;
@@ -130,20 +132,16 @@ export default function CheckoutPage() {
     }
     setUpiError('');
     setLoading(true);
-    const pendingOrder = {
-      id: `ORD${Date.now()}`,
-      items, total,
-      address: `${form.address}, ${form.city} - ${form.pincode}`,
-      name: form.name, email: form.email,
-      date: new Date().toISOString(),
-      status: 'confirmed',
-    };
-    localStorage.setItem('mm_pending_order', JSON.stringify(pendingOrder));
     try {
       const res = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, address: form }),
+        body: JSON.stringify({
+          items,
+          address: form,
+          userEmail: user?.primaryEmailAddress?.emailAddress || form.email,
+          userName: user?.fullName || form.name,
+        }),
       });
       const { url } = await res.json();
       window.location.href = url;

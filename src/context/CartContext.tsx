@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface CartItem {
   id: number;
@@ -14,7 +14,7 @@ interface CartItem {
 
 const CartContext = createContext<{
   items: CartItem[];
-  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
+  addToCart: (item: Omit<CartItem, "quantity">) => void;
   updateQuantity: (id: number, quantity: number) => void;
   removeItem: (id: number) => void;
   clearCart: () => void;
@@ -31,44 +31,56 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    try { setItems(JSON.parse(localStorage.getItem('cart') ?? '[]')); } catch { /* ignore */ }
+    try {
+      setItems(JSON.parse(localStorage.getItem("cart") ?? "[]"));
+    } catch {
+      /* ignore */
+    }
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated) localStorage.setItem('cart', JSON.stringify(items));
+    if (hydrated) localStorage.setItem("cart", JSON.stringify(items));
   }, [items, hydrated]);
 
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
-    setItems(prev => {
-      const existing = prev.find(i => i.id === item.id);
+  const addToCart = (item: Omit<CartItem, "quantity">) => {
+    setItems((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
       if (existing) {
-        return prev.map(i => 
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
         );
       }
-      return [...prev, { ...item, quantity: 1, color: 'Default', size: 'Standard' }];
+      return [
+        ...prev,
+        { ...item, quantity: 1, color: "Default", size: "Standard" },
+      ];
     });
   };
 
   const updateQuantity = (id: number, quantity: number) => {
     if (quantity <= 0) {
-      setItems(prev => prev.filter(item => item.id !== id));
+      setItems((prev) => prev.filter((item) => item.id !== id));
     } else {
-      setItems(prev => prev.map(item => 
-        item.id === id ? { ...item, quantity } : item
-      ));
+      setItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, quantity } : item)),
+      );
     }
   };
 
   const removeItem = (id: number) => {
-    setItems(prev => prev.filter(item => item.id !== id));
+    setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const clearCart = () => { setItems([]); localStorage.removeItem('cart'); };
+  const clearCart = () => {
+    setItems([]);
+    localStorage.removeItem("cart");
+  };
 
   return (
-    <CartContext.Provider value={{ items, addToCart, updateQuantity, removeItem, clearCart }}>
+    <CartContext.Provider
+      value={{ items, addToCart, updateQuantity, removeItem, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );

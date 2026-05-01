@@ -1,28 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiSearch, FiFilter, FiHeart, FiShoppingCart, FiStar } from 'react-icons/fi';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '../../context/CartContext';
-import { products, categories } from '@/data/products';
+
+const CATEGORIES = ['All','Electronics','Wearables','Fashion','Home','Gaming','Photography','Books','Sports','Beauty','Kitchen','Travel'];
+
+interface Product { _id: string; name: string; price: number; originalPrice: number; image: string; rating: number; reviews: number; category: string; badge: string; }
 
 export default function ShopPage() {
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState(
     () => typeof window !== 'undefined' ? (sessionStorage.getItem('shop_category') ?? 'All') : 'All'
   );
   const [searchTerm, setSearchTerm] = useState(
     () => typeof window !== 'undefined' ? (sessionStorage.getItem('shop_search') ?? '') : ''
   );
-  const [favorites, setFavorites] = useState<number[]>(
+  const [favorites, setFavorites] = useState<string[]>(
     () => { try { return typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('shop_favorites') ?? '[]') : []; } catch { return []; } }
   );
   const [toast, setToast] = useState<{show: boolean, message: string}>({show: false, message: ''});
   const { addToCart } = useCart();
 
-  const handleAddToCart = (product: typeof products[0]) => {
+  useEffect(() => {
+    fetch('/api/products').then(r => r.json()).then(setProducts).catch(() => setProducts([]));
+  }, []);
+
+  const handleAddToCart = (product: Product) => {
     addToCart({
-      id: product.id,
+      id: product._id as any,
       name: product.name,
       price: product.price,
       image: product.image
@@ -32,12 +40,12 @@ export default function ShopPage() {
   };
 
   const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
-  const toggleFavorite = (productId: number) => {
+  const toggleFavorite = (productId: string) => {
     setFavorites(prev => {
       const next = prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId];
       sessionStorage.setItem('shop_favorites', JSON.stringify(next));
@@ -84,7 +92,7 @@ export default function ShopPage() {
 
           {/* Category Tabs */}
           <div className="flex flex-wrap gap-2 mb-8 animate-fade-in-up animation-delay-400">
-            {categories.map((category) => (
+            {CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => { setSelectedCategory(category); sessionStorage.setItem('shop_category', category); }}
@@ -101,9 +109,12 @@ export default function ShopPage() {
 
           {/* Products Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.length === 0 && products.length === 0 && (
+              <div className="col-span-3 text-center py-20 text-gray-400">Loading products...</div>
+            )}
             {filteredProducts.map((product, index) => (
               <div
-                key={product.id}
+                key={product._id}
                 className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 animate-fade-in-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -130,12 +141,12 @@ export default function ShopPage() {
 
                   {/* Favorite Button */}
                   <button
-                    onClick={() => toggleFavorite(product.id)}
+                    onClick={() => toggleFavorite(product._id)}
                     className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
                   >
                     <FiHeart
                       className={`w-5 h-5 ${
-                        favorites.includes(product.id) ? 'text-red-500 fill-current' : 'text-gray-600'
+                        favorites.includes(product._id) ? 'text-red-500 fill-current' : 'text-gray-600'
                       }`}
                     />
                   </button>
