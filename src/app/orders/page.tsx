@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useCart } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import emailjs from '@emailjs/browser';
+import { downloadReceipt } from '@/utils/generateReceipt';
 
 interface OrderItem { id: number; name: string; price: number; image: string; quantity: number; }
-interface Order { id: string; items: OrderItem[]; total: number; address: string; name: string; date: string; status: string; }
+interface Order { id: string; items: OrderItem[]; total: number; address: string; name: string; email: string; date: string; status: string; }
 
 const STEPS = ['Order Placed', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered'];
 const STEP_ICONS = ['🧾', '✅', '📦', '🚚', '🏠'];
@@ -92,6 +95,7 @@ function Confetti({ active }: { active: boolean }) {
 }
 
 export default function OrdersPage() {
+  const { clearCart } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -106,6 +110,7 @@ export default function OrdersPage() {
       const newOrder = JSON.parse(pending);
       localStorage.setItem('mm_orders', JSON.stringify([newOrder, ...existing]));
       localStorage.removeItem('mm_pending_order');
+      clearCart();
       setIsNew(true);
       setExpanded(newOrder.id);
       setTimeout(() => {
@@ -113,6 +118,33 @@ export default function OrdersPage() {
         setConfetti(true);
         setTimeout(() => setConfetti(false), 4000);
       }, 500);
+
+      // Auto-download receipt
+      setTimeout(() => downloadReceipt(newOrder), 1000);
+
+      // Send order confirmation email with receipt link
+      const itemsList = newOrder.items
+        .map((i: { name: string; quantity: number; price: number }) => `${i.name} x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`)
+        .join('\n');
+      const arrival = getArrival(newOrder.date);
+      const receiptUrl = `${window.location.origin}/receipt/${newOrder.id}`;
+      emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_ORDER_TEMPLATE_ID!,
+        {
+          to_name: newOrder.name,
+          to_email: newOrder.email,
+          order_id: newOrder.id,
+          order_date: new Date(newOrder.date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }),
+          items_list: itemsList,
+          order_total: `$${newOrder.total.toFixed(2)}`,
+          delivery_address: newOrder.address,
+          estimated_delivery: arrival,
+          tracking_steps: 'Order Placed ✅ → Confirmed → Shipped → Out for Delivery → Delivered',
+          receipt_link: receiptUrl,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      ).catch(() => {});
     }
     setOrders(JSON.parse(localStorage.getItem('mm_orders') || '[]'));
   }, []);
@@ -174,6 +206,9 @@ export default function OrdersPage() {
                     </div>
                     <button onClick={() => setExpanded(isOpen ? null : order.id)} style={{ background: isOpen ? '#f1f5f9' : 'linear-gradient(135deg,#3b82f6,#9333ea)', color: isOpen ? '#64748b' : 'white', border: 'none', padding: '8px 22px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px', transition: 'all 0.2s ease' }}>
                       {isOpen ? '▲ Hide' : '▼ Details'}
+                    </button>
+                    <button onClick={() => downloadReceipt(order)} style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s ease' }}>
+                      ⬇ Receipt
                     </button>
                   </div>
 

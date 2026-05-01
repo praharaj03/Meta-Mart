@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface CartItem {
   id: number;
@@ -28,6 +28,16 @@ const CartContext = createContext<{
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    try { setItems(JSON.parse(localStorage.getItem('cart') ?? '[]')); } catch { /* ignore */ }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated) localStorage.setItem('cart', JSON.stringify(items));
+  }, [items, hydrated]);
 
   const addToCart = (item: Omit<CartItem, 'quantity'>) => {
     setItems(prev => {
@@ -55,7 +65,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     setItems(prev => prev.filter(item => item.id !== id));
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => { setItems([]); localStorage.removeItem('cart'); };
 
   return (
     <CartContext.Provider value={{ items, addToCart, updateQuantity, removeItem, clearCart }}>
