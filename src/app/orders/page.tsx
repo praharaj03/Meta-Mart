@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
+import { useCart } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
@@ -54,6 +55,7 @@ function Confetti({ active }: { active: boolean }) {
 
 export default function OrdersPage() {
   const { user, isLoaded } = useUser();
+  const { clearCart } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [confetti, setConfetti] = useState(false);
@@ -71,7 +73,7 @@ export default function OrdersPage() {
       setIsNew(true);
       setConfetti(true);
       setTimeout(() => setConfetti(false), 4000);
-      // Clean URL
+      clearCart();
       window.history.replaceState({}, '', '/orders');
     }
 

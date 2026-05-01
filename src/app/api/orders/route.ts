@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   await connectDB();
   const email = req.nextUrl.searchParams.get('email');
   if (!email) return NextResponse.json([]);
-  const orders = await Order.find({ userEmail: email }).sort({ createdAt: -1 });
+  const orders = await Order.find({ userEmail: email, status: { $ne: 'cancelled' } }).sort({ createdAt: -1 });
   return NextResponse.json(orders);
 }
 
