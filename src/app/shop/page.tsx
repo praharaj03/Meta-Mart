@@ -9,13 +9,13 @@ import { products, categories } from '@/data/products';
 
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState(
-    () => sessionStorage.getItem('shop_category') ?? 'All'
+    () => typeof window !== 'undefined' ? (sessionStorage.getItem('shop_category') ?? 'All') : 'All'
   );
   const [searchTerm, setSearchTerm] = useState(
-    () => sessionStorage.getItem('shop_search') ?? ''
+    () => typeof window !== 'undefined' ? (sessionStorage.getItem('shop_search') ?? '') : ''
   );
   const [favorites, setFavorites] = useState<number[]>(
-    () => { try { return JSON.parse(sessionStorage.getItem('shop_favorites') ?? '[]'); } catch { return []; } }
+    () => { try { return typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('shop_favorites') ?? '[]') : []; } catch { return []; } }
   );
   const [toast, setToast] = useState<{show: boolean, message: string}>({show: false, message: ''});
   const { addToCart } = useCart();
