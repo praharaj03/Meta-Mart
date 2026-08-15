@@ -19,7 +19,7 @@ const AutoSlider = () => {
   }, [slides.length]);
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto overflow-hidden rounded-2xl shadow-lg">
+    <div className="relative w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#14111d] shadow-2xl shadow-black/40">
       {/* Slides */}
       <div
         className="flex transition-transform duration-700 ease-in-out"
@@ -30,7 +30,7 @@ const AutoSlider = () => {
             <img
               src={slide.src}
               alt={slide.alt}
-              className="w-full h-48 sm:h-64 md:h-80 object-cover"
+              className="w-full h-64 sm:h-80 md:h-[30rem] object-cover opacity-85"
             />
           </div>
         ))}
@@ -43,7 +43,7 @@ const AutoSlider = () => {
             key={i}
             onClick={() => setCurrent(i)}
             className={`w-3 h-3 rounded-full ${
-              current === i ? "bg-teal-500" : "bg-gray-400"
+              current === i ? "bg-purple-300 w-8" : "bg-white/40 hover:bg-white"
             }`}
           />
         ))}

@@ -74,6 +74,8 @@ export default function OrdersPage() {
       setConfetti(true);
       setTimeout(() => setConfetti(false), 4000);
       clearCart();
+      localStorage.removeItem('metamart_checkout_draft');
+      sessionStorage.removeItem('metamart_payment_pending');
       window.history.replaceState({}, '', '/orders');
     }
 

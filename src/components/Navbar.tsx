@@ -47,13 +47,13 @@ const Navbar = () => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b shadow-lg transition-all duration-300 ${
-      isScrolled ? 'bg-white/90 border-gray-200' : 'bg-white/10 border-white/20'
+      isScrolled ? 'bg-[#0b0911]/95 border-white/10' : 'bg-[#08070d]/70 border-white/10'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         {/* Left Navigation — desktop only */}
         <nav className="hidden md:flex items-center space-x-5 lg:space-x-7 font-inter">
           {navLinks.map(link => (
-            <Link key={link.href} href={link.href} className="font-semibold text-gray-900 hover:text-blue-600 transition-all duration-300 hover:scale-105 text-sm lg:text-base">
+            <Link key={link.href} href={link.href} className="font-semibold text-zinc-300 hover:text-purple-300 transition-all duration-300 text-sm lg:text-base">
               {link.label}
             </Link>
           ))}
@@ -65,7 +65,7 @@ const Navbar = () => {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             {isMobileMenuOpen
               ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
               : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>
@@ -75,8 +75,8 @@ const Navbar = () => {
 
         {/* Center Logo */}
         <div className="flex items-center justify-center flex-shrink-0">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-wide text-gray-900 font-inter">
-            Meta<span className="text-blue-600">Mart</span>
+          <h1 className="display-font text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            Meta<span className="text-purple-400">Mart</span>
           </h1>
         </div>
 
@@ -84,9 +84,9 @@ const Navbar = () => {
         <div className="flex items-center space-x-2 sm:space-x-3">
           <button 
             onClick={toggleSearch}
-            className="p-2 hover:bg-white/20 rounded-full transition-all duration-300 hover:scale-110"
+            className="p-2 hover:bg-purple-500/20 rounded-full transition-all duration-300 hover:scale-110"
           >
-            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <circle cx="11" cy="11" r="8"/>
               <path d="m21 21-4.35-4.35"/>
             </svg>
@@ -95,17 +95,17 @@ const Navbar = () => {
             <UserButton />
           ) : (
             <SignInButton mode="redirect">
-              <button className="flex items-center space-x-1 hover:bg-white/20 px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
-                <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <button className="flex items-center space-x-1 hover:bg-purple-500/20 px-2 sm:px-3 py-2 rounded-lg transition-all duration-300">
+                <svg className="w-5 h-5 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
-                <span className="hidden sm:inline text-sm font-semibold text-gray-900 font-inter">Login</span>
+                <span className="hidden sm:inline text-sm font-semibold text-zinc-200">Login</span>
               </button>
             </SignInButton>
           )}
-          <Link href="/cart" className="relative p-2 hover:bg-white/20 rounded-full transition-all duration-300 hover:scale-110">
-            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <Link href="/cart" className="relative p-2 hover:bg-purple-500/20 rounded-full transition-all duration-300 hover:scale-110">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <circle cx="8" cy="21" r="1"/>
               <circle cx="19" cy="21" r="1"/>
               <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
@@ -121,14 +121,14 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 py-4">
+        <div className="md:hidden bg-[#0d0b13]/95 backdrop-blur-md border-t border-white/10 px-4 py-4">
           <nav className="flex flex-col space-y-1">
             {navLinks.map(link => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="font-semibold text-gray-900 hover:text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-lg transition-all duration-200"
+                className="font-semibold text-zinc-200 hover:text-purple-200 hover:bg-purple-500/15 px-4 py-3 rounded-lg transition-all duration-200"
               >
                 {link.label}
               </Link>
@@ -175,7 +175,7 @@ const Navbar = () => {
           top: 100%;
           left: 0;
           right: 0;
-          background: rgba(0, 0, 0, 0.9);
+          background: rgba(10, 7, 16, 0.98);
           backdrop-filter: blur(10px);
           transform: translateY(-100%);
           opacity: 0;
@@ -199,7 +199,8 @@ const Navbar = () => {
         .search-form {
           display: flex;
           align-items: center;
-          background: white;
+          background: #171522;
+          border: 1px solid rgba(232, 223, 255, 0.16);
           border-radius: 50px;
           padding: 8px;
           box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -212,15 +213,15 @@ const Navbar = () => {
           padding: 16px 24px;
           font-size: 18px;
           background: transparent;
-          color: #333;
+          color: #fff;
         }
         
         .search-input::placeholder {
-          color: #999;
+          color: #b7aec8;
         }
         
         .search-submit {
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #c084fc, #7c3aed);
           border: none;
           border-radius: 50%;
           width: 48px;

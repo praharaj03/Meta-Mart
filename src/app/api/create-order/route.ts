@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     items,
     total: finalTotal,
     address: addressStr,
-    status: 'confirmed',
+    status: 'pending',
     stripeSessionId: session.id,
   });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -17,15 +17,27 @@ const fields = [
   { name: 'pincode', placeholder: 'PIN / ZIP Code', type: 'text', icon: '📮' },
 ];
 
+const EMPTY_FORM = { name: '', email: '', phone: '', address: '', city: '', pincode: '' };
+const CHECKOUT_DRAFT_KEY = 'metamart_checkout_draft';
+
+function loadCheckoutDraft() {
+  if (typeof window === 'undefined') return { form: EMPTY_FORM, payMethod: 'stripe' as const, upiApp: '', upiId: '' };
+  try {
+    const draft = JSON.parse(window.localStorage.getItem(CHECKOUT_DRAFT_KEY) ?? '{}');
+    return { form: { ...EMPTY_FORM, ...draft.form }, payMethod: draft.payMethod === 'upi' ? 'upi' as const : 'stripe' as const, upiApp: draft.upiApp ?? '', upiId: draft.upiId ?? '' };
+  } catch { return { form: EMPTY_FORM, payMethod: 'stripe' as const, upiApp: '', upiId: '' }; }
+}
+
 export default function CheckoutPage() {
-  const { items } = useCart();
+  const { items, hydrated } = useCart();
   const router = useRouter();
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', city: '', pincode: '' });
+  const [draft] = useState(loadCheckoutDraft);
+  const [form, setForm] = useState(draft.form);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState('');
-  const [payMethod, setPayMethod] = useState<'stripe' | 'upi'>('stripe');
-  const [upiApp, setUpiApp] = useState('');
-  const [upiId, setUpiId] = useState('');
+  const [payMethod, setPayMethod] = useState<'stripe' | 'upi'>(draft.payMethod);
+  const [upiApp, setUpiApp] = useState(draft.upiApp);
+  const [upiId, setUpiId] = useState(draft.upiId);
   const [upiError, setUpiError] = useState('');
   const [upiPopup, setUpiPopup] = useState(false);
 
@@ -116,6 +128,10 @@ export default function CheckoutPage() {
   ];
 
   const { user } = useUser();
+  useEffect(() => {
+    if (!hydrated) return;
+    localStorage.setItem(CHECKOUT_DRAFT_KEY, JSON.stringify({ form, payMethod, upiApp, upiId }));
+  }, [form, payMethod, upiApp, upiId, hydrated]);
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const shipping = subtotal > 100 ? 0 : 15;
   const tax = subtotal * 0.08;
@@ -133,6 +149,7 @@ export default function CheckoutPage() {
     setUpiError('');
     setLoading(true);
     try {
+      sessionStorage.setItem('metamart_payment_pending', JSON.stringify({ startedAt: Date.now(), cart: items }));
       const res = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -144,11 +161,15 @@ export default function CheckoutPage() {
         }),
       });
       const { url } = await res.json();
+      if (!url) throw new Error('Unable to start checkout');
       window.location.href = url;
     } catch {
+      sessionStorage.removeItem('metamart_payment_pending');
       setLoading(false);
     }
   };
+
+  if (!hydrated) return <div className="min-h-screen grid place-items-center"><div className="text-sm font-semibold text-purple-300">Restoring your checkout…</div></div>;
 
   if (items.length === 0) return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#f0f4ff,#faf5ff)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>

@@ -9,6 +9,8 @@ const OrderSchema = new Schema({
   address: { type: String },
   status: { type: String, default: 'confirmed' },
   stripeSessionId: { type: String },
+  purchaseEmailSentAt: { type: Date },
+  deliveryEmailSentAt: { type: Date },
 }, { timestamps: true });
 
 export const Order = models.Order || mongoose.model('Order', OrderSchema);

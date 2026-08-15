@@ -1,27 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
+:root { --background:#08070d; --foreground:#f7f4ff; --line:rgba(232,223,255,.12); }
+@theme inline { --color-background:var(--background); --color-foreground:var(--foreground); --font-sans:"Manrope",Arial,sans-serif; }
+* { box-sizing:border-box; } html { scroll-behavior:smooth; background:var(--background); } body { margin:0; background:var(--background); color:var(--foreground); font-family:"Manrope",Arial,sans-serif; overflow-x:hidden; } button,input { font:inherit; } ::selection { background:#a855f7; color:white; }
+.display-font { font-family:"Space Grotesk","Manrope",sans-serif; } .eyebrow { font-family:"DM Mono",monospace; letter-spacing:.13em; text-transform:uppercase; } .purple-grid { background-image:linear-gradient(rgba(168,85,247,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.08) 1px,transparent 1px); background-size:48px 48px; } .glow-button { background:linear-gradient(135deg,#c084fc,#7c3aed 55%,#5b21b6); box-shadow:0 12px 34px rgba(124,58,237,.3),inset 0 1px rgba(255,255,255,.25); } .glow-button:hover { box-shadow:0 16px 45px rgba(168,85,247,.48),inset 0 1px rgba(255,255,255,.25); } .glass-panel { background:rgba(23,21,34,.72); border:1px solid var(--line); box-shadow:0 20px 60px rgba(0,0,0,.25); }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Site-wide dark surfaces — also covers the earlier page-specific component styles. */
+main, main > div, main section { color: #f7f4ff; }
+main :is(h1,h2,h3,h4,h5,h6,p,span,label,li,dt,dd,td,th) { color: #f7f4ff !important; }
+main :is(input,textarea,select) { background: #171522 !important; border-color: rgba(232,223,255,.18) !important; color: #fff !important; }
+main :is(input,textarea,select)::placeholder { color: #b7aec8 !important; }
+main .bg-white, main .bg-gray-50, main .bg-gray-100, main .bg-blue-50, main .bg-indigo-50 { background-color: #15121d !important; }
+main .text-black, main .text-gray-900, main .text-gray-800, main .text-gray-700, main .text-gray-600, main .text-gray-500, main .text-gray-400, main .text-slate-900 { color: #f7f4ff !important; }
+main .border-gray-100, main .border-gray-200, main .border-blue-100 { border-color: rgba(232,223,255,.12) !important; }
+main [style*="background: white"], main [style*="background:white"], main [style*="background: rgb(255, 255, 255)"] { background: #15121d !important; border-color: rgba(232,223,255,.14) !important; }
+main [style*="background: #f8fafc"], main [style*="background: #f9fafb"], main [style*="background: #f1f5f9"] { background: #1a1625 !important; }
+/* Utility and inline-style pages (cart, checkout, orders, receipts) use these shared guards. */
+.min-h-screen { background: #08070d !important; color: #f7f4ff !important; }
+body [style*="min-height: 100vh"] { background: #08070d !important; color: #f7f4ff !important; }
+body :is(h1,h2,h3,h4,h5,h6,p,label) { color: #f7f4ff; }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
-}
+/* Purple is the site language: surfaces stay near-black while every affordance carries the accent. */
+a { color: #d8b4fe; }
+a:hover { color: #f3e8ff; }
+header { border-color: rgba(192,132,252,.28) !important; box-shadow: 0 8px 34px rgba(76,29,149,.16) !important; }
+footer { background: linear-gradient(135deg, #10091d 0%, #241043 52%, #10091d 100%) !important; border-top: 1px solid rgba(192,132,252,.25); }
+footer :is(h1,h2,h3,h4,a) { color: #e9d5ff !important; }
+footer :is(p,span,li) { color: #ddd6e9 !important; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #c084fc !important; outline-offset: 3px; }
+input:focus, textarea:focus, select:focus { border-color: #c084fc !important; box-shadow: 0 0 0 3px rgba(168,85,247,.18) !important; }
+main :is(button, [role="button"]) { border-color: rgba(192,132,252,.28); }
+main :is(button, [role="button"]):hover { border-color: #c084fc; }
+main .bg-blue-500, main .bg-blue-600, main .bg-blue-700, main .bg-indigo-700 { background: linear-gradient(135deg,#c084fc,#7c3aed) !important; }
+main .text-blue-600, main .text-blue-500 { color: #d8b4fe !important; }
+main .ring-blue-500 { --tw-ring-color: #a855f7 !important; }
+main button:hover { background-color: rgba(168,85,247,.16); }
+main .bg-gradient-to-br, main .bg-gradient-to-r { border-color: rgba(192,132,252,.18); }
+.cart-item, .order-summary, .empty-cart, .contact-card, .faq-item { border-color: rgba(192,132,252,.25) !important; box-shadow: 0 14px 35px rgba(61,20,100,.16) !important; }
