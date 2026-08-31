@@ -10,6 +10,7 @@ const OrderSchema = new Schema({
   status: { type: String, default: 'confirmed' },
   cancelReason: { type: String },
   returnReason: { type: String },
+  returnType: { type: String }, // 'refund' | 'replacement'
   returnRequestedAt: { type: Date },
   stripeSessionId: { type: String },
   purchaseEmailSentAt: { type: Date },

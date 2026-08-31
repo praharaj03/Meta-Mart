@@ -10,7 +10,7 @@ import { downloadReceipt } from '@/utils/generateReceipt';
 import emailjs from '@emailjs/browser';
 
 interface OrderItem { id: string; name: string; price: number; image: string; quantity: number; }
-interface Order { _id: string; orderId: string; items: OrderItem[]; total: number; address: string; userName: string; userEmail: string; createdAt: string; status: string; returnRequestedAt?: string; }
+interface Order { _id: string; orderId: string; items: OrderItem[]; total: number; address: string; userName: string; userEmail: string; createdAt: string; status: string; returnRequestedAt?: string; returnType?: string; }
 
 const STEPS = ['Order Placed', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered'];
 const STEP_ICONS = ['🧾', '✅', '📦', '🚚', '🏠'];
@@ -43,6 +43,8 @@ function daysLeftToReturn(date: string) {
 
 const RETURN_STEPS = ['Return Requested', 'Pickup Scheduled', 'Item Picked Up', 'Checking Product', 'Refund Processed', 'Refunded'];
 const RETURN_STEP_ICONS = ['🔄', '📅', '🚚', '🔍', '💳', '✅'];
+const REPLACEMENT_STEPS = ['Return Requested', 'Pickup Scheduled', 'Item Picked Up', 'Checking Product', 'Replacement Dispatched', 'Delivered'];
+const REPLACEMENT_STEP_ICONS = ['🔄', '📅', '🚚', '🔍', '📦', '🏠'];
 
 function getReturnStep(returnRequestedAt: string) {
   const h = (Date.now() - new Date(returnRequestedAt).getTime()) / 36e5;
@@ -136,51 +138,19 @@ function buildCancelEmail(name: string, orderId: string, reason: string, total: 
 </div>`;
 }
 
-function buildReturnEmail(name: string, orderId: string, reason: string, total: number): string {
-  return `
-<div style="font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f7;padding:32px 0;">
-  <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-    <!-- Header -->
-    <div style="background:linear-gradient(135deg,#1c1107,#78350f);padding:36px 40px;text-align:center;">
-      <div style="font-size:40px;margin-bottom:12px;">&#128260;</div>
-      <h1 style="color:#ffffff;font-size:22px;font-weight:800;margin:0 0 6px;">Return Request Received</h1>
-      <p style="color:#fde68a;font-size:14px;margin:0;">We\'ll arrange a pickup at your earliest convenience</p>
-    </div>
-    <!-- Body -->
-    <div style="padding:36px 40px;">
-      <p style="color:#374151;font-size:15px;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
-      <p style="color:#374151;font-size:15px;margin:0 0 24px;">We\'ve received your return request. Here\'s what happens next:</p>
-      <!-- Steps -->
-      <div style="margin-bottom:24px;">
-        ${['Pickup will be scheduled within 24 hours','Our team will collect the item from your address','Item will be inspected by our quality team','Refund will be processed upon approval'].map((s, i) => `
-        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
-          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i + 1}</div>
-          <p style="color:#374151;font-size:14px;margin:4px 0 0;">${s}</p>
-        </div>`).join('')}
-      </div>
-      <!-- Order Details Box -->
-      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
-        <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Order ID</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:700;text-align:right;">#${orderId}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Return Reason</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;">${reason}</td></tr>
-          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Refund Amount</td><td style="padding:6px 0;color:#d97706;font-size:15px;font-weight:800;text-align:right;">₹${total.toFixed(2)}</td></tr>
-        </table>
-      </div>
-      <!-- Refund Banner -->
-      <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px 20px;margin-bottom:24px;">
-        <p style="color:#065f46;font-size:14px;font-weight:700;margin:0 0 2px;">&#128176; Refund Timeline</p>
-        <p style="color:#047857;font-size:13px;margin:0;">&#8377;${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong> of item pickup.</p>
-      </div>
-      <p style="color:#6b7280;font-size:13px;margin:0 0 8px;">Need help? Contact us at:</p>
-      <p style="margin:0;"><a href="mailto:devopspraharaj25@gmail.com" style="color:#d97706;font-size:13px;font-weight:600;">devopspraharaj25@gmail.com</a></p>
-    </div>
-    <!-- Footer -->
-    <div style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 40px;text-align:center;">
-      <p style="color:#9ca3af;font-size:12px;margin:0 0 4px;">&#169; ${new Date().getFullYear()} MetaMart. All rights reserved.</p>
-      <p style="color:#9ca3af;font-size:12px;margin:0;">This is an automated email. Please do not reply directly.</p>
-    </div>
-  </div>
-</div>`;
+function buildReturnEmail(name: string, orderId: string, type: string, reason: string, total: number): string {
+  const isReplacement = type === 'replacement';
+  const accent = isReplacement ? '#3b82f6' : '#d97706';
+  const headerBg = isReplacement ? 'linear-gradient(135deg,#0c1a3a,#1e3a8a)' : 'linear-gradient(135deg,#1c1107,#78350f)';
+  const title = isReplacement ? '&#128260; Replacement Requested' : '&#128260; Return Request Received';
+  const subtitle = isReplacement ? "We'll send a replacement once we receive your item" : "We'll arrange a pickup at your earliest convenience";
+  const steps = isReplacement
+    ? ['Pickup scheduled within 24 hours','Our team collects the item from your address','Item inspected by our quality team','Replacement dispatched within 2–3 business days']
+    : ['Pickup scheduled within 24 hours','Our team collects the item from your address','Item inspected by our quality team','Refund processed upon approval'];
+  const timeline = isReplacement
+    ? 'Your replacement will be dispatched within 2–3 business days after item pickup.'
+    : `&#8377;${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong> of item pickup.`;
+  return `<div style="font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f7;padding:32px 0;"><div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);"><div style="background:${headerBg};padding:36px 40px;text-align:center;"><div style="font-size:40px;margin-bottom:12px;">${title.split(' ')[0]}</div><h1 style="color:#ffffff;font-size:22px;font-weight:800;margin:0 0 6px;">${title.substring(title.indexOf(' ')+1)}</h1><p style="color:#fde68a;font-size:14px;margin:0;">${subtitle}</p></div><div style="padding:36px 40px;"><p style="color:#374151;font-size:15px;margin:0 0 24px;">Hi <strong>${name}</strong>,</p><p style="color:#374151;font-size:15px;margin:0 0 24px;">We've received your ${isReplacement ? 'replacement' : 'return'} request. Here's what happens next:</p><div style="margin-bottom:24px;">${steps.map((s,i)=>`<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;"><div style="width:28px;height:28px;border-radius:50%;background:${accent};color:white;font-size:12px;font-weight:800;text-align:center;line-height:28px;flex-shrink:0;">${i+1}</div><p style="color:#374151;font-size:14px;margin:4px 0 0;">${s}</p></div>`).join('')}</div><div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:20px 24px;margin-bottom:24px;"><table style="width:100%;border-collapse:collapse;"><tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Order ID</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:700;text-align:right;">#${orderId}</td></tr><tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Request Type</td><td style="padding:6px 0;font-size:13px;font-weight:700;text-align:right;color:${accent};">${isReplacement ? 'Replacement' : 'Refund'}</td></tr><tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Reason</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;">${reason}</td></tr>${!isReplacement ? `<tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Refund Amount</td><td style="padding:6px 0;color:${accent};font-size:15px;font-weight:800;text-align:right;">&#8377;${total.toFixed(2)}</td></tr>` : ''}</table></div><div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px 20px;margin-bottom:24px;"><p style="color:#065f46;font-size:14px;font-weight:700;margin:0 0 4px;">&#128176; ${isReplacement ? 'Replacement' : 'Refund'} Timeline</p><p style="color:#047857;font-size:13px;margin:0;">${timeline}</p></div><p style="color:#6b7280;font-size:13px;margin:0 0 8px;">Need help? Contact us at:</p><p style="margin:0;"><a href="mailto:devopspraharaj25@gmail.com" style="color:${accent};font-size:13px;font-weight:600;">devopspraharaj25@gmail.com</a></p></div><div style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 40px;text-align:center;"><p style="color:#9ca3af;font-size:12px;margin:0 0 4px;">&#169; ${new Date().getFullYear()} MetaMart. All rights reserved.</p><p style="color:#9ca3af;font-size:12px;margin:0;">This is an automated email. Please do not reply directly.</p></div></div></div>`;
 }
 
 export default function OrdersPage() {
@@ -197,6 +167,7 @@ export default function OrdersPage() {
   const [cancelling, setCancelling] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState<string | null>(null);
   const [returnModal, setReturnModal] = useState<{ orderId: string; orderRef: string; email: string; name: string; total: number; createdAt: string } | null>(null);
+  const [returnType, setReturnType] = useState<'refund' | 'replacement' | ''>('');
   const [returnReason, setReturnReason] = useState('');
   const [customReturnReason, setCustomReturnReason] = useState('');
   const [returning, setReturning] = useState(false);
@@ -211,7 +182,7 @@ export default function OrdersPage() {
       const res = await fetch('/api/orders', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId: returnModal.orderRef, returnReason: reason }),
+        body: JSON.stringify({ orderId: returnModal.orderRef, returnReason: reason, returnType }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Failed');
@@ -224,12 +195,13 @@ export default function OrdersPage() {
           order_id: returnModal.orderRef,
           cancel_reason: reason,
           refund_amount: `₹${returnModal.total.toFixed(2)}`,
-          message: buildReturnEmail(returnModal.name, returnModal.orderRef, reason, returnModal.total),
+          message: buildReturnEmail(returnModal.name, returnModal.orderRef, returnType, reason, returnModal.total),
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
       setReturnSuccess(returnModal.orderRef);
       setReturnModal(null);
+      setReturnType('');
       setReturnReason('');
       setCustomReturnReason('');
       const email = user?.primaryEmailAddress?.emailAddress;
@@ -350,7 +322,8 @@ export default function OrdersPage() {
             const step = getStep(order.createdAt, order.status);
             const isCancelled = order.status === 'cancelled';
             const isDelivered = step === 4;
-            const isReturnRequested = order.status === 'return_requested';
+            const isReturnRequested = order.status === 'return_requested' || order.status === 'replacement_requested';
+            const isReplacement = order.status === 'replacement_requested';
             const daysLeft = daysLeftToReturn(order.createdAt);
             const canReturn = isDelivered && !isReturnRequested && daysLeft > 0;
             const isOpen = expanded === order._id;
@@ -362,7 +335,11 @@ export default function OrdersPage() {
                 {returnSuccess === order.orderId && (
                   <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '10px', padding: '10px 14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '16px' }}>✅</span>
-                    <span style={{ color: '#34d399', fontWeight: 600, fontSize: '14px' }}>Return submitted! Refund of ₹{order.total.toFixed(2)} will be credited within 24 hours.</span>
+                    <span style={{ color: '#34d399', fontWeight: 600, fontSize: '14px' }}>
+                      {returnType === 'replacement'
+                        ? 'Replacement requested! We\'ll dispatch a new item after pickup.'
+                        : `Return submitted! Refund of ₹${order.total.toFixed(2)} will be credited within 24 hours.`}
+                    </span>
                   </div>
                 )}
 
@@ -397,7 +374,7 @@ export default function OrdersPage() {
                     </button>
                   )}
                   {canReturn && (
-                    <button onClick={() => { setReturnModal({ orderId: order._id, orderRef: order.orderId, email: order.userEmail, name: order.userName, total: order.total, createdAt: order.createdAt }); setReturnReason(''); setCustomReturnReason(''); }}
+                    <button onClick={() => { setReturnModal({ orderId: order._id, orderRef: order.orderId, email: order.userEmail, name: order.userName, total: order.total, createdAt: order.createdAt }); setReturnType(''); setReturnReason(''); setCustomReturnReason(''); }}
                       style={{ background: 'rgba(245,158,11,0.1)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>
                       🔄 Return · {daysLeft}d left
                     </button>
@@ -424,25 +401,35 @@ export default function OrdersPage() {
                 {/* Return stepper */}
                 {isReturnRequested && order.returnRequestedAt && (() => {
                   const rStep = getReturnStep(order.returnRequestedAt!);
+                  const steps = isReplacement ? REPLACEMENT_STEPS : RETURN_STEPS;
+                  const icons = isReplacement ? REPLACEMENT_STEP_ICONS : RETURN_STEP_ICONS;
+                  const accentColor = isReplacement ? '#3b82f6' : '#f59e0b';
+                  const accentGlow = isReplacement ? 'rgba(59,130,246,0.25)' : 'rgba(245,158,11,0.25)';
+                  const gradientBar = isReplacement ? 'linear-gradient(90deg,#3b82f6,#6366f1)' : 'linear-gradient(90deg,#f59e0b,#d97706)';
+                  const gradientCircle = isReplacement ? 'linear-gradient(135deg,#3b82f6,#6366f1)' : 'linear-gradient(135deg,#f59e0b,#d97706)';
                   return (
                     <div>
-                      <p style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', marginTop: '4px' }}>🔄 Return in Progress</p>
+                      <p style={{ fontSize: '11px', color: accentColor, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', marginTop: '4px' }}>
+                        {isReplacement ? '🔁 Replacement in Progress' : '🔄 Return in Progress'}
+                      </p>
                       <div style={{ display: 'flex', alignItems: 'flex-start', overflowX: 'auto', paddingBottom: '8px' }}>
-                        {RETURN_STEPS.map((s, i) => (
-                          <div key={s} style={{ display: 'flex', alignItems: 'center', flex: i < RETURN_STEPS.length - 1 ? 1 : 'none' }}>
+                        {steps.map((s, i) => (
+                          <div key={s} style={{ display: 'flex', alignItems: 'center', flex: i < steps.length - 1 ? 1 : 'none' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                              <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: i <= rStep ? 'linear-gradient(135deg,#f59e0b,#d97706)' : '#1e1a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= rStep ? '16px' : '13px', fontWeight: 700, color: i <= rStep ? 'white' : '#94a3b8', boxShadow: i === rStep ? '0 0 0 4px rgba(245,158,11,0.25)' : 'none', flexShrink: 0 }}>
-                                {i < rStep ? '✓' : RETURN_STEP_ICONS[i]}
+                              <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: i <= rStep ? gradientCircle : '#1e1a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= rStep ? '16px' : '13px', fontWeight: 700, color: i <= rStep ? 'white' : '#94a3b8', boxShadow: i === rStep ? `0 0 0 4px ${accentGlow}` : 'none', flexShrink: 0 }}>
+                                {i < rStep ? '✓' : icons[i]}
                               </div>
-                              <span style={{ fontSize: '9px', color: i <= rStep ? '#f59e0b' : '#94a3b8', fontWeight: i <= rStep ? 700 : 400, textAlign: 'center', width: '60px', lineHeight: 1.3 }}>{s}</span>
+                              <span style={{ fontSize: '9px', color: i <= rStep ? accentColor : '#94a3b8', fontWeight: i <= rStep ? 700 : 400, textAlign: 'center', width: '60px', lineHeight: 1.3 }}>{s}</span>
                             </div>
-                            {i < RETURN_STEPS.length - 1 && <div style={{ flex: 1, height: '3px', background: i < rStep ? 'linear-gradient(90deg,#f59e0b,#d97706)' : '#1e1a2e', margin: '0 4px', marginBottom: '26px', borderRadius: '2px' }} />}
+                            {i < steps.length - 1 && <div style={{ flex: 1, height: '3px', background: i < rStep ? gradientBar : '#1e1a2e', margin: '0 4px', marginBottom: '26px', borderRadius: '2px' }} />}
                           </div>
                         ))}
                       </div>
                       {rStep === 5 && (
                         <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginTop: '8px', fontSize: '13px', color: '#34d399' }}>
-                          ✅ Refund of ₹{order.total.toFixed(2)} has been credited to your original payment method.
+                          {isReplacement
+                            ? '🏠 Your replacement has been delivered!'
+                            : `✅ Refund of ₹${order.total.toFixed(2)} has been credited to your original payment method.`}
                         </div>
                       )}
                     </div>
@@ -485,29 +472,43 @@ export default function OrdersPage() {
           onClick={e => { if (e.target === e.currentTarget) setReturnModal(null); }}>
           <div style={{ background: '#13111b', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
             <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff', marginBottom: '6px' }}>🔄 Return Order</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{returnModal.orderRef} · ₹{returnModal.total.toFixed(2)} · {daysLeftToReturn(returnModal.createdAt)} days left to return</p>
+            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{returnModal.orderRef} · ₹{returnModal.total.toFixed(2)} · {daysLeftToReturn(returnModal.createdAt)} days left</p>
 
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>Why are you returning?</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-              {RETURN_REASONS.map(r => (
-                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '10px', background: returnReason === r ? 'rgba(245,158,11,0.1)' : '#1e1a2e', border: returnReason === r ? '1px solid rgba(245,158,11,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
-                  <input type="radio" name="returnReason" value={r} checked={returnReason === r} onChange={() => setReturnReason(r)} style={{ accentColor: '#f59e0b' }} />
-                  <span style={{ fontSize: '13px', color: '#f7f4ff' }}>{r}</span>
-                </label>
+            {/* Step 1 — Refund or Replacement */}
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>What would you like?</p>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              {(['refund', 'replacement'] as const).map(t => (
+                <button key={t} onClick={() => { setReturnType(t); setReturnReason(''); setCustomReturnReason(''); }}
+                  style={{ flex: 1, padding: '14px', borderRadius: '12px', border: returnType === t ? '2px solid #f59e0b' : '1px solid rgba(255,255,255,0.08)', background: returnType === t ? 'rgba(245,158,11,0.12)' : '#1e1a2e', color: returnType === t ? '#fbbf24' : '#94a3b8', fontWeight: 700, cursor: 'pointer', fontSize: '14px', textTransform: 'capitalize' }}>
+                  {t === 'refund' ? '💰 Refund' : '🔁 Replacement'}
+                </button>
               ))}
             </div>
 
-            {returnReason === 'Other' && (
-              <textarea value={customReturnReason} onChange={e => setCustomReturnReason(e.target.value)}
-                placeholder="Please describe your reason..."
-                rows={3}
-                style={{ width: '100%', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 12px', color: '#f7f4ff', fontSize: '13px', resize: 'none', outline: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
-              />
+            {/* Step 2 — Reason (shown after type selected) */}
+            {returnType && (
+              <>
+                <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>Why are you returning?</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                  {RETURN_REASONS.map(r => (
+                    <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '10px', background: returnReason === r ? 'rgba(245,158,11,0.1)' : '#1e1a2e', border: returnReason === r ? '1px solid rgba(245,158,11,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
+                      <input type="radio" name="returnReason" value={r} checked={returnReason === r} onChange={() => setReturnReason(r)} style={{ accentColor: '#f59e0b' }} />
+                      <span style={{ fontSize: '13px', color: '#f7f4ff' }}>{r}</span>
+                    </label>
+                  ))}
+                </div>
+                {returnReason === 'Other' && (
+                  <textarea value={customReturnReason} onChange={e => setCustomReturnReason(e.target.value)}
+                    placeholder="Please describe your reason..."
+                    rows={3}
+                    style={{ width: '100%', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 12px', color: '#f7f4ff', fontSize: '13px', resize: 'none', outline: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
+                  />
+                )}
+                <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '20px', fontSize: '13px', color: '#34d399' }}>
+                  {returnType === 'refund' ? `💰 Refund of ₹${returnModal.total.toFixed(2)} will be credited within 24 hours of item pickup.` : '🔁 Replacement will be dispatched within 2–3 business days after item pickup.'}
+                </div>
+              </>
             )}
-
-            <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '20px', fontSize: '13px', color: '#34d399' }}>
-              💰 Refund of ₹{returnModal.total.toFixed(2)} will be credited within 24 hours of item pickup.
-            </div>
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={() => setReturnModal(null)}
@@ -515,9 +516,9 @@ export default function OrdersPage() {
                 Keep Item
               </button>
               <button onClick={handleReturn}
-                disabled={returning || !returnReason || (returnReason === 'Other' && !customReturnReason.trim())}
-                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: returning ? '#78350f' : 'linear-gradient(135deg,#f59e0b,#d97706)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '14px', opacity: (!returnReason || (returnReason === 'Other' && !customReturnReason.trim())) ? 0.5 : 1 }}>
-                {returning ? 'Submitting...' : 'Confirm Return'}
+                disabled={returning || !returnType || !returnReason || (returnReason === 'Other' && !customReturnReason.trim())}
+                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: returning ? '#78350f' : 'linear-gradient(135deg,#f59e0b,#d97706)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '14px', opacity: (!returnType || !returnReason || (returnReason === 'Other' && !customReturnReason.trim())) ? 0.5 : 1 }}>
+                {returning ? 'Submitting...' : `Confirm ${returnType === 'replacement' ? 'Replacement' : 'Return'}`}
               </button>
             </div>
           </div>

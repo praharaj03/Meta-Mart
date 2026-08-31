@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   await connectDB();
-  const { orderId, cancelReason, returnReason } = await req.json();
+  const { orderId, cancelReason, returnReason, returnType } = await req.json();
   if (!orderId) return NextResponse.json({ error: 'Missing orderId' }, { status: 400 });
 
   if (cancelReason) {
@@ -35,18 +35,8 @@ export async function PATCH(req: NextRequest) {
   }
 
   if (returnReason) {
-    const order = await Order.findOne({ orderId });
-    if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-    // Delivery = createdAt + 5 days
-    const deliveredAt = new Date(order.createdAt);
-    deliveredAt.setDate(deliveredAt.getDate() + 5);
-    if (Date.now() < deliveredAt.getTime()) return NextResponse.json({ error: 'Order not yet delivered' }, { status: 400 });
-    // 7-day return window from delivery
-    const returnDeadline = new Date(deliveredAt);
-    returnDeadline.setDate(returnDeadline.getDate() + 7);
-    if (Date.now() > returnDeadline.getTime()) return NextResponse.json({ error: 'Return window has expired (7 days)' }, { status: 400 });
-    if (['cancelled', 'return_requested'].includes(order.status)) return NextResponse.json({ error: 'Cannot return this order' }, { status: 400 });
-    await Order.findOneAndUpdate({ orderId }, { status: 'return_requested', returnReason, returnRequestedAt: new Date() });
+    const newStatus = returnType === 'replacement' ? 'replacement_requested' : 'return_requested';
+    await Order.findOneAndUpdate({ orderId }, { status: newStatus, returnReason, returnType: returnType ?? 'refund', returnRequestedAt: new Date() });
     return NextResponse.json({ success: true });
   }
 
