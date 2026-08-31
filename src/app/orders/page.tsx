@@ -94,6 +94,95 @@ function Confetti({ active }: { active: boolean }) {
   return <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 9999 }} />;
 }
 
+function buildCancelEmail(name: string, orderId: string, reason: string, total: number): string {
+  return `
+<div style="font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f7;padding:32px 0;">
+  <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1a0a2e,#3b1a6b);padding:36px 40px;text-align:center;">
+      <div style="font-size:40px;margin-bottom:12px;">&#10060;</div>
+      <h1 style="color:#ffffff;font-size:22px;font-weight:800;margin:0 0 6px;">Order Cancelled</h1>
+      <p style="color:#c4b5fd;font-size:14px;margin:0;">We\'ve received your cancellation request</p>
+    </div>
+    <!-- Body -->
+    <div style="padding:36px 40px;">
+      <p style="color:#374151;font-size:15px;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
+      <p style="color:#374151;font-size:15px;margin:0 0 24px;">Your order has been successfully cancelled. Here\'s a summary:</p>
+      <!-- Order Details Box -->
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Order ID</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:700;text-align:right;">#${orderId}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Cancellation Reason</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;">${reason}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Refund Amount</td><td style="padding:6px 0;color:#7c3aed;font-size:15px;font-weight:800;text-align:right;">₹${total.toFixed(2)}</td></tr>
+        </table>
+      </div>
+      <!-- Refund Banner -->
+      <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
+        <span style="font-size:24px;">&#128176;</span>
+        <div>
+          <p style="color:#065f46;font-size:14px;font-weight:700;margin:0 0 2px;">Refund Initiated</p>
+          <p style="color:#047857;font-size:13px;margin:0;">&#8377;${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong>.</p>
+        </div>
+      </div>
+      <p style="color:#6b7280;font-size:13px;margin:0 0 8px;">If you have any questions, feel free to reach out to us:</p>
+      <p style="margin:0;"><a href="mailto:devopspraharaj25@gmail.com" style="color:#7c3aed;font-size:13px;font-weight:600;">devopspraharaj25@gmail.com</a></p>
+    </div>
+    <!-- Footer -->
+    <div style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 40px;text-align:center;">
+      <p style="color:#9ca3af;font-size:12px;margin:0 0 4px;">&#169; ${new Date().getFullYear()} MetaMart. All rights reserved.</p>
+      <p style="color:#9ca3af;font-size:12px;margin:0;">This is an automated email. Please do not reply directly.</p>
+    </div>
+  </div>
+</div>`;
+}
+
+function buildReturnEmail(name: string, orderId: string, reason: string, total: number): string {
+  return `
+<div style="font-family:'Segoe UI',Arial,sans-serif;background:#f4f4f7;padding:32px 0;">
+  <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1c1107,#78350f);padding:36px 40px;text-align:center;">
+      <div style="font-size:40px;margin-bottom:12px;">&#128260;</div>
+      <h1 style="color:#ffffff;font-size:22px;font-weight:800;margin:0 0 6px;">Return Request Received</h1>
+      <p style="color:#fde68a;font-size:14px;margin:0;">We\'ll arrange a pickup at your earliest convenience</p>
+    </div>
+    <!-- Body -->
+    <div style="padding:36px 40px;">
+      <p style="color:#374151;font-size:15px;margin:0 0 24px;">Hi <strong>${name}</strong>,</p>
+      <p style="color:#374151;font-size:15px;margin:0 0 24px;">We\'ve received your return request. Here\'s what happens next:</p>
+      <!-- Steps -->
+      <div style="margin-bottom:24px;">
+        ${['Pickup will be scheduled within 24 hours','Our team will collect the item from your address','Item will be inspected by our quality team','Refund will be processed upon approval'].map((s, i) => `
+        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i + 1}</div>
+          <p style="color:#374151;font-size:14px;margin:4px 0 0;">${s}</p>
+        </div>`).join('')}
+      </div>
+      <!-- Order Details Box -->
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Order ID</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:700;text-align:right;">#${orderId}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Return Reason</td><td style="padding:6px 0;color:#111827;font-size:13px;font-weight:600;text-align:right;">${reason}</td></tr>
+          <tr><td style="padding:6px 0;color:#6b7280;font-size:13px;">Refund Amount</td><td style="padding:6px 0;color:#d97706;font-size:15px;font-weight:800;text-align:right;">₹${total.toFixed(2)}</td></tr>
+        </table>
+      </div>
+      <!-- Refund Banner -->
+      <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px 20px;margin-bottom:24px;">
+        <p style="color:#065f46;font-size:14px;font-weight:700;margin:0 0 2px;">&#128176; Refund Timeline</p>
+        <p style="color:#047857;font-size:13px;margin:0;">&#8377;${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong> of item pickup.</p>
+      </div>
+      <p style="color:#6b7280;font-size:13px;margin:0 0 8px;">Need help? Contact us at:</p>
+      <p style="margin:0;"><a href="mailto:devopspraharaj25@gmail.com" style="color:#d97706;font-size:13px;font-weight:600;">devopspraharaj25@gmail.com</a></p>
+    </div>
+    <!-- Footer -->
+    <div style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:20px 40px;text-align:center;">
+      <p style="color:#9ca3af;font-size:12px;margin:0 0 4px;">&#169; ${new Date().getFullYear()} MetaMart. All rights reserved.</p>
+      <p style="color:#9ca3af;font-size:12px;margin:0;">This is an automated email. Please do not reply directly.</p>
+    </div>
+  </div>
+</div>`;
+}
+
 export default function OrdersPage() {
   const { user, isLoaded } = useUser();
   const { clearCart } = useCart();
@@ -135,7 +224,7 @@ export default function OrdersPage() {
           order_id: returnModal.orderRef,
           cancel_reason: reason,
           refund_amount: `₹${returnModal.total.toFixed(2)}`,
-          message: `Your return request for order #${returnModal.orderRef} has been received. Reason: ${reason}. Refund of ₹${returnModal.total.toFixed(2)} will be processed within 24 hours once we receive the item.`,
+          message: buildReturnEmail(returnModal.name, returnModal.orderRef, reason, returnModal.total),
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
@@ -164,7 +253,6 @@ export default function OrdersPage() {
         body: JSON.stringify({ orderId: cancelModal.orderRef, cancelReason: reason }),
       });
       if (!res.ok) throw new Error();
-      // Send cancellation email
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
@@ -174,7 +262,7 @@ export default function OrdersPage() {
           order_id: cancelModal.orderRef,
           cancel_reason: reason,
           refund_amount: `₹${cancelModal.total.toFixed(2)}`,
-          message: `Your order #${cancelModal.orderRef} has been cancelled. Reason: ${reason}. Refund of ₹${cancelModal.total.toFixed(2)} will be processed within 24 hours to your original payment method.`,
+          message: buildCancelEmail(cancelModal.name, cancelModal.orderRef, reason, cancelModal.total),
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
@@ -183,7 +271,6 @@ export default function OrdersPage() {
       setCancelModal(null);
       setCancelReason('');
       setCustomReason('');
-      // Re-fetch from server so all devices stay in sync
       const email = user?.primaryEmailAddress?.emailAddress;
       if (email) fetchOrders(email);
     } catch {
