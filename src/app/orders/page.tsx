@@ -10,7 +10,7 @@ import { downloadReceipt } from '@/utils/generateReceipt';
 import emailjs from '@emailjs/browser';
 
 interface OrderItem { id: string; name: string; price: number; image: string; quantity: number; }
-interface Order { _id: string; orderId: string; items: OrderItem[]; total: number; address: string; userName: string; userEmail: string; createdAt: string; status: string; }
+interface Order { _id: string; orderId: string; items: OrderItem[]; total: number; address: string; userName: string; userEmail: string; createdAt: string; status: string; returnRequestedAt?: string; }
 
 const STEPS = ['Order Placed', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered'];
 const STEP_ICONS = ['🧾', '✅', '📦', '🚚', '🏠'];
@@ -39,6 +39,19 @@ function getReturnDeadline(date: string) {
 function daysLeftToReturn(date: string) {
   const deadline = getReturnDeadline(date);
   return Math.ceil((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+}
+
+const RETURN_STEPS = ['Return Requested', 'Pickup Scheduled', 'Item Picked Up', 'Checking Product', 'Refund Processed', 'Refunded'];
+const RETURN_STEP_ICONS = ['🔄', '📅', '🚚', '🔍', '💳', '✅'];
+
+function getReturnStep(returnRequestedAt: string) {
+  const h = (Date.now() - new Date(returnRequestedAt).getTime()) / 36e5;
+  if (h < 2) return 0;
+  if (h < 12) return 1;
+  if (h < 24) return 2;
+  if (h < 36) return 3;
+  if (h < 48) return 4;
+  return 5;
 }
 
 function getStep(date: string, status: string) {
@@ -258,16 +271,7 @@ export default function OrdersPage() {
             return (
               <div key={order._id} style={{ background: isCancelled ? '#1a0f0f' : '#13111b', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.2)', marginBottom: '16px', border: isCancelled ? '1.5px solid rgba(239,68,68,0.3)' : isOpen ? '1.5px solid #c084fc' : '1px solid rgba(192,132,252,.15)', animation: `fadeUp 0.5s ease-out ${idx * 80}ms both` }}>
 
-                {/* Return requested banner */}
-                {isReturnRequested && (
-                  <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '10px', padding: '10px 14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '16px' }}>🔄</span>
-                    <span style={{ color: '#fbbf24', fontWeight: 600, fontSize: '14px' }}>Return Requested</span>
-                    <span style={{ color: '#94a3b8', fontSize: '13px', marginLeft: 'auto' }}>Refund within 24 hrs</span>
-                  </div>
-                )}
-
-                {/* Return success banner */}
+                {/* Return success banner — shown briefly after submitting */}
                 {returnSuccess === order.orderId && (
                   <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '10px', padding: '10px 14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '16px' }}>✅</span>
@@ -313,22 +317,50 @@ export default function OrdersPage() {
                   )}
                 </div>
 
-                {/* Stepper — hidden for cancelled orders */}
-                {!isCancelled && (
-                <div style={{ display: 'flex', alignItems: 'flex-start', padding: '16px 0', overflowX: 'auto' }}>
-                  {STEPS.map((s, i) => (
-                    <div key={s} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: i <= step ? 'linear-gradient(135deg,#3b82f6,#9333ea)' : '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= step ? '18px' : '14px', fontWeight: 700, color: i <= step ? 'white' : '#94a3b8', boxShadow: i === step ? '0 0 0 4px rgba(59,130,246,0.2)' : 'none', flexShrink: 0 }}>
-                          {i < step ? '✓' : STEP_ICONS[i]}
+                {/* Stepper — delivery or return depending on status */}
+                {!isCancelled && !isReturnRequested && (
+                  <div style={{ display: 'flex', alignItems: 'flex-start', padding: '16px 0', overflowX: 'auto' }}>
+                    {STEPS.map((s, i) => (
+                      <div key={s} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: i <= step ? 'linear-gradient(135deg,#3b82f6,#9333ea)' : '#1e1a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= step ? '18px' : '14px', fontWeight: 700, color: i <= step ? 'white' : '#94a3b8', boxShadow: i === step ? '0 0 0 4px rgba(59,130,246,0.2)' : 'none', flexShrink: 0 }}>
+                            {i < step ? '✓' : STEP_ICONS[i]}
+                          </div>
+                          <span style={{ fontSize: '10px', color: i <= step ? '#3b82f6' : '#94a3b8', fontWeight: i <= step ? 700 : 400, textAlign: 'center', width: '64px', lineHeight: 1.3 }}>{s}</span>
                         </div>
-                        <span style={{ fontSize: '10px', color: i <= step ? '#3b82f6' : '#94a3b8', fontWeight: i <= step ? 700 : 400, textAlign: 'center', width: '64px', lineHeight: 1.3 }}>{s}</span>
+                        {i < STEPS.length - 1 && <div style={{ flex: 1, height: '3px', background: i < step ? 'linear-gradient(90deg,#3b82f6,#9333ea)' : '#1e1a2e', margin: '0 4px', marginBottom: '28px', borderRadius: '2px' }} />}
                       </div>
-                      {i < STEPS.length - 1 && <div style={{ flex: 1, height: '3px', background: i < step ? 'linear-gradient(90deg,#3b82f6,#9333ea)' : '#e5e7eb', margin: '0 4px', marginBottom: '28px', borderRadius: '2px' }} />}
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
                 )}
+
+                {/* Return stepper */}
+                {isReturnRequested && order.returnRequestedAt && (() => {
+                  const rStep = getReturnStep(order.returnRequestedAt!);
+                  return (
+                    <div>
+                      <p style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', marginTop: '4px' }}>🔄 Return in Progress</p>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', overflowX: 'auto', paddingBottom: '8px' }}>
+                        {RETURN_STEPS.map((s, i) => (
+                          <div key={s} style={{ display: 'flex', alignItems: 'center', flex: i < RETURN_STEPS.length - 1 ? 1 : 'none' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                              <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: i <= rStep ? 'linear-gradient(135deg,#f59e0b,#d97706)' : '#1e1a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= rStep ? '16px' : '13px', fontWeight: 700, color: i <= rStep ? 'white' : '#94a3b8', boxShadow: i === rStep ? '0 0 0 4px rgba(245,158,11,0.25)' : 'none', flexShrink: 0 }}>
+                                {i < rStep ? '✓' : RETURN_STEP_ICONS[i]}
+                              </div>
+                              <span style={{ fontSize: '9px', color: i <= rStep ? '#f59e0b' : '#94a3b8', fontWeight: i <= rStep ? 700 : 400, textAlign: 'center', width: '60px', lineHeight: 1.3 }}>{s}</span>
+                            </div>
+                            {i < RETURN_STEPS.length - 1 && <div style={{ flex: 1, height: '3px', background: i < rStep ? 'linear-gradient(90deg,#f59e0b,#d97706)' : '#1e1a2e', margin: '0 4px', marginBottom: '26px', borderRadius: '2px' }} />}
+                          </div>
+                        ))}
+                      </div>
+                      {rStep === 5 && (
+                        <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginTop: '8px', fontSize: '13px', color: '#34d399' }}>
+                          ✅ Refund of ₹{order.total.toFixed(2)} has been credited to your original payment method.
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {isOpen && (
                   <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
