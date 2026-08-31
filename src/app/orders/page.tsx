@@ -22,6 +22,25 @@ const CANCEL_REASONS = [
   'Other',
 ];
 
+const RETURN_REASONS = [
+  'Item damaged or defective',
+  'Wrong item received',
+  'Item not as described',
+  'Changed my mind',
+  'Other',
+];
+
+function getReturnDeadline(date: string) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + 12); // 5 days delivery + 7 days return window
+  return d;
+}
+
+function daysLeftToReturn(date: string) {
+  const deadline = getReturnDeadline(date);
+  return Math.ceil((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+}
+
 function getStep(date: string, status: string) {
   if (status === 'cancelled') return -1;
   const h = (Date.now() - new Date(date).getTime()) / 36e5;
@@ -75,6 +94,50 @@ export default function OrdersPage() {
   const [customReason, setCustomReason] = useState('');
   const [cancelling, setCancelling] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState<string | null>(null);
+  const [returnModal, setReturnModal] = useState<{ orderId: string; orderRef: string; email: string; name: string; total: number; createdAt: string } | null>(null);
+  const [returnReason, setReturnReason] = useState('');
+  const [customReturnReason, setCustomReturnReason] = useState('');
+  const [returning, setReturning] = useState(false);
+  const [returnSuccess, setReturnSuccess] = useState<string | null>(null);
+
+  const handleReturn = async () => {
+    if (!returnModal) return;
+    const reason = returnReason === 'Other' ? customReturnReason.trim() : returnReason;
+    if (!reason) return;
+    setReturning(true);
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: returnModal.orderRef, returnReason: reason }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Failed');
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          to_email: returnModal.email,
+          to_name: returnModal.name,
+          order_id: returnModal.orderRef,
+          cancel_reason: reason,
+          refund_amount: `₹${returnModal.total.toFixed(2)}`,
+          message: `Your return request for order #${returnModal.orderRef} has been received. Reason: ${reason}. Refund of ₹${returnModal.total.toFixed(2)} will be processed within 24 hours once we receive the item.`,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+      setReturnSuccess(returnModal.orderRef);
+      setReturnModal(null);
+      setReturnReason('');
+      setCustomReturnReason('');
+      const email = user?.primaryEmailAddress?.emailAddress;
+      if (email) fetchOrders(email);
+    } catch (e: any) {
+      alert(e.message ?? 'Failed to submit return. Please try again.');
+    } finally {
+      setReturning(false);
+    }
+  };
 
   const handleCancel = async () => {
     if (!cancelModal) return;
@@ -187,10 +250,30 @@ export default function OrdersPage() {
             const step = getStep(order.createdAt, order.status);
             const isCancelled = order.status === 'cancelled';
             const isDelivered = step === 4;
+            const isReturnRequested = order.status === 'return_requested';
+            const daysLeft = daysLeftToReturn(order.createdAt);
+            const canReturn = isDelivered && !isReturnRequested && daysLeft > 0;
             const isOpen = expanded === order._id;
             const receiptData = { id: order.orderId, items: order.items, total: order.total, address: order.address, name: order.userName, email: order.userEmail, date: order.createdAt, status: order.status };
             return (
               <div key={order._id} style={{ background: isCancelled ? '#1a0f0f' : '#13111b', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.2)', marginBottom: '16px', border: isCancelled ? '1.5px solid rgba(239,68,68,0.3)' : isOpen ? '1.5px solid #c084fc' : '1px solid rgba(192,132,252,.15)', animation: `fadeUp 0.5s ease-out ${idx * 80}ms both` }}>
+
+                {/* Return requested banner */}
+                {isReturnRequested && (
+                  <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '10px', padding: '10px 14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '16px' }}>🔄</span>
+                    <span style={{ color: '#fbbf24', fontWeight: 600, fontSize: '14px' }}>Return Requested</span>
+                    <span style={{ color: '#94a3b8', fontSize: '13px', marginLeft: 'auto' }}>Refund within 24 hrs</span>
+                  </div>
+                )}
+
+                {/* Return success banner */}
+                {returnSuccess === order.orderId && (
+                  <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '10px', padding: '10px 14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '16px' }}>✅</span>
+                    <span style={{ color: '#34d399', fontWeight: 600, fontSize: '14px' }}>Return submitted! Refund of ₹{order.total.toFixed(2)} will be credited within 24 hours.</span>
+                  </div>
+                )}
 
                 {/* Cancelled banner */}
                 {isCancelled && (
@@ -220,6 +303,12 @@ export default function OrdersPage() {
                     <button onClick={() => { setCancelModal({ orderId: order._id, orderRef: order.orderId, email: order.userEmail, name: order.userName, total: order.total }); setCancelReason(''); setCustomReason(''); }}
                       style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>
                       ❌ Cancel Order
+                    </button>
+                  )}
+                  {canReturn && (
+                    <button onClick={() => { setReturnModal({ orderId: order._id, orderRef: order.orderId, email: order.userEmail, name: order.userName, total: order.total, createdAt: order.createdAt }); setReturnReason(''); setCustomReturnReason(''); }}
+                      style={{ background: 'rgba(245,158,11,0.1)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>
+                      🔄 Return · {daysLeft}d left
                     </button>
                   )}
                 </div>
@@ -270,6 +359,51 @@ export default function OrdersPage() {
         )}
       </div>
       <Footer />
+
+      {/* Return Order Modal */}
+      {returnModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
+          onClick={e => { if (e.target === e.currentTarget) setReturnModal(null); }}>
+          <div style={{ background: '#13111b', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff', marginBottom: '6px' }}>🔄 Return Order</h2>
+            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{returnModal.orderRef} · ₹{returnModal.total.toFixed(2)} · {daysLeftToReturn(returnModal.createdAt)} days left to return</p>
+
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>Why are you returning?</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+              {RETURN_REASONS.map(r => (
+                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '10px', background: returnReason === r ? 'rgba(245,158,11,0.1)' : '#1e1a2e', border: returnReason === r ? '1px solid rgba(245,158,11,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
+                  <input type="radio" name="returnReason" value={r} checked={returnReason === r} onChange={() => setReturnReason(r)} style={{ accentColor: '#f59e0b' }} />
+                  <span style={{ fontSize: '13px', color: '#f7f4ff' }}>{r}</span>
+                </label>
+              ))}
+            </div>
+
+            {returnReason === 'Other' && (
+              <textarea value={customReturnReason} onChange={e => setCustomReturnReason(e.target.value)}
+                placeholder="Please describe your reason..."
+                rows={3}
+                style={{ width: '100%', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 12px', color: '#f7f4ff', fontSize: '13px', resize: 'none', outline: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
+              />
+            )}
+
+            <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '20px', fontSize: '13px', color: '#34d399' }}>
+              💰 Refund of ₹{returnModal.total.toFixed(2)} will be credited within 24 hours of item pickup.
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setReturnModal(null)}
+                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>
+                Keep Item
+              </button>
+              <button onClick={handleReturn}
+                disabled={returning || !returnReason || (returnReason === 'Other' && !customReturnReason.trim())}
+                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: returning ? '#78350f' : 'linear-gradient(135deg,#f59e0b,#d97706)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '14px', opacity: (!returnReason || (returnReason === 'Other' && !customReturnReason.trim())) ? 0.5 : 1 }}>
+                {returning ? 'Submitting...' : 'Confirm Return'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cancel Order Modal */}
       {cancelModal && (

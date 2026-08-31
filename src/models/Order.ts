@@ -9,6 +9,8 @@ const OrderSchema = new Schema({
   address: { type: String },
   status: { type: String, default: 'confirmed' },
   cancelReason: { type: String },
+  returnReason: { type: String },
+  returnRequestedAt: { type: Date },
   stripeSessionId: { type: String },
   purchaseEmailSentAt: { type: Date },
   deliveryEmailSentAt: { type: Date },

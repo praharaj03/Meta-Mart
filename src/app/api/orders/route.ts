@@ -19,13 +19,30 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   await connectDB();
-  const { orderId, cancelReason } = await req.json();
-  if (!orderId || !cancelReason) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
-  const order = await Order.findOneAndUpdate(
-    { orderId, status: { $nin: ['delivered', 'cancelled'] } },
-    { status: 'cancelled', cancelReason },
-    { new: true }
-  );
-  if (!order) return NextResponse.json({ error: 'Order cannot be cancelled' }, { status: 400 });
-  return NextResponse.json({ success: true });
+  const { orderId, cancelReason, returnReason } = await req.json();
+  if (!orderId) return NextResponse.json({ error: 'Missing orderId' }, { status: 400 });
+
+  if (cancelReason) {
+    const order = await Order.findOneAndUpdate(
+      { orderId, status: { $nin: ['delivered', 'cancelled'] } },
+      { status: 'cancelled', cancelReason },
+      { new: true }
+    );
+    if (!order) return NextResponse.json({ error: 'Order cannot be cancelled' }, { status: 400 });
+    return NextResponse.json({ success: true });
+  }
+
+  if (returnReason) {
+    const order = await Order.findOne({ orderId, status: 'delivered' });
+    if (!order) return NextResponse.json({ error: 'Only delivered orders can be returned' }, { status: 400 });
+    // Check 7-day window from delivery (delivery = createdAt + 5 days)
+    const deliveredAt = new Date(order.createdAt);
+    deliveredAt.setDate(deliveredAt.getDate() + 5);
+    const daysSinceDelivery = (Date.now() - deliveredAt.getTime()) / (1000 * 60 * 60 * 24);
+    if (daysSinceDelivery > 7) return NextResponse.json({ error: 'Return window has expired (7 days)' }, { status: 400 });
+    await Order.findOneAndUpdate({ orderId }, { status: 'return_requested', returnReason, returnRequestedAt: new Date() });
+    return NextResponse.json({ success: true });
+  }
+
+  return NextResponse.json({ error: 'Missing reason' }, { status: 400 });
 }
