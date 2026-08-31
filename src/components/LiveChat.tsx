@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 
 // ─── MASTER SWITCH ────────────────────────────────────────────────────────────
 // Set to true only when you've tested and approved the chat feature
-const CHAT_ENABLED = true;
+const CHAT_ENABLED = false;
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface Message {
