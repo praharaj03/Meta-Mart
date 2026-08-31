@@ -46,7 +46,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-[#08070d]">
       <Navbar />
       
       {/* Hero Section */}
@@ -301,7 +301,7 @@ const ContactPage = () => {
         .hero-badge span {
           font-size: 14px;
           font-weight: 600;
-          color: #3b82f6;
+          color: #c084fc;
         }
 
         .contact-title {
@@ -317,7 +317,7 @@ const ContactPage = () => {
 
         .contact-subtitle {
           font-size: 1.25rem;
-          color: #64748b;
+          color: #b7aec8;
           margin-bottom: 32px;
           max-width: 600px;
           margin-left: auto;
@@ -339,13 +339,13 @@ const ContactPage = () => {
         .info-title {
           font-size: 2.5rem;
           font-weight: 800;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 16px;
         }
 
         .info-subtitle {
           font-size: 1.125rem;
-          color: #64748b;
+          color: #b7aec8;
           margin-bottom: 40px;
           line-height: 1.6;
         }
@@ -362,16 +362,16 @@ const ContactPage = () => {
           align-items: flex-start;
           gap: 20px;
           padding: 24px;
-          background: white;
+          background: #13111b;
           border-radius: 16px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-          border: 1px solid rgba(59, 130, 246, 0.1);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+          border: 1px solid rgba(192,132,252,.15);
           transition: all 0.3s ease;
         }
 
         .contact-method:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+          box-shadow: 0 8px 30px rgba(168,85,247,.2);
         }
 
         .method-icon {
@@ -389,19 +389,19 @@ const ContactPage = () => {
         .method-content h3 {
           font-size: 1.125rem;
           font-weight: 600;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 4px;
         }
 
         .method-content p {
-          color: #64748b;
+          color: #b7aec8;
           line-height: 1.5;
         }
 
         .social-links h3 {
           font-size: 1.25rem;
           font-weight: 600;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 16px;
         }
 
@@ -439,17 +439,17 @@ const ContactPage = () => {
         }
 
         .contact-form {
-          background: white;
+          background: #13111b;
           padding: 40px;
           border-radius: 24px;
-          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-          border: 1px solid rgba(59, 130, 246, 0.1);
+          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(192,132,252,.15);
         }
 
         .form-title {
           font-size: 2rem;
           font-weight: 800;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 32px;
           text-align: center;
         }
@@ -468,7 +468,7 @@ const ContactPage = () => {
           display: block;
           font-size: 14px;
           font-weight: 600;
-          color: #374151;
+          color: #d8b4fe;
           margin-bottom: 8px;
         }
 
@@ -476,20 +476,20 @@ const ContactPage = () => {
         .form-group textarea {
           width: 100%;
           padding: 16px;
-          border: 2px solid #e5e7eb;
+          border: 2px solid rgba(192,132,252,.2);
           border-radius: 12px;
           font-size: 16px;
-          color: #000000;
+          color: #f7f4ff;
           transition: all 0.3s ease;
-          background: #f9fafb;
+          background: #171522;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
           outline: none;
-          border-color: #3b82f6;
-          background: white;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          border-color: #c084fc;
+          background: #1e1a2e;
+          box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.18);
         }
 
         .form-group textarea {

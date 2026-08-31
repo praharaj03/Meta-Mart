@@ -2,6 +2,7 @@
 
 import { CartProvider } from '../context/CartContext';
 import LoadingScreen from '../components/LoadingScreen';
+import CookieConsent from '../components/CookieConsent';
 import { ClerkProvider } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
 
@@ -17,6 +18,7 @@ export default function ClientProviders({ children }: { children: React.ReactNod
       <CartProvider>
         {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
         {children}
+        <CookieConsent />
       </CartProvider>
     </ClerkProvider>
   );

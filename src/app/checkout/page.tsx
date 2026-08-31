@@ -172,27 +172,27 @@ export default function CheckoutPage() {
   if (!hydrated) return <div className="min-h-screen grid place-items-center"><div className="text-sm font-semibold text-purple-300">Restoring your checkout…</div></div>;
 
   if (items.length === 0) return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#f0f4ff,#faf5ff)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+    <div style={{ minHeight: '100vh', background: '#08070d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
       <Navbar />
       <div style={{ textAlign: 'center', padding: '60px 24px' }}>
         <div style={{ fontSize: '4rem', marginBottom: '16px' }}>🛒</div>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '8px' }}>Your cart is empty</h2>
-        <p style={{ color: '#64748b', marginBottom: '24px' }}>Add items before checking out</p>
-        <Link href="/shop" style={{ background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', padding: '14px 32px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none' }}>Shop Now</Link>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f7f4ff', marginBottom: '8px' }}>Your cart is empty</h2>
+        <p style={{ color: '#b7aec8', marginBottom: '24px' }}>Add items before checking out</p>
+        <Link href="/shop" style={{ background: 'linear-gradient(135deg,#c084fc,#7c3aed)', color: 'white', padding: '14px 32px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none' }}>Shop Now</Link>
       </div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#f0f4ff 0%,#faf5ff 50%,#f0fdf4 100%)' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#08070d 0%,#0d0b13 50%,#08070d 100%)' }}>
       <Navbar />
       <div style={{ paddingTop: '110px', paddingBottom: '80px', maxWidth: '1000px', margin: '0 auto' }} className="px-4 sm:px-6">
 
         {/* Breadcrumb */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '28px', fontSize: '14px', color: '#94a3b8' }}>
-          <Link href="/cart" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>Cart</Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '28px', fontSize: '14px', color: '#b7aec8' }}>
+          <Link href="/cart" style={{ color: '#c084fc', textDecoration: 'none', fontWeight: 600 }}>Cart</Link>
           <span>›</span>
-          <span style={{ color: '#1e293b', fontWeight: 600 }}>Checkout</span>
+          <span style={{ color: '#f7f4ff', fontWeight: 600 }}>Checkout</span>
           <span>›</span>
           <span>Payment</span>
         </div>
@@ -207,8 +207,8 @@ export default function CheckoutPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
             {/* Address */}
-            <div style={{ background: 'white', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid rgba(59,130,246,0.08)' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e293b', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ background: '#13111b', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.3)', border: '1px solid rgba(192,132,252,.15)' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f7f4ff', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 📦 Delivery Address
               </h2>
               {fields.map(f => (
@@ -223,28 +223,28 @@ export default function CheckoutPage() {
                     onFocus={() => setFocused(f.name)}
                     onBlur={() => setFocused('')}
                     required
-                    style={{ width: '100%', padding: '13px 16px 13px 42px', border: `2px solid ${focused === f.name ? '#3b82f6' : '#e5e7eb'}`, borderRadius: '12px', fontSize: '14px', outline: 'none', color: '#1e293b', background: focused === f.name ? 'white' : '#f9fafb', boxSizing: 'border-box', transition: 'all 0.2s ease', boxShadow: focused === f.name ? '0 0 0 3px rgba(59,130,246,0.1)' : 'none' }}
+                    style={{ width: '100%', padding: '13px 16px 13px 42px', border: `2px solid ${focused === f.name ? '#c084fc' : 'rgba(192,132,252,.2)'}`, borderRadius: '12px', fontSize: '14px', outline: 'none', color: '#f7f4ff', background: focused === f.name ? '#1e1a2e' : '#171522', boxSizing: 'border-box', transition: 'all 0.2s ease', boxShadow: focused === f.name ? '0 0 0 3px rgba(168,85,247,.18)' : 'none' }}
                   />
                 </div>
               ))}
             </div>
 
             {/* Payment Method */}
-            <div style={{ background: 'white', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid rgba(59,130,246,0.08)' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e293b', marginBottom: '16px' }}>💳 Payment Method</h2>
+            <div style={{ background: '#13111b', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.3)', border: '1px solid rgba(192,132,252,.15)' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f7f4ff', marginBottom: '16px' }}>💳 Payment Method</h2>
 
               {/* Tabs */}
               <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
                 {(['stripe', 'upi'] as const).map(m => (
                   <button key={m} type="button" onClick={() => setPayMethod(m)}
-                    style={{ flex: 1, padding: '10px', borderRadius: '12px', border: `2px solid ${payMethod === m ? '#3b82f6' : '#e5e7eb'}`, background: payMethod === m ? '#eff6ff' : '#f9fafb', color: payMethod === m ? '#3b82f6' : '#64748b', fontWeight: 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' }}>
+                    style={{ flex: 1, padding: '10px', borderRadius: '12px', border: `2px solid ${payMethod === m ? '#c084fc' : 'rgba(192,132,252,.2)'}`, background: payMethod === m ? 'rgba(192,132,252,.1)' : '#171522', color: payMethod === m ? '#c084fc' : '#b7aec8', fontWeight: 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' }}>
                     {m === 'stripe' ? '💳 Card / Stripe' : '📲 UPI'}
                   </button>
                 ))}
               </div>
 
               {payMethod === 'stripe' && (
-                <p style={{ fontSize: '13px', color: '#64748b', background: '#f8fafc', borderRadius: '10px', padding: '12px 14px' }}>
+                <p style={{ fontSize: '13px', color: '#b7aec8', background: '#171522', borderRadius: '10px', padding: '12px 14px' }}>
                   🔒 You'll be redirected to Stripe's secure checkout to complete payment.
                 </p>
               )}
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
               {payMethod === 'upi' && (
                 <div>
                   <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Select UPI App</p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '10px', marginBottom: '16px' }}>
                     {UPI_APPS.map(app => (
                       <button key={app.id} type="button" onClick={() => { setUpiApp(app.id); setUpiError(''); }}
                         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '12px 8px', borderRadius: '14px', border: `2px solid ${upiApp === app.id ? app.color : '#e5e7eb'}`, background: upiApp === app.id ? `${app.color}12` : '#f9fafb', cursor: 'pointer', transition: 'all 0.2s', boxShadow: upiApp === app.id ? `0 0 0 3px ${app.color}22` : 'none' }}>
@@ -266,7 +266,7 @@ export default function CheckoutPage() {
                     placeholder="Enter UPI ID (e.g. name@upi)"
                     value={upiId}
                     onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
-                    style={{ width: '100%', padding: '12px 14px', border: `2px solid ${upiError ? '#ef4444' : '#e5e7eb'}`, borderRadius: '12px', fontSize: '14px', outline: 'none', color: '#1e293b', background: '#f9fafb', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '12px 14px', border: `2px solid ${upiError ? '#ef4444' : 'rgba(192,132,252,.2)'}`, borderRadius: '12px', fontSize: '14px', outline: 'none', color: '#f7f4ff', background: '#171522', boxSizing: 'border-box' }}
                   />
                   {upiError && <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '6px' }}>{upiError}</p>}
                   <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px' }}>⚠️ Demo only — no real UPI transaction will occur.</p>
@@ -276,31 +276,31 @@ export default function CheckoutPage() {
           </div>
 
           {/* Summary */}
-          <div style={{ background: 'white', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid rgba(59,130,246,0.08)' }} className="checkout-summary-sticky">
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e293b', marginBottom: '20px' }}>🧾 Order Summary</h2>
+          <div style={{ background: '#13111b', borderRadius: '20px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.3)', border: '1px solid rgba(192,132,252,.15)' }} className="checkout-summary-sticky">
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f7f4ff', marginBottom: '20px' }}>🧾 Order Summary</h2>
 
             <div style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '16px' }}>
               {items.map(item => (
                 <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                   <img src={item.image} alt={item.name} style={{ width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</p>
-                    <p style={{ fontSize: '12px', color: '#64748b' }}>Qty: {item.quantity}</p>
+                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#f7f4ff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</p>
+                    <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity}</p>
                   </div>
-                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', flexShrink: 0 }}>${(item.price * item.quantity).toFixed(2)}</span>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#f7f4ff', flexShrink: 0 }}>${(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
 
-            <hr style={{ borderColor: '#f1f5f9', margin: '16px 0' }} />
+            <hr style={{ borderColor: 'rgba(192,132,252,.15)', margin: '16px 0' }} />
             {[['Subtotal', `$${subtotal.toFixed(2)}`], ['Shipping', shipping === 0 ? '🎉 Free' : `$${shipping.toFixed(2)}`], ['Tax (8%)', `$${tax.toFixed(2)}`]].map(([k, v]) => (
               <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px' }}>
-                <span style={{ color: '#64748b' }}>{k}</span>
-                <span style={{ fontWeight: 600, color: '#1e293b' }}>{v}</span>
+                <span style={{ color: '#b7aec8' }}>{k}</span>
+                <span style={{ fontWeight: 600, color: '#f7f4ff' }}>{v}</span>
               </div>
             ))}
-            <hr style={{ borderColor: '#f1f5f9', margin: '16px 0' }} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 800, color: '#3b82f6', marginBottom: '20px' }}>
+            <hr style={{ borderColor: 'rgba(192,132,252,.15)', margin: '16px 0' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 800, color: '#c084fc', marginBottom: '20px' }}>
               <span>Total</span><span>${total.toFixed(2)}</span>
             </div>
 
@@ -318,16 +318,16 @@ export default function CheckoutPage() {
       {/* UPI Unavailable Popup */}
       {upiPopup && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ background: 'white', borderRadius: '24px', padding: '36px 32px', maxWidth: '400px', width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: 'white', borderRadius: '24px', padding: '36px 32px', maxWidth: '400px', width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.5)', border: '1px solid rgba(192,132,252,.2)' }}>
             <div style={{ fontSize: '3rem', marginBottom: '12px' }}>🚧</div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1e293b', marginBottom: '10px' }}>UPI Unavailable</h2>
-            <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.6, marginBottom: '24px' }}>
-              UPI payments are not available right now.<br />Please use <strong>Card / Stripe</strong> to complete your order.
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f7f4ff', marginBottom: '10px' }}>UPI Unavailable</h2>
+            <p style={{ fontSize: '14px', color: '#b7aec8', lineHeight: 1.6, marginBottom: '24px' }}>
+              UPI payments are not available right now.<br />Please use <strong style={{ color: '#f7f4ff' }}>Card / Stripe</strong> to complete your order.
             </p>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
                 onClick={() => setUpiPopup(false)}
-                style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid #e5e7eb', background: '#f9fafb', color: '#64748b', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}
+                style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid rgba(192,132,252,.2)', background: '#171522', color: '#b7aec8', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}
               >
                 Close
               </button>

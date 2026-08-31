@@ -11,32 +11,38 @@ const FAQPage = () => {
     {
       question: "What is Meta Mart?",
       answer: "Meta Mart is a premium e-commerce platform offering carefully curated products that enhance your lifestyle with innovation and luxury.",
-      icon: "🛍️"
+      icon: "🛍️",
+      id: undefined
     },
     {
       question: "How do I place an order?",
       answer: "Simply browse our products, add items to your cart, and proceed to checkout. We accept all major payment methods and provide secure transactions.",
-      icon: "📦"
+      icon: "📦",
+      id: undefined
     },
     {
       question: "What are your shipping options?",
       answer: "We offer free standard shipping on orders over $50, express shipping (2-3 days), and overnight delivery. International shipping is available to 50+ countries.",
-      icon: "🚚"
+      icon: "🚚",
+      id: "shipping"
     },
     {
       question: "What is your return policy?",
       answer: "We offer a 30-day hassle-free return policy. Items must be in original condition with tags attached. Return shipping is free for defective items.",
-      icon: "↩️"
+      icon: "↩️",
+      id: "returns"
     },
     {
       question: "Do you offer customer support?",
       answer: "Yes! Our 24/7 customer support team is available via live chat, email, or phone. We're committed to providing exceptional service.",
-      icon: "💬"
+      icon: "💬",
+      id: undefined
     },
     {
       question: "Are your products authentic?",
       answer: "Absolutely! We guarantee 100% authentic products. All items are sourced directly from authorized dealers and come with authenticity certificates.",
-      icon: "✅"
+      icon: "✅",
+      id: undefined
     }
   ];
 
@@ -45,7 +51,7 @@ const FAQPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-[#08070d]">
       <Navbar />
       
       {/* Hero Section */}
@@ -77,6 +83,7 @@ const FAQPage = () => {
             {faqs.map((faq, index) => (
               <div
                 key={index}
+                id={faq.id}
                 className={`faq-item ${activeIndex === index ? 'active' : ''}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
@@ -201,7 +208,7 @@ const FAQPage = () => {
 
         .faq-subtitle {
           font-size: 1.25rem;
-          color: #64748b;
+          color: #b7aec8;
           margin-bottom: 32px;
           animation: slideUp 0.8s ease-out 0.2s both;
         }
@@ -213,23 +220,23 @@ const FAQPage = () => {
         }
 
         .faq-item {
-          background: white;
+          background: #13111b;
           border-radius: 20px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
           overflow: hidden;
           transition: all 0.3s ease;
           animation: slideUp 0.6s ease-out both;
-          border: 1px solid rgba(139, 92, 246, 0.1);
+          border: 1px solid rgba(192,132,252,.15);
         }
 
         .faq-item:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+          box-shadow: 0 8px 30px rgba(168,85,247,.2);
         }
 
         .faq-item.active {
-          border-color: rgba(139, 92, 246, 0.3);
-          box-shadow: 0 8px 30px rgba(139, 92, 246, 0.2);
+          border-color: rgba(192,132,252,.4);
+          box-shadow: 0 8px 30px rgba(168,85,247,.25);
         }
 
         .faq-question {
@@ -270,7 +277,7 @@ const FAQPage = () => {
         .question-text {
           font-size: 18px;
           font-weight: 600;
-          color: #1e293b;
+          color: #f7f4ff;
         }
 
         .faq-toggle {
@@ -297,7 +304,7 @@ const FAQPage = () => {
         }
 
         .answer-content p {
-          color: #64748b;
+          color: #b7aec8;
           line-height: 1.6;
           font-size: 16px;
         }

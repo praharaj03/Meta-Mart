@@ -86,22 +86,22 @@ export default function OrdersPage() {
   }, [isLoaded, user]);
 
   if (!isLoaded || loading) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#f0f4ff,#faf5ff)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#08070d' }}>
       <Navbar />
-      <div style={{ fontSize: '14px', color: '#64748b' }}>Loading orders...</div>
+      <div style={{ fontSize: '14px', color: '#b7aec8' }}>Loading orders...</div>
     </div>
   );
 
   if (!user) return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#f0f4ff,#faf5ff)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#08070d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <Navbar />
-      <p style={{ color: '#64748b', marginBottom: '16px' }}>Please sign in to view your orders.</p>
-      <Link href="/login" style={{ background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
+      <p style={{ color: '#b7aec8', marginBottom: '16px' }}>Please sign in to view your orders.</p>
+      <Link href="/login" style={{ background: 'linear-gradient(135deg,#c084fc,#7c3aed)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#f0f4ff 0%,#faf5ff 50%,#f0fdf4 100%)' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#08070d 0%,#0d0b13 50%,#08070d 100%)' }}>
       <Confetti active={confetti} />
       <Navbar />
 
@@ -114,15 +114,15 @@ export default function OrdersPage() {
       <div style={{ paddingTop: isNew ? '90px' : '110px', paddingBottom: '80px', maxWidth: '860px', margin: '0 auto' }} className="px-4 sm:px-6">
         <div style={{ marginBottom: '32px' }}>
           <h1 style={{ fontSize: '2.2rem', fontWeight: 900, background: 'linear-gradient(135deg,#3b82f6,#9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '6px' }}>My Orders</h1>
-          <p style={{ color: '#64748b', fontSize: '15px' }}>{orders.length} order{orders.length !== 1 ? 's' : ''} for {user.primaryEmailAddress?.emailAddress}</p>
+          <p style={{ color: '#b7aec8', fontSize: '15px' }}>{orders.length} order{orders.length !== 1 ? 's' : ''} for {user.primaryEmailAddress?.emailAddress}</p>
         </div>
 
         {orders.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '80px 20px', background: 'white', borderRadius: '24px', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+          <div style={{ textAlign: 'center', padding: '80px 20px', background: '#13111b', borderRadius: '24px', boxShadow: '0 8px 40px rgba(0,0,0,0.3)', border: '1px solid rgba(192,132,252,.15)' }}>
             <div style={{ fontSize: '5rem', marginBottom: '16px' }}>📦</div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e293b', marginBottom: '8px' }}>No orders yet</h2>
-            <p style={{ color: '#64748b', marginBottom: '28px' }}>Start shopping to see your orders here</p>
-            <Link href="/shop" style={{ background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', padding: '14px 36px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '15px' }}>Shop Now</Link>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f7f4ff', marginBottom: '8px' }}>No orders yet</h2>
+            <p style={{ color: '#b7aec8', marginBottom: '28px' }}>Start shopping to see your orders here</p>
+            <Link href="/shop" style={{ background: 'linear-gradient(135deg,#c084fc,#7c3aed)', color: 'white', padding: '14px 36px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '15px' }}>Shop Now</Link>
           </div>
         ) : (
           orders.map((order, idx) => {
@@ -130,11 +130,11 @@ export default function OrdersPage() {
             const isOpen = expanded === order._id;
             const receiptData = { id: order.orderId, items: order.items, total: order.total, address: order.address, name: order.userName, email: order.userEmail, date: order.createdAt, status: order.status };
             return (
-              <div key={order._id} style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.07)', marginBottom: '16px', border: isOpen ? '1.5px solid #3b82f6' : '1px solid rgba(59,130,246,0.1)', animation: `fadeUp 0.5s ease-out ${idx * 80}ms both` }}>
+              <div key={order._id} style={{ background: '#13111b', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.2)', marginBottom: '16px', border: isOpen ? '1.5px solid #c084fc' : '1px solid rgba(192,132,252,.15)', animation: `fadeUp 0.5s ease-out ${idx * 80}ms both` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
-                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>ORDER ID</span><br /><span style={{ fontWeight: 700, color: '#1e293b', fontSize: '14px' }}>{order.orderId}</span></div>
-                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>PLACED ON</span><br /><span style={{ fontWeight: 600, color: '#1e293b', fontSize: '14px' }}>{new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
-                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>TOTAL</span><br /><span style={{ fontWeight: 800, color: '#3b82f6', fontSize: '1.1rem' }}>${order.total.toFixed(2)}</span></div>
+                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>ORDER ID</span><br /><span style={{ fontWeight: 700, color: '#f7f4ff', fontSize: '14px' }}>{order.orderId}</span></div>
+                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>PLACED ON</span><br /><span style={{ fontWeight: 600, color: '#f7f4ff', fontSize: '14px' }}>{new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
+                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>TOTAL</span><br /><span style={{ fontWeight: 800, color: '#c084fc', fontSize: '1.1rem' }}>${order.total.toFixed(2)}</span></div>
                   <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>DELIVERY BY</span><br /><span style={{ fontWeight: 700, color: '#10b981', fontSize: '14px' }}>🚚 {getArrival(order.createdAt)}</span></div>
                   <button onClick={() => setExpanded(isOpen ? null : order._id)} style={{ background: isOpen ? '#f1f5f9' : 'linear-gradient(135deg,#3b82f6,#9333ea)', color: isOpen ? '#64748b' : 'white', border: 'none', padding: '8px 22px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>{isOpen ? '▲ Hide' : '▼ Details'}</button>
                   <button onClick={() => downloadReceipt(receiptData)} style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>⬇ Receipt</button>
@@ -158,19 +158,19 @@ export default function OrdersPage() {
                 {isOpen && (
                   <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
                     <div className="orders-detail-grid">
-                      <div style={{ background: '#f8fafc', borderRadius: '14px', padding: '18px' }}>
+                      <div style={{ background: '#1e1a2e', borderRadius: '14px', padding: '18px' }}>
                         <p style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '8px', textTransform: 'uppercase' }}>📍 Delivery Address</p>
-                        <p style={{ fontWeight: 700, color: '#1e293b', fontSize: '14px', marginBottom: '4px' }}>{order.userName}</p>
-                        <p style={{ color: '#64748b', fontSize: '13px' }}>{order.address}</p>
+                        <p style={{ fontWeight: 700, color: '#f7f4ff', fontSize: '14px', marginBottom: '4px' }}>{order.userName}</p>
+                        <p style={{ color: '#b7aec8', fontSize: '13px' }}>{order.address}</p>
                       </div>
-                      <div style={{ background: '#f8fafc', borderRadius: '14px', padding: '18px' }}>
+                      <div style={{ background: '#1e1a2e', borderRadius: '14px', padding: '18px' }}>
                         <p style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '10px', textTransform: 'uppercase' }}>🛍️ Items</p>
                         {order.items.map((item, i) => (
                           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                             <img src={item.image} alt={item.name} style={{ width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }} />
                             <div>
-                              <p style={{ fontSize: '13px', fontWeight: 600, color: '#1e293b', marginBottom: '2px' }}>{item.name}</p>
-                              <p style={{ fontSize: '12px', color: '#64748b' }}>Qty: {item.quantity} · <span style={{ color: '#3b82f6', fontWeight: 600 }}>${(item.price * item.quantity).toFixed(2)}</span></p>
+                              <p style={{ fontSize: '13px', fontWeight: 600, color: '#f7f4ff', marginBottom: '2px' }}>{item.name}</p>
+                              <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity} · <span style={{ color: '#c084fc', fontWeight: 600 }}>${(item.price * item.quantity).toFixed(2)}</span></p>
                             </div>
                           </div>
                         ))}

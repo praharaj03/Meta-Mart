@@ -20,6 +20,9 @@ main [style*="background: #f8fafc"], main [style*="background: #f9fafb"], main [
 body [style*="min-height: 100vh"] { background: #08070d !important; color: #f7f4ff !important; }
 body :is(h1,h2,h3,h4,h5,h6,p,label) { color: #f7f4ff; }
 
+/* Light-bg page overrides — shop, cart, checkout, contact, faq, orders all use gradient-from-gray/blue/purple light bgs */
+.min-h-screen[class*="bg-gradient"], div[class*="bg-gradient-to-br"][class*="from-gray"], div[class*="bg-gradient-to-br"][class*="from-slate"], div[class*="bg-gradient-to-br"][class*="from-purple-50"] { background: #08070d !important; color: #f7f4ff !important; }
+
 /* Purple is the site language: surfaces stay near-black while every affordance carries the accent. */
 a { color: #d8b4fe; }
 a:hover { color: #f3e8ff; }
@@ -37,3 +40,19 @@ main .ring-blue-500 { --tw-ring-color: #a855f7 !important; }
 main button:hover { background-color: rgba(168,85,247,.16); }
 main .bg-gradient-to-br, main .bg-gradient-to-r { border-color: rgba(192,132,252,.18); }
 .cart-item, .order-summary, .empty-cart, .contact-card, .faq-item { border-color: rgba(192,132,252,.25) !important; box-shadow: 0 14px 35px rgba(61,20,100,.16) !important; }
+
+/* ── Legal pages prose ── */
+.prose-legal h3 { font-size: 1rem; font-weight: 700; color: #e9d5ff; margin-top: 1.5rem; margin-bottom: .5rem; }
+.prose-legal ul { list-style: disc; padding-left: 1.5rem; space-y: .5rem; }
+.prose-legal ul li { color: #d4d0e0; margin-bottom: .35rem; }
+.prose-legal strong { color: #f7f4ff; }
+.prose-legal a { color: #d8b4fe; }
+.prose-legal a:hover { color: #f3e8ff; }
+
+/* ── Responsive helpers ── */
+@media (max-width: 640px) {
+  .cart-grid { grid-template-columns: 1fr !important; }
+  .contact-grid { grid-template-columns: 1fr !important; }
+  .checkout-form-grid { grid-template-columns: 1fr !important; }
+  .orders-detail-grid { grid-template-columns: 1fr !important; }
+}

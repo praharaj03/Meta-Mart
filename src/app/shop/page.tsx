@@ -56,10 +56,10 @@ export default function ShopPage() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20">
+      <div className="min-h-screen bg-[#08070d] pt-20">
         
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-700 text-white py-10 sm:py-16">
+        <div className="bg-gradient-to-r from-purple-900 via-purple-700 to-indigo-900 text-white py-10 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-3xl sm:text-5xl font-bold mb-4 animate-fade-in-up">
               Discover Amazing Products
@@ -75,16 +75,16 @@ export default function ShopPage() {
           {/* Search and Filter Bar */}
           <div className="flex flex-col md:flex-row gap-4 mb-8 animate-fade-in-up animation-delay-300">
             <div className="relative flex-1">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-300" />
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); sessionStorage.setItem('shop_search', e.target.value); }}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-black"
+                className="w-full pl-10 pr-4 py-3 border border-white/10 rounded-xl bg-[#13111b] text-white placeholder-zinc-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
               />
             </div>
-            <button className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-300 text-black">
+            <button className="flex items-center gap-2 px-6 py-3 bg-[#13111b] border border-white/10 rounded-xl hover:bg-purple-500/20 transition-all duration-300 text-zinc-200">
               <FiFilter />
               Filters
             </button>
@@ -98,8 +98,8 @@ export default function ShopPage() {
                 onClick={() => { setSelectedCategory(category); sessionStorage.setItem('shop_category', category); }}
                 className={`px-6 py-2 rounded-full transition-all duration-300 ${
                   selectedCategory === category
-                    ? 'bg-blue-600 text-white shadow-lg scale-105'
-                    : 'bg-white text-gray-600 hover:bg-gray-100 hover:scale-105'
+                    ? 'bg-purple-600 text-white shadow-lg scale-105'
+                    : 'bg-[#13111b] text-zinc-300 border border-white/10 hover:bg-purple-500/20 hover:scale-105'
                 }`}
               >
                 {category}
@@ -110,12 +110,12 @@ export default function ShopPage() {
           {/* Products Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.length === 0 && products.length === 0 && (
-              <div className="col-span-3 text-center py-20 text-gray-400">Loading products...</div>
+              <div className="col-span-3 text-center py-20 text-zinc-400">Loading products...</div>
             )}
             {filteredProducts.map((product, index) => (
               <div
                 key={product._id}
-                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 animate-fade-in-up"
+                className="group bg-[#13111b] border border-white/10 rounded-2xl shadow-lg hover:shadow-2xl hover:border-purple-400/60 transition-all duration-500 transform hover:-translate-y-2 animate-fade-in-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 
@@ -165,7 +165,7 @@ export default function ShopPage() {
 
                 {/* Product Info */}
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors duration-300">
                     {product.name}
                   </h3>
 
@@ -188,10 +188,10 @@ export default function ShopPage() {
 
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="text-2xl font-bold text-gray-800">
+                    <span className="text-2xl font-bold text-white">
                       ${product.price}
                     </span>
-                    <span className="text-lg text-gray-500 line-through">
+                    <span className="text-lg text-zinc-500 line-through">
                       ${product.originalPrice}
                     </span>
                     <span className="text-sm text-green-600 font-semibold">
@@ -213,7 +213,7 @@ export default function ShopPage() {
 
           {/* Load More Button */}
           <div className="text-center mt-12">
-            <button className="px-8 py-4 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-xl hover:from-gray-900 hover:to-black transition-all duration-300 transform hover:scale-105 font-semibold">
+            <button className="px-8 py-4 bg-gradient-to-r from-purple-800 to-purple-900 text-white rounded-xl hover:from-purple-900 hover:to-indigo-900 transition-all duration-300 transform hover:scale-105 font-semibold">
               Load More Products
             </button>
           </div>

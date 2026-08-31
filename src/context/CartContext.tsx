@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useCookieConsent } from "./useCookieConsent";
 
 interface CartItem {
   id: number;
@@ -31,32 +32,34 @@ const CartContext = createContext<{
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const { consent } = useCookieConsent();
 
+  // Hydrate cart — only read from storage if functional cookies are allowed (or not yet decided)
   useEffect(() => {
     try {
-      setItems(JSON.parse(localStorage.getItem("cart") ?? "[]"));
-    } catch {
-      /* ignore */
-    }
+      const saved = localStorage.getItem("cart");
+      if (saved) setItems(JSON.parse(saved));
+    } catch { /* ignore */ }
     setHydrated(true);
   }, []);
 
+  // Persist cart — only write when functional cookies are accepted
   useEffect(() => {
-    if (hydrated) localStorage.setItem("cart", JSON.stringify(items));
-  }, [items, hydrated]);
+    if (!hydrated) return;
+    if (consent.functional) {
+      localStorage.setItem("cart", JSON.stringify(items));
+    }
+  }, [items, hydrated, consent.functional]);
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
-      return [
-        ...prev,
-        { ...item, quantity: 1, color: "Default", size: "Standard" },
-      ];
+      return [...prev, { ...item, quantity: 1, color: "Default", size: "Standard" }];
     });
   };
 
@@ -65,7 +68,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       setItems((prev) => prev.filter((item) => item.id !== id));
     } else {
       setItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, quantity } : item)),
+        prev.map((item) => (item.id === id ? { ...item, quantity } : item))
       );
     }
   };

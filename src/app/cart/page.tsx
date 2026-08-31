@@ -18,7 +18,7 @@ const CartPage = () => {
   const total = subtotal + shipping + tax;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-[#08070d]">
       <Navbar />
       
       {/* Hero Section */}
@@ -224,7 +224,7 @@ const CartPage = () => {
         .cart-badge span {
           font-size: 16px;
           font-weight: 600;
-          color: #3b82f6;
+          color: #c084fc;
         }
 
         .cart-title {
@@ -240,7 +240,7 @@ const CartPage = () => {
 
         .cart-subtitle {
           font-size: 1.25rem;
-          color: #64748b;
+          color: #b7aec8;
           margin-bottom: 32px;
           animation: slideUp 0.8s ease-out 0.2s both;
         }
@@ -248,9 +248,10 @@ const CartPage = () => {
         .empty-cart {
           text-align: center;
           padding: 80px 20px;
-          background: white;
+          background: #13111b;
           border-radius: 24px;
-          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(192,132,252,.2);
           animation: slideUp 0.8s ease-out;
         }
 
@@ -262,12 +263,12 @@ const CartPage = () => {
         .empty-cart h2 {
           font-size: 2rem;
           font-weight: 800;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 16px;
         }
 
         .empty-cart p {
-          color: #64748b;
+          color: #b7aec8;
           font-size: 1.125rem;
           margin-bottom: 32px;
         }
@@ -303,7 +304,7 @@ const CartPage = () => {
         .section-title {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 24px;
         }
 
@@ -312,17 +313,17 @@ const CartPage = () => {
           align-items: center;
           gap: 20px;
           padding: 24px;
-          background: white;
+          background: #13111b;
           border-radius: 20px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-          border: 1px solid rgba(59, 130, 246, 0.1);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+          border: 1px solid rgba(192,132,252,.15);
           margin-bottom: 20px;
           transition: all 0.3s ease;
         }
 
         .cart-item:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+          box-shadow: 0 8px 30px rgba(168,85,247,.2);
         }
 
         .item-image {
@@ -350,7 +351,7 @@ const CartPage = () => {
         .item-name {
           font-size: 1.25rem;
           font-weight: 600;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 8px;
         }
 
@@ -362,8 +363,8 @@ const CartPage = () => {
 
         .item-specs span {
           font-size: 14px;
-          color: #64748b;
-          background: #f1f5f9;
+          color: #b7aec8;
+          background: #1e1a2e;
           padding: 4px 12px;
           border-radius: 20px;
         }
@@ -371,7 +372,7 @@ const CartPage = () => {
         .item-price {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #3b82f6;
+          color: #c084fc;
         }
 
         .item-controls {
@@ -385,8 +386,8 @@ const CartPage = () => {
           display: flex;
           align-items: center;
           gap: 0;
-          background: #f8fafc;
-          border: 2px solid #e2e8f0;
+          background: #1e1a2e;
+          border: 2px solid rgba(192,132,252,.2);
           border-radius: 8px;
           overflow: hidden;
         }
@@ -395,19 +396,19 @@ const CartPage = () => {
           width: 32px;
           height: 32px;
           border: none;
-          background: #ffffff;
-          color: #64748b;
+          background: #13111b;
+          color: #b7aec8;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
           transition: all 0.2s ease;
-          border-right: 1px solid #e2e8f0;
+          border-right: 1px solid rgba(192,132,252,.15);
         }
 
         .qty-btn:last-child {
           border-right: none;
-          border-left: 1px solid #e2e8f0;
+          border-left: 1px solid rgba(192,132,252,.15);
         }
 
         .qty-btn:hover:not(:disabled) {
@@ -431,13 +432,13 @@ const CartPage = () => {
         .quantity {
           font-size: 14px;
           font-weight: 600;
-          color: #1e293b;
+          color: #f7f4ff;
           min-width: 40px;
           text-align: center;
           padding: 8px 12px;
-          background: white;
-          border-top: 1px solid #e2e8f0;
-          border-bottom: 1px solid #e2e8f0;
+          background: #13111b;
+          border-top: 1px solid rgba(192,132,252,.15);
+          border-bottom: 1px solid rgba(192,132,252,.15);
         }
 
         .remove-btn {
@@ -463,11 +464,11 @@ const CartPage = () => {
         }
 
         .order-summary {
-          background: white;
+          background: #13111b;
           border-radius: 24px;
           padding: 32px;
-          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-          border: 1px solid rgba(59, 130, 246, 0.1);
+          box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(192,132,252,.2);
           height: fit-content;
           position: sticky;
           top: 120px;
@@ -477,7 +478,7 @@ const CartPage = () => {
         .summary-title {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #1e293b;
+          color: #f7f4ff;
           margin-bottom: 24px;
           text-align: center;
         }
@@ -495,12 +496,12 @@ const CartPage = () => {
         }
 
         .summary-row span:first-child {
-          color: #64748b;
+          color: #b7aec8;
         }
 
         .summary-row span:last-child {
           font-weight: 600;
-          color: #1e293b;
+          color: #f7f4ff;
         }
 
         .summary-row.total {
@@ -509,12 +510,12 @@ const CartPage = () => {
         }
 
         .summary-row.total span {
-          color: #3b82f6;
+          color: #c084fc;
         }
 
         .summary-divider {
           height: 1px;
-          background: #e2e8f0;
+          background: rgba(192,132,252,.15);
           margin: 16px 0;
         }
 
@@ -527,21 +528,23 @@ const CartPage = () => {
         .promo-input {
           flex: 1;
           padding: 12px 16px;
-          border: 2px solid #e2e8f0;
+          border: 2px solid rgba(192,132,252,.2);
           border-radius: 12px;
           font-size: 14px;
           outline: none;
+          background: #1e1a2e;
+          color: #f7f4ff;
           transition: border-color 0.3s ease;
         }
 
         .promo-input:focus {
-          border-color: #3b82f6;
+          border-color: #c084fc;
         }
 
         .promo-btn {
-          background: #f1f5f9;
-          color: #3b82f6;
-          border: 2px solid #e2e8f0;
+          background: #1e1a2e;
+          color: #c084fc;
+          border: 2px solid rgba(192,132,252,.2);
           padding: 12px 20px;
           border-radius: 12px;
           font-size: 14px;
@@ -551,7 +554,7 @@ const CartPage = () => {
         }
 
         .promo-btn:hover {
-          background: #3b82f6;
+          background: #7c3aed;
           color: white;
         }
 
@@ -586,10 +589,10 @@ const CartPage = () => {
 
         .badge {
           font-size: 12px;
-          color: #64748b;
+          color: #b7aec8;
           text-align: center;
           padding: 8px;
-          background: #f8fafc;
+          background: #1e1a2e;
           border-radius: 8px;
         }
 
