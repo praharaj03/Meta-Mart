@@ -107,6 +107,9 @@ export default function OrdersPage() {
       setCancelModal(null);
       setCancelReason('');
       setCustomReason('');
+      // Re-fetch from server so all devices stay in sync
+      const email = user?.primaryEmailAddress?.emailAddress;
+      if (email) fetchOrders(email);
     } catch {
       alert('Failed to cancel order. Please try again.');
     } finally {
@@ -114,12 +117,18 @@ export default function OrdersPage() {
     }
   };
 
+  const fetchOrders = (email: string) => {
+    fetch(`/api/orders?email=${encodeURIComponent(email)}`)
+      .then(r => r.json())
+      .then(data => { setOrders(data); setLoading(false); })
+      .catch(() => setLoading(false));
+  };
+
   useEffect(() => {
     if (!isLoaded || !user) return;
     const email = user.primaryEmailAddress?.emailAddress;
     if (!email) return;
 
-    // Check if coming from a new order (Stripe redirect)
     const params = new URLSearchParams(window.location.search);
     if (params.get('session_id')) {
       setIsNew(true);
@@ -131,10 +140,7 @@ export default function OrdersPage() {
       window.history.replaceState({}, '', '/orders');
     }
 
-    fetch(`/api/orders?email=${encodeURIComponent(email)}`)
-      .then(r => r.json())
-      .then(data => { setOrders(data); setLoading(false); })
-      .catch(() => setLoading(false));
+    fetchOrders(email);
   }, [isLoaded, user]);
 
   if (!isLoaded || loading) return (
