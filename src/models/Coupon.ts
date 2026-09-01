@@ -9,5 +9,6 @@ const CouponSchema = new Schema({
   usedCount: { type: Number, default: 0 },
   expiresAt: { type: Date, default: null },
   active: { type: Boolean, default: true },
+}, { timestamps: true });
 
 export const Coupon = models.Coupon || mongoose.model('Coupon', CouponSchema);
