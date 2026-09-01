@@ -5,6 +5,7 @@ import { FiSearch, FiFilter, FiHeart, FiShoppingCart, FiStar } from 'react-icons
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 
 const CATEGORIES = ['All','Electronics','Wearables','Fashion','Home','Gaming','Photography','Books','Sports','Beauty','Kitchen','Travel'];
 
@@ -18,11 +19,9 @@ export default function ShopPage() {
   const [searchTerm, setSearchTerm] = useState(
     () => typeof window !== 'undefined' ? (sessionStorage.getItem('shop_search') ?? '') : ''
   );
-  const [favorites, setFavorites] = useState<string[]>(
-    () => { try { return typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('shop_favorites') ?? '[]') : []; } catch { return []; } }
-  );
   const [toast, setToast] = useState<{show: boolean, message: string}>({show: false, message: ''});
   const { addToCart } = useCart();
+  const { toggle: toggleWishlist, has: inWishlist } = useWishlist();
 
   useEffect(() => {
     fetch('/api/products').then(r => r.json()).then(setProducts).catch(() => setProducts([]));
@@ -39,19 +38,17 @@ export default function ShopPage() {
     setTimeout(() => setToast({show: false, message: ''}), 3000);
   };
 
+  const handleToggleWishlist = (product: Product) => {
+    toggleWishlist({ id: product._id, name: product.name, price: product.price, originalPrice: product.originalPrice, image: product.image, category: product.category, badge: product.badge, rating: product.rating });
+  };
+
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
-  const toggleFavorite = (productId: string) => {
-    setFavorites(prev => {
-      const next = prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId];
-      sessionStorage.setItem('shop_favorites', JSON.stringify(next));
-      return next;
-    });
-  };
+  const toggleFavorite = (product: Product) => handleToggleWishlist(product);
 
   return (
     <>
@@ -141,14 +138,10 @@ export default function ShopPage() {
 
                   {/* Favorite Button */}
                   <button
-                    onClick={() => toggleFavorite(product._id)}
+                    onClick={() => toggleFavorite(product)}
                     className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
                   >
-                    <FiHeart
-                      className={`w-5 h-5 ${
-                        favorites.includes(product._id) ? 'text-red-500 fill-current' : 'text-gray-600'
-                      }`}
-                    />
+                      <FiHeart className={`w-5 h-5 ${inWishlist(product._id) ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
                   </button>
 
                   {/* Quick Add to Cart */}
@@ -189,10 +182,10 @@ export default function ShopPage() {
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-2xl font-bold text-white">
-                      ${product.price}
+                      ₹{product.price}
                     </span>
                     <span className="text-lg text-zinc-500 line-through">
-                      ${product.originalPrice}
+                      ₹{product.originalPrice}
                     </span>
                     <span className="text-sm text-green-600 font-semibold">
                       {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF

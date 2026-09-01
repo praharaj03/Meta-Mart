@@ -101,7 +101,7 @@ function buildCancelEmail(name: string, orderId: string, reason: string, total: 
     `Hi ${name},`,
     `Your order #${orderId} has been successfully cancelled.`,
     `Reason: ${reason}`,
-    `Refund Amount: Rs.${total.toFixed(2)}`,
+    `Refund Amount: ₹${total.toFixed(2)}`,
     `Your refund will be credited to your original payment method within 24 hours.`,
     `If you have questions, contact us at devopspraharaj25@gmail.com`,
     `Team MetaMart`,
@@ -117,10 +117,10 @@ function buildReturnEmail(name: string, orderId: string, type: string, reason: s
     `Reason: ${reason}`,
     isReplacement
       ? `What happens next:\n1. Pickup scheduled within 24 hours\n2. Item collected from your address\n3. Product inspected by our team\n4. Replacement dispatched within 2-3 business days`
-      : `What happens next:\n1. Pickup scheduled within 24 hours\n2. Item collected from your address\n3. Product inspected by our team\n4. Refund of Rs.${total.toFixed(2)} credited within 24 hours of pickup`,
+      : `What happens next:\n1. Pickup scheduled within 24 hours\n2. Item collected from your address\n3. Product inspected by our team\n4. Refund of ₹${total.toFixed(2)} credited within 24 hours of pickup`,
     isReplacement
       ? `Your replacement will be dispatched within 2-3 business days after item pickup.`
-      : `Refund Amount: Rs.${total.toFixed(2)} — will be credited to your original payment method within 24 hours of item pickup.`,
+      : `Refund Amount: ₹${total.toFixed(2)} — will be credited to your original payment method within 24 hours of item pickup.`,
     `If you have questions, contact us at devopspraharaj25@gmail.com`,
     `Team MetaMart`,
   ];
@@ -409,7 +409,7 @@ export default function OrdersPage() {
                             <img src={item.image} alt={item.name} style={{ width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }} />
                             <div>
                               <p style={{ fontSize: '13px', fontWeight: 600, color: '#f7f4ff', marginBottom: '2px' }}>{item.name}</p>
-                              <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity} · <span style={{ color: '#c084fc', fontWeight: 600 }}>${(item.price * item.quantity).toFixed(2)}</span></p>
+                              <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity} · <span style={{ color: '#c084fc', fontWeight: 600 }}>₹{(item.price * item.quantity).toFixed(2)}</span></p>
                             </div>
                           </div>
                         ))}

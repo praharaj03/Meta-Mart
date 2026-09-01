@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useCart } from '../context/CartContext'
+import { useWishlist } from '../context/WishlistContext'
 import { UserButton, SignInButton } from '@clerk/nextjs'
 import { useUser } from '@clerk/nextjs'
 
@@ -13,9 +14,11 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { items } = useCart();
+  const { items: wishlistItems } = useWishlist();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const totalItems = mounted ? items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+  const wishlistCount = mounted ? wishlistItems.length : 0;
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -43,6 +46,7 @@ const Navbar = () => {
     { href: '/faq', label: 'FAQ' },
     { href: '/contact', label: 'Contact' },
     { href: '/orders', label: 'Orders' },
+    { href: '/wishlist', label: 'Wishlist' },
   ];
 
   return (
@@ -104,6 +108,16 @@ const Navbar = () => {
               </button>
             </SignInButton>
           )}
+          <Link href="/wishlist" className="relative p-2 hover:bg-pink-500/20 rounded-full transition-all duration-300 hover:scale-110">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            {mounted && wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
           <Link href="/cart" className="relative p-2 hover:bg-purple-500/20 rounded-full transition-all duration-300 hover:scale-110">
             <svg className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <circle cx="8" cy="21" r="1"/>

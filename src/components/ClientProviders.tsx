@@ -1,6 +1,7 @@
 'use client';
 
 import { CartProvider } from '../context/CartContext';
+import { WishlistProvider } from '../context/WishlistContext';
 import LoadingScreen from '../components/LoadingScreen';
 import CookieConsent from '../components/CookieConsent';
 import LiveChat from '../components/LiveChat';
@@ -17,10 +18,12 @@ export default function ClientProviders({ children }: { children: React.ReactNod
   return (
     <ClerkProvider>
       <CartProvider>
-        {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
-        {children}
-        <CookieConsent />
-        <LiveChat />
+        <WishlistProvider>
+          {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+          {children}
+          <CookieConsent />
+          <LiveChat />
+        </WishlistProvider>
       </CartProvider>
     </ClerkProvider>
   );
