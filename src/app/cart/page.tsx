@@ -139,15 +139,6 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                <div className="promo-code">
-                  <input 
-                    type="text" 
-                    placeholder="Enter promo code"
-                    className="promo-input"
-                  />
-                  <button className="promo-btn">Apply</button>
-                </div>
-
                 <button className="checkout-btn" onClick={() => router.push('/checkout')}>
                   <span>Proceed to Checkout</span>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -517,45 +508,6 @@ const CartPage = () => {
           height: 1px;
           background: rgba(192,132,252,.15);
           margin: 16px 0;
-        }
-
-        .promo-code {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 24px;
-        }
-
-        .promo-input {
-          flex: 1;
-          padding: 12px 16px;
-          border: 2px solid rgba(192,132,252,.2);
-          border-radius: 12px;
-          font-size: 14px;
-          outline: none;
-          background: #1e1a2e;
-          color: #f7f4ff;
-          transition: border-color 0.3s ease;
-        }
-
-        .promo-input:focus {
-          border-color: #c084fc;
-        }
-
-        .promo-btn {
-          background: #1e1a2e;
-          color: #c084fc;
-          border: 2px solid rgba(192,132,252,.2);
-          padding: 12px 20px;
-          border-radius: 12px;
-          font-size: 14px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .promo-btn:hover {
-          background: #7c3aed;
-          color: white;
         }
 
         .checkout-btn {
