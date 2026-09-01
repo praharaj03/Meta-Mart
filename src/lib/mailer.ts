@@ -1,13 +1,7 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-export function getTransporter() {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  });
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
 }
 
 export function baseTemplate(headerBg: string, icon: string, title: string, subtitle: string, body: string) {
@@ -79,17 +73,18 @@ export function stepsList(steps: string[], accent: string) {
 }
 
 export async function sendMail(to: string, subject: string, html: string) {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.warn('[sendMail] GMAIL_USER or GMAIL_APP_PASSWORD not set');
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('[sendMail] RESEND_API_KEY not set');
     return false;
   }
   try {
-    await getTransporter().sendMail({
-      from: `"MetaMart" <${process.env.GMAIL_USER}>`,
+    const { error } = await getResend().emails.send({
+      from: 'MetaMart <onboarding@resend.dev>',
       to,
       subject,
       html,
     });
+    if (error) { console.error('[sendMail]', error); return false; }
     return true;
   } catch (err: any) {
     console.error('[sendMail]', err?.message);
