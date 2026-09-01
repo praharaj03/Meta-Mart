@@ -25,8 +25,8 @@ export default function WishlistPage() {
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#08070d 0%,#0d0b13 50%,#08070d 100%)' }}>
       <Navbar />
 
-      <div style={{ paddingTop: '110px', paddingBottom: '80px', maxWidth: '1100px', margin: '0 auto' }} className="px-4 sm:px-6">
-        <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{ paddingTop: '110px', paddingBottom: '80px', maxWidth: '1100px', margin: '0 auto' }} className="px-4 sm:px-6 wishlist-wrap">
+        <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <FiHeart style={{ color: '#f43f5e', width: '28px', height: '28px', fill: '#f43f5e' }} />
           <div>
             <h1 style={{ fontSize: '2.2rem', fontWeight: 900, background: 'linear-gradient(135deg,#f43f5e,#9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '4px' }}>My Wishlist</h1>
@@ -44,7 +44,7 @@ export default function WishlistPage() {
             </Link>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))', gap: '16px' }}>
             {items.map((item, idx) => (
               <div key={item.id} style={{ background: '#13111b', borderRadius: '20px', border: '1px solid rgba(244,63,94,0.15)', overflow: 'hidden', animation: `fadeUp 0.4s ease-out ${idx * 60}ms both`, transition: 'border-color 0.2s', position: 'relative' }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(244,63,94,0.4)')}
@@ -108,6 +108,9 @@ export default function WishlistPage() {
       <style>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @media (max-width: 640px) {
+          .wishlist-wrap { padding-top: 80px !important; }
+        }
       `}</style>
     </div>
   );
