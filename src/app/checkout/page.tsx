@@ -254,16 +254,20 @@ export default function CheckoutPage() {
 
             {couponApplied ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '10px', padding: '10px 14px', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', color: '#34d399', fontWeight: 600 }}>🎟️ {couponApplied} applied</span>
+                <div>
+                  <span style={{ fontSize: '13px', color: '#34d399', fontWeight: 700 }}>🎟️ {couponApplied}</span>
+                  <p style={{ fontSize: '11px', color: '#6ee7b7', marginTop: '2px' }}>Coupon applied successfully</p>
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontSize: '13px', color: '#34d399', fontWeight: 700 }}>-₹{couponDiscount.toFixed(2)}</span>
+                  <span style={{ fontSize: '14px', color: '#34d399', fontWeight: 800 }}>-₹{couponDiscount.toFixed(2)}</span>
                   <button onClick={removeCoupon} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>✕</button>
                 </div>
               </div>
             ) : (
               <div style={{ marginBottom: '12px' }}>
+                <p style={{ fontSize: '11px', color: '#52525b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>🎟️ Coupon Code</p>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  <input type="text" placeholder="Coupon code" value={couponCode}
+                  <input type="text" placeholder="Enter coupon code" value={couponCode}
                     onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponError(''); }}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyCoupon())}
                     style={{ flex: 1, padding: '10px 12px', border: `1.5px solid ${couponError ? '#ef4444' : 'rgba(192,132,252,.2)'}`, borderRadius: '10px', fontSize: '13px', outline: 'none', color: '#f7f4ff', background: '#171522', letterSpacing: '1px', fontWeight: 600 }}
@@ -278,7 +282,11 @@ export default function CheckoutPage() {
             )}
 
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 800, color: '#c084fc', marginBottom: '20px' }}>
-              <span>Total</span><span>₹{total.toFixed(2)}</span>
+              <span>Total</span>
+              <div style={{ textAlign: 'right' }}>
+                {couponDiscount > 0 && <p style={{ fontSize: '11px', color: '#34d399', fontWeight: 600, marginBottom: '2px' }}>You save ₹{couponDiscount.toFixed(2)}!</p>}
+                <span>₹{total.toFixed(2)}</span>
+              </div>
             </div>
 
             <button
