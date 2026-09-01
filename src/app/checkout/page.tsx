@@ -40,6 +40,11 @@ export default function CheckoutPage() {
   const [upiId, setUpiId] = useState(draft.upiId);
   const [upiError, setUpiError] = useState('');
   const [upiPopup, setUpiPopup] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const UPI_APPS = [
     {
@@ -135,7 +140,23 @@ export default function CheckoutPage() {
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const shipping = subtotal > 100 ? 0 : 15;
   const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
+  const total = Math.max(0, subtotal + shipping + tax - couponDiscount);
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true); setCouponError('');
+    const res = await fetch('/api/coupons', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: couponCode, orderTotal: subtotal + shipping + tax }),
+    });
+    const data = await res.json();
+    if (!res.ok) { setCouponError(data.error); setCouponDiscount(0); setCouponApplied(''); }
+    else { setCouponDiscount(data.discount); setCouponApplied(data.code); setCouponError(''); }
+    setCouponLoading(false);
+  };
+
+  const removeCoupon = () => { setCouponDiscount(0); setCouponApplied(''); setCouponCode(''); setCouponError(''); };
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -287,27 +308,57 @@ export default function CheckoutPage() {
                     <p style={{ fontSize: '13px', fontWeight: 600, color: '#f7f4ff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</p>
                     <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity}</p>
                   </div>
-                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#f7f4ff', flexShrink: 0 }}>${(item.price * item.quantity).toFixed(2)}</span>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#f7f4ff', flexShrink: 0 }}>₹{(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
 
             <hr style={{ borderColor: 'rgba(192,132,252,.15)', margin: '16px 0' }} />
-            {[['Subtotal', `$${subtotal.toFixed(2)}`], ['Shipping', shipping === 0 ? '🎉 Free' : `$${shipping.toFixed(2)}`], ['Tax (8%)', `$${tax.toFixed(2)}`]].map(([k, v]) => (
+            {[['Subtotal', `₹${subtotal.toFixed(2)}`], ['Shipping', shipping === 0 ? '🎉 Free' : `₹${shipping.toFixed(2)}`], ['Tax (8%)', `₹${tax.toFixed(2)}`]].map(([k, v]) => (
               <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px' }}>
                 <span style={{ color: '#b7aec8' }}>{k}</span>
                 <span style={{ fontWeight: 600, color: '#f7f4ff' }}>{v}</span>
               </div>
             ))}
             <hr style={{ borderColor: 'rgba(192,132,252,.15)', margin: '16px 0' }} />
+
+            {/* Coupon */}
+            {couponApplied ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '10px', padding: '10px 14px', marginBottom: '12px' }}>
+                <span style={{ fontSize: '13px', color: '#34d399', fontWeight: 600 }}>🎟️ {couponApplied} applied</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ fontSize: '13px', color: '#34d399', fontWeight: 700 }}>-₹{couponDiscount.toFixed(2)}</span>
+                  <button onClick={removeCoupon} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>✕</button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ marginBottom: '12px' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type="text"
+                    placeholder="Coupon code"
+                    value={couponCode}
+                    onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponError(''); }}
+                    onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyCoupon())}
+                    style={{ flex: 1, padding: '10px 12px', border: `1.5px solid ${couponError ? '#ef4444' : 'rgba(192,132,252,.2)'}`, borderRadius: '10px', fontSize: '13px', outline: 'none', color: '#f7f4ff', background: '#171522', letterSpacing: '1px', fontWeight: 600 }}
+                  />
+                  <button onClick={applyCoupon} disabled={couponLoading || !couponCode.trim()}
+                    style={{ padding: '10px 16px', borderRadius: '10px', background: 'linear-gradient(135deg,#c084fc,#7c3aed)', color: 'white', border: 'none', fontWeight: 700, fontSize: '13px', cursor: 'pointer', opacity: (!couponCode.trim() || couponLoading) ? 0.6 : 1, whiteSpace: 'nowrap' }}>
+                    {couponLoading ? '...' : 'Apply'}
+                  </button>
+                </div>
+                {couponError && <p style={{ color: '#f87171', fontSize: '12px', marginTop: '6px' }}>{couponError}</p>}
+              </div>
+            )}
+
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 800, color: '#c084fc', marginBottom: '20px' }}>
-              <span>Total</span><span>${total.toFixed(2)}</span>
+              <span>Total</span><span>₹{total.toFixed(2)}</span>
             </div>
 
             <button type="submit" disabled={loading} onClick={payMethod === 'upi' ? (e) => { e.preventDefault(); setUpiPopup(true); } : undefined} style={{ width: '100%', padding: '15px', background: loading ? '#94a3b8' : 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', border: 'none', borderRadius: '14px', fontSize: '15px', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
               {loading ? (
                 <><span style={{ width: '18px', height: '18px', border: '2px solid white', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} /> Redirecting...</>
-              ) : payMethod === 'upi' ? `Pay via ${UPI_APPS.find(a => a.id === upiApp)?.label || 'UPI'} · $${total.toFixed(2)}` : `🔒 Pay $${total.toFixed(2)}`}
+              ) : payMethod === 'upi' ? `Pay via ${UPI_APPS.find(a => a.id === upiApp)?.label || 'UPI'} · ₹${total.toFixed(2)}` : `🔒 Pay ₹${total.toFixed(2)}`}
             </button>
             <p style={{ textAlign: 'center', fontSize: '11px', color: '#94a3b8', marginTop: '10px' }}>Secured by Stripe · 256-bit SSL</p>
           </div>
