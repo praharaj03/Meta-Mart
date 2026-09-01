@@ -87,13 +87,18 @@ export default function CheckoutPage() {
   const tax = subtotal * 0.08;
   const total = Math.max(0, subtotal + shipping + tax - couponDiscount);
 
-  const applyCoupon = async () => {
+  const applyCoupon = async (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!couponCode.trim()) return;
+    const orderTotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+    const ship = orderTotal > 100 ? 0 : 15;
+    const taxAmt = orderTotal * 0.08;
+    const rawTotal = orderTotal + ship + taxAmt;
     setCouponLoading(true); setCouponError('');
     const res = await fetch('/api/coupons', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: couponCode, orderTotal: subtotal + shipping + tax }),
+      body: JSON.stringify({ code: couponCode, orderTotal: rawTotal }),
     });
     const data = await res.json();
     if (!res.ok) { setCouponError(data.error); setCouponDiscount(0); setCouponApplied(''); }
