@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { connectDB } from '@/lib/db';
 import { Order } from '@/models/Order';
+import { BlockedUser } from '@/models/BlockedUser';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -32,6 +33,10 @@ export async function POST(req: NextRequest) {
   });
 
   await connectDB();
+
+  const isBlocked = await BlockedUser.exists({ email: userEmail.toLowerCase() });
+  if (isBlocked) return NextResponse.json({ error: 'Your account has been blocked. Please contact support.' }, { status: 403 });
+
   await Order.create({
     orderId,
     userEmail,
