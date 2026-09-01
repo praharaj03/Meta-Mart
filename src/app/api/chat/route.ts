@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { connectDB } from '@/lib/db';
-import { Product } from '@/models/Product';
+import { getProducts } from '@/lib/productCache';
 
 const STORE_POLICIES = `
 STORE POLICIES — MetaMart:
@@ -66,16 +65,12 @@ export async function POST(req: NextRequest) {
     const firstUserIdx = rawHistory.findIndex((m: any) => m.role === 'user');
     const history = firstUserIdx === -1 ? [] : rawHistory.slice(firstUserIdx);
 
-    // RAG — fetch live products
+    // RAG — fetch live products (Redis-cached)
     let productContext = 'No products currently available.';
     try {
-      await connectDB();
-      const products = await Product.find()
-        .select('name price originalPrice category badge rating -_id')
-        .limit(50)
-        .lean();
+      const products = await getProducts();
       if (products.length > 0) {
-        productContext = products.map((p: any) =>
+        productContext = products.slice(0, 50).map((p: any) =>
           `- ${p.name} | ${p.category} | ₹${p.price} (was ₹${p.originalPrice}) | ${p.rating}/5 stars | ${p.badge}`
         ).join('\n');
       }
