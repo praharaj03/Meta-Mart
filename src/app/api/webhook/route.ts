@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { connectDB } from '@/lib/db';
 import { Order } from '@/models/Order';
-import { sendPurchaseEmail } from '@/lib/email';
+import { sendPurchaseEmail, sendDeliveryEmail } from '@/lib/email';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -30,8 +30,21 @@ export async function POST(req: NextRequest) {
       { status: 'confirmed', stripeSessionId: session.id },
       { new: true },
     );
-    if (order && !order.purchaseEmailSentAt && await sendPurchaseEmail(order)) {
-      await Order.updateOne({ _id: order._id, purchaseEmailSentAt: { $exists: false } }, { purchaseEmailSentAt: new Date() });
+    if (order && !order.purchaseEmailSentAt) {
+      const sent = await sendPurchaseEmail({
+        orderId: order.orderId,
+        userEmail: order.userEmail,
+        userName: order.userName,
+        total: order.total,
+        address: order.address,
+        items: order.items,
+      });
+      if (sent) {
+        await Order.updateOne(
+          { _id: order._id, purchaseEmailSentAt: { $exists: false } },
+          { purchaseEmailSentAt: new Date() }
+        );
+      }
     }
   } else if (event.type === 'checkout.session.expired') {
     await Order.findOneAndUpdate({ orderId }, { status: 'cancelled' });
