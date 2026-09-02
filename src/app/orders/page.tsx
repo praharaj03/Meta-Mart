@@ -101,7 +101,7 @@ function buildCancelEmail(name: string, orderId: string, reason: string, total: 
     `Hi ${name},`,
     `Your order #${orderId} has been successfully cancelled.`,
     `Reason: ${reason}`,
-    `Refund Amount: ₹${total.toFixed(2)}`,
+    `Refund Amount: Rs. ${total.toFixed(2)}`,
     `Your refund will be credited to your original payment method within 24 hours.`,
     `If you have questions, contact us at devopspraharaj25@gmail.com`,
     `Team MetaMart`,
@@ -117,10 +117,10 @@ function buildReturnEmail(name: string, orderId: string, type: string, reason: s
     `Reason: ${reason}`,
     isReplacement
       ? `What happens next:\n1. Pickup scheduled within 24 hours\n2. Item collected from your address\n3. Product inspected by our team\n4. Replacement dispatched within 2-3 business days`
-      : `What happens next:\n1. Pickup scheduled within 24 hours\n2. Item collected from your address\n3. Product inspected by our team\n4. Refund of ₹${total.toFixed(2)} credited within 24 hours of pickup`,
+      : `What happens next:\n1. Pickup scheduled within 24 hours\n2. Item collected from your address\n3. Product inspected by our team\n4. Refund of Rs. ${total.toFixed(2)} credited within 24 hours of pickup`,
     isReplacement
       ? `Your replacement will be dispatched within 2-3 business days after item pickup.`
-      : `Refund Amount: ₹${total.toFixed(2)} — will be credited to your original payment method within 24 hours of item pickup.`,
+      : `Refund Amount: Rs. ${total.toFixed(2)} — will be credited to your original payment method within 24 hours of item pickup.`,
     `If you have questions, contact us at devopspraharaj25@gmail.com`,
     `Team MetaMart`,
   ];
@@ -296,7 +296,7 @@ export default function OrdersPage() {
                     <span style={{ color: '#34d399', fontWeight: 600, fontSize: '14px' }}>
                       {returnType === 'replacement'
                         ? 'Replacement requested! We\'ll dispatch a new item after pickup.'
-                        : `Return submitted! Refund of ₹${order.total.toFixed(2)} will be credited within 24 hours.`}
+                        : `Return submitted! Refund of Rs. ${order.total.toFixed(2)} will be credited within 24 hours.`}
                     </span>
                   </div>
                 )}
@@ -314,14 +314,14 @@ export default function OrdersPage() {
                 {cancelSuccess === order.orderId && (
                   <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '10px', padding: '10px 14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '16px' }}>✅</span>
-                    <span style={{ color: '#34d399', fontWeight: 600, fontSize: '14px' }}>Cancelled! Refund of ₹{order.total.toFixed(2)} will be credited within 24 hours.</span>
+                    <span style={{ color: '#34d399', fontWeight: 600, fontSize: '14px' }}>Cancelled! Refund of Rs. {order.total.toFixed(2)} will be credited within 24 hours.</span>
                   </div>
                 )}
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
                   <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>ORDER ID</span><br /><span style={{ fontWeight: 700, color: '#f7f4ff', fontSize: '14px' }}>{order.orderId}</span></div>
                   <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>PLACED ON</span><br /><span style={{ fontWeight: 600, color: '#f7f4ff', fontSize: '14px' }}>{new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
-                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>TOTAL</span><br /><span style={{ fontWeight: 800, color: isCancelled ? '#f87171' : '#c084fc', fontSize: '1.1rem' }}>₹{order.total.toFixed(2)}</span></div>
+                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>TOTAL</span><br /><span style={{ fontWeight: 800, color: isCancelled ? '#f87171' : '#c084fc', fontSize: '1.1rem' }}>Rs. {order.total.toFixed(2)}</span></div>
                   {!isCancelled && <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>DELIVERY BY</span><br /><span style={{ fontWeight: 700, color: '#10b981', fontSize: '14px' }}>🚚 {getArrival(order.createdAt)}</span></div>}
                   <button onClick={() => setExpanded(isOpen ? null : order._id)} style={{ background: isOpen ? '#f1f5f9' : 'linear-gradient(135deg,#3b82f6,#9333ea)', color: isOpen ? '#64748b' : 'white', border: 'none', padding: '8px 22px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>{isOpen ? '▲ Hide' : '▼ Details'}</button>
                   <button onClick={() => downloadReceipt(receiptData)} style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>⬇ Receipt</button>
@@ -387,7 +387,7 @@ export default function OrdersPage() {
                         <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginTop: '8px', fontSize: '13px', color: '#34d399' }}>
                           {isReplacement
                             ? '🏠 Your replacement has been delivered!'
-                            : `✅ Refund of ₹${order.total.toFixed(2)} has been credited to your original payment method.`}
+                            : `✅ Refund of Rs. ${order.total.toFixed(2)} has been credited to your original payment method.`}
                         </div>
                       )}
                     </div>
@@ -409,7 +409,7 @@ export default function OrdersPage() {
                             <img src={item.image} alt={item.name} style={{ width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }} />
                             <div>
                               <p style={{ fontSize: '13px', fontWeight: 600, color: '#f7f4ff', marginBottom: '2px' }}>{item.name}</p>
-                              <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity} · <span style={{ color: '#c084fc', fontWeight: 600 }}>₹{(item.price * item.quantity).toFixed(2)}</span></p>
+                              <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity} · <span style={{ color: '#c084fc', fontWeight: 600 }}>Rs. {(item.price * item.quantity).toFixed(2)}</span></p>
                             </div>
                           </div>
                         ))}
@@ -430,7 +430,7 @@ export default function OrdersPage() {
           onClick={e => { if (e.target === e.currentTarget) setReturnModal(null); }}>
           <div style={{ background: '#13111b', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
             <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff', marginBottom: '6px' }}>🔄 Return Order</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{returnModal.orderRef} · ₹{returnModal.total.toFixed(2)} · {daysLeftToReturn(returnModal.createdAt)} days left</p>
+            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{returnModal.orderRef} · Rs. {returnModal.total.toFixed(2)} · {daysLeftToReturn(returnModal.createdAt)} days left</p>
 
             {/* Step 1 — Refund or Replacement */}
             <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>What would you like?</p>
@@ -463,7 +463,7 @@ export default function OrdersPage() {
                   />
                 )}
                 <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '20px', fontSize: '13px', color: '#34d399' }}>
-                  {returnType === 'refund' ? `💰 Refund of ₹${returnModal.total.toFixed(2)} will be credited within 24 hours of item pickup.` : '🔁 Replacement will be dispatched within 2–3 business days after item pickup.'}
+                  {returnType === 'refund' ? `💰 Refund of Rs. ${returnModal.total.toFixed(2)} will be credited within 24 hours of item pickup.` : '🔁 Replacement will be dispatched within 2–3 business days after item pickup.'}
                 </div>
               </>
             )}
@@ -489,7 +489,7 @@ export default function OrdersPage() {
           onClick={e => { if (e.target === e.currentTarget) setCancelModal(null); }}>
           <div style={{ background: '#13111b', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
             <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff', marginBottom: '6px' }}>❌ Cancel Order</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{cancelModal.orderRef} · ₹{cancelModal.total.toFixed(2)}</p>
+            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{cancelModal.orderRef} · Rs. {cancelModal.total.toFixed(2)}</p>
 
             <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>Why are you cancelling?</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
@@ -510,7 +510,7 @@ export default function OrdersPage() {
             )}
 
             <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '20px', fontSize: '13px', color: '#34d399' }}>
-              💰 Refund of ₹{cancelModal.total.toFixed(2)} will be credited within 24 hours.
+              💰 Refund of Rs. {cancelModal.total.toFixed(2)} will be credited within 24 hours.
             </div>
 
             <div style={{ display: 'flex', gap: '10px' }}>

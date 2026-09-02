@@ -182,10 +182,10 @@ export default function ShopPage() {
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-2xl font-bold text-white">
-                      ₹{product.price}
+                      Rs. {product.price}
                     </span>
                     <span className="text-lg text-zinc-500 line-through">
-                      ₹{product.originalPrice}
+                      Rs. {product.originalPrice}
                     </span>
                     <span className="text-sm text-green-600 font-semibold">
                       {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
