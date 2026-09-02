@@ -126,7 +126,7 @@ const CartPage = () => {
                   </div>
                   <div className="summary-row">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : `Rs. ${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'Free' : `rs ${shipping.toFixed(2)}`}</span>
                   </div>
                   <div className="summary-row">
                     <span>Tax</span>
@@ -150,7 +150,7 @@ const CartPage = () => {
                 <div className="security-badges">
                   <div className="badge">🔒 Secure Checkout</div>
                   <div className="badge">✅ 30-Day Returns</div>
-                  <div className="badge">🚚 Free Shipping Rs. 100+</div>
+                  <div className="badge">🚚 Free Shipping rs 100+</div>
                 </div>
               </div>
             </div>

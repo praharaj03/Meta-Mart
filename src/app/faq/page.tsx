@@ -22,7 +22,7 @@ const FAQPage = () => {
     },
     {
       question: "What are your shipping options?",
-      answer: "We offer free standard shipping on orders over Rs. 50, express shipping (2-3 days), and overnight delivery. International shipping is available to 50+ countries.",
+      answer: "We offer free standard shipping on orders over rs 50, express shipping (2-3 days), and overnight delivery. International shipping is available to 50+ countries.",
       icon: "🚚",
       id: "shipping"
     },

@@ -4,8 +4,8 @@ import { getProducts } from '@/lib/productCache';
 
 const STORE_POLICIES = `
 STORE POLICIES — MetaMart:
-- Free standard shipping on orders over Rs. 499; Rs. 99 otherwise
-- Express shipping: Rs. 199 (1-2 business days)
+- Free standard shipping on orders over rs 499; rs 99 otherwise
+- Express shipping: rs 199 (1-2 business days)
 - 7-day return policy (items must be unused, original packaging)
 - Refunds processed within 5-7 business days
 - Payments via Stripe (card) and UPI
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       const products = await getProducts();
       if (products.length > 0) {
         productContext = products.slice(0, 50).map((p: any) =>
-          `- ${p.name} | ${p.category} | Rs. ${p.price} (was Rs. ${p.originalPrice}) | ${p.rating}/5 stars | ${p.badge}`
+          `- ${p.name} | ${p.category} | rs ${p.price} (was rs ${p.originalPrice}) | ${p.rating}/5 stars | ${p.badge}`
         ).join('\n');
       }
     } catch {

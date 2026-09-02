@@ -8,9 +8,9 @@ function buildCancelHtml(name: string, orderId: string, reason: string, total: n
     ${detailsTable([
       ['Order ID', `#${orderId}`],
       ['Cancellation Reason', reason],
-      ['Refund Amount', `Rs. ${total.toFixed(2)}`, '#7c3aed'],
+      ['Refund Amount', `rs ${total.toFixed(2)}`, '#7c3aed'],
     ])}
-    ${infoBox('#f0fdf4', '#86efac', '#166534', '#15803d', '&#128176; Refund Initiated', `Rs. ${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong>.`)}
+    ${infoBox('#f0fdf4', '#86efac', '#166534', '#15803d', '&#128176; Refund Initiated', `rs ${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong>.`)}
     <p style="color:#6b7280;font-size:13px;margin:0 0 6px;">Questions? We're here to help:</p>
     <p style="margin:0;"><a href="mailto:devopspraharaj25@gmail.com" style="color:#7c3aed;font-size:13px;font-weight:600;text-decoration:none;">devopspraharaj25@gmail.com</a></p>`;
   return baseTemplate('linear-gradient(135deg,#1a0a2e 0%,#3b1a6b 100%)', '&#10060;', 'Order Cancelled', "We've received your cancellation request", body);
@@ -22,16 +22,16 @@ function buildReturnHtml(name: string, orderId: string, type: string, reason: st
   const headerBg = isReplacement ? 'linear-gradient(135deg,#0c1a3a 0%,#1e3a8a 100%)' : 'linear-gradient(135deg,#1c1107 0%,#78350f 100%)';
   const steps = isReplacement
     ? ['Pickup scheduled within 24 hours', 'Our team collects the item from your address', 'Item inspected by our quality team', 'Replacement dispatched within 2–3 business days']
-    : ['Pickup scheduled within 24 hours', 'Our team collects the item from your address', 'Item inspected by our quality team', `Refund of Rs. ${total.toFixed(2)} credited within 24 hours of pickup`];
+    : ['Pickup scheduled within 24 hours', 'Our team collects the item from your address', 'Item inspected by our quality team', `Refund of rs ${total.toFixed(2)} credited within 24 hours of pickup`];
   const rows: [string, string, string?][] = [
     ['Order ID', `#${orderId}`],
     ['Request Type', isReplacement ? 'Replacement' : 'Refund', accent],
     ['Reason', reason],
   ];
-  if (!isReplacement) rows.push(['Refund Amount', `Rs. ${total.toFixed(2)}`, accent]);
+  if (!isReplacement) rows.push(['Refund Amount', `rs ${total.toFixed(2)}`, accent]);
   const timeline = isReplacement
     ? 'Your replacement will be dispatched within 2–3 business days after item pickup.'
-    : `Rs. ${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong> of item pickup.`;
+    : `rs ${total.toFixed(2)} will be credited to your original payment method within <strong>24 hours</strong> of item pickup.`;
   const body = `
     <p style="color:#374151;font-size:15px;margin:0 0 6px;">Hi <strong>${name}</strong>,</p>
     <p style="color:#6b7280;font-size:14px;margin:0 0 24px;line-height:1.6;">We've received your ${isReplacement ? 'replacement' : 'return & refund'} request. Here's what happens next:</p>

@@ -23,7 +23,7 @@ const SUGGESTIONS = [
 const QUICK_ANSWERS: { keywords: string[]; answer: string }[] = [
   {
     keywords: ['shipping', 'deliver', 'delivery', 'how long', 'arrive', 'dispatch'],
-    answer: '🚚 We offer free shipping on orders above Rs. 499. Standard delivery takes 3–7 business days. Express (1–2 days) is available at checkout for select pincodes.',
+    answer: '🚚 We offer free shipping on orders above rs 499. Standard delivery takes 3–7 business days. Express (1–2 days) is available at checkout for select pincodes.',
   },
   {
     keywords: ['return', 'refund', 'exchange', 'send back', 'replace'],

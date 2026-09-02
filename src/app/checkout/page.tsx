@@ -241,13 +241,13 @@ export default function CheckoutPage() {
                     <p style={{ fontSize: '13px', fontWeight: 600, color: '#f7f4ff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</p>
                     <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity}</p>
                   </div>
-                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#f7f4ff', flexShrink: 0 }}>Rs. {(item.price * item.quantity).toFixed(2)}</span>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#f7f4ff', flexShrink: 0 }}>rs {(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
 
             <hr style={{ borderColor: 'rgba(192,132,252,.15)', margin: '16px 0' }} />
-            {[['Subtotal', `Rs. ${subtotal.toFixed(2)}`], ['Shipping', shipping === 0 ? '🎉 Free' : `Rs. ${shipping.toFixed(2)}`], ['Tax (8%)', `Rs. ${tax.toFixed(2)}`]].map(([k, v]) => (
+            {[['Subtotal', `rs ${subtotal.toFixed(2)}`], ['Shipping', shipping === 0 ? '🎉 Free' : `rs ${shipping.toFixed(2)}`], ['Tax (8%)', `rs ${tax.toFixed(2)}`]].map(([k, v]) => (
               <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px' }}>
                 <span style={{ color: '#b7aec8' }}>{k}</span>
                 <span style={{ fontWeight: 600, color: '#f7f4ff' }}>{v}</span>
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
                   <p style={{ fontSize: '11px', color: '#6ee7b7', marginTop: '2px' }}>Coupon applied successfully</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontSize: '14px', color: '#34d399', fontWeight: 800 }}>-Rs. {couponDiscount.toFixed(2)}</span>
+                  <span style={{ fontSize: '14px', color: '#34d399', fontWeight: 800 }}>-rs {couponDiscount.toFixed(2)}</span>
                   <button onClick={removeCoupon} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>✕</button>
                 </div>
               </div>
@@ -287,8 +287,8 @@ export default function CheckoutPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: 800, color: '#c084fc', marginBottom: '20px' }}>
               <span>Total</span>
               <div style={{ textAlign: 'right' }}>
-                {couponDiscount > 0 && <p style={{ fontSize: '11px', color: '#34d399', fontWeight: 600, marginBottom: '2px' }}>You save Rs. {couponDiscount.toFixed(2)}!</p>}
-                <span>Rs. {total.toFixed(2)}</span>
+                {couponDiscount > 0 && <p style={{ fontSize: '11px', color: '#34d399', fontWeight: 600, marginBottom: '2px' }}>You save rs {couponDiscount.toFixed(2)}!</p>}
+                <span>rs {total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -299,7 +299,7 @@ export default function CheckoutPage() {
               style={{ width: '100%', padding: '15px', background: isBlocked ? 'rgba(239,68,68,0.15)' : loading ? '#94a3b8' : 'linear-gradient(135deg,#3b82f6,#9333ea)', color: isBlocked ? '#f87171' : 'white', border: isBlocked ? '1px solid rgba(239,68,68,0.3)' : 'none', borderRadius: '14px', fontSize: '15px', fontWeight: 700, cursor: isBlocked || loading ? 'not-allowed' : 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
               {isBlocked ? '🚫 Account Restricted' : loading ? (
                 <><span style={{ width: '18px', height: '18px', border: '2px solid white', borderTopColor: 'transparent', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} /> Processing...</>
-              ) : payMethod === 'upi' ? `Pay via ${UPI_APPS.find(a => a.id === upiApp)?.label || 'UPI'} · Rs. ${total.toFixed(2)}` : `🔒 Pay Rs. ${total.toFixed(2)}`}
+              ) : payMethod === 'upi' ? `Pay via ${UPI_APPS.find(a => a.id === upiApp)?.label || 'UPI'} · rs ${total.toFixed(2)}` : `🔒 Pay rs ${total.toFixed(2)}`}
             </button>
             <p style={{ textAlign: 'center', fontSize: '11px', color: '#94a3b8', marginTop: '10px' }}>Secured by Stripe · 256-bit SSL</p>
           </div>

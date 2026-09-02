@@ -139,16 +139,16 @@ export default function ShopPage() {
                   {/* Favorite Button */}
                   <button
                     onClick={() => toggleFavorite(product)}
-                    className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                    className="absolute top-4 right-4 p-2 bg-[#171522]/90 border border-orange-500/30 rounded-full shadow-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:scale-110"
                   >
-                      <FiHeart className={`w-5 h-5 ${inWishlist(product._id) ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
+                      <FiHeart className={`w-5 h-5 ${inWishlist(product._id) ? 'text-orange-500 fill-current' : 'text-zinc-300'}`} />
                   </button>
 
                   {/* Quick Add to Cart */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300">
                     <button 
                       onClick={() => handleAddToCart(product)}
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
+                      className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-500 transition-colors duration-300 shadow-md text-xs font-bold"
                     >
                       <FiShoppingCart className="w-4 h-4" />
                       Quick Add
@@ -182,10 +182,10 @@ export default function ShopPage() {
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-2xl font-bold text-white">
-                      Rs. {product.price}
+                      rs {product.price}
                     </span>
                     <span className="text-lg text-zinc-500 line-through">
-                      Rs. {product.originalPrice}
+                      rs {product.originalPrice}
                     </span>
                     <span className="text-sm text-green-600 font-semibold">
                       {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF

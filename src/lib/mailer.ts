@@ -55,7 +55,7 @@ export function itemsTable(items: { name: string; quantity: number; price: numbe
     <tr>
       <td style="padding:10px 20px;color:#374151;font-size:13px;border-bottom:1px solid #f0f0f5;">${item.name}</td>
       <td style="padding:10px 20px;color:#6b7280;font-size:13px;text-align:center;border-bottom:1px solid #f0f0f5;">&#215;${item.quantity}</td>
-      <td style="padding:10px 20px;color:#7c3aed;font-size:13px;font-weight:700;text-align:right;border-bottom:1px solid #f0f0f5;">Rs. ${(item.price * item.quantity).toFixed(2)}</td>
+      <td style="padding:10px 20px;color:#7c3aed;font-size:13px;font-weight:700;text-align:right;border-bottom:1px solid #f0f0f5;">rs ${(item.price * item.quantity).toFixed(2)}</td>
     </tr>`).join('')}
   </table>`;
 }

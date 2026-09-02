@@ -80,8 +80,8 @@ export default function WishlistPage() {
 
                   {/* Price */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff' }}>Rs. {item.price}</span>
-                    <span style={{ fontSize: '13px', color: '#64748b', textDecoration: 'line-through' }}>Rs. {item.originalPrice}</span>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff' }}>rs {item.price}</span>
+                    <span style={{ fontSize: '13px', color: '#64748b', textDecoration: 'line-through' }}>rs {item.originalPrice}</span>
                     <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 700 }}>{discount(item.price, item.originalPrice)}% OFF</span>
                   </div>
 

@@ -27,7 +27,7 @@ export async function sendPurchaseEmail(order: EmailOrder) {
       ['Order ID', `#${order.orderId}`],
       ['Order Date', new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })],
       ['Estimated Delivery', getArrival()],
-      ['Order Total', `Rs. ${order.total.toFixed(2)}`, '#7c3aed'],
+      ['Order Total', `rs ${order.total.toFixed(2)}`, '#7c3aed'],
     ])}
     ${itemsTable(order.items)}
     ${order.address ? infoBox('#f5f3ff', '#c4b5fd', '#5b21b6', '#6d28d9', '&#128205; Delivery Address', order.address) : ''}
@@ -63,7 +63,7 @@ export async function sendDeliveryEmail(order: EmailOrder) {
     ${detailsTable([
       ['Order ID', `#${order.orderId}`],
       ['Delivered On', new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })],
-      ['Order Total', `Rs. ${order.total.toFixed(2)}`, '#059669'],
+      ['Order Total', `rs ${order.total.toFixed(2)}`, '#059669'],
     ])}
     ${itemsTable(order.items)}
     ${infoBox('#f0fdf4', '#86efac', '#166534', '#15803d', '&#9989; Delivery Complete', 'Your order has been marked as delivered. If you have any issues with your items, you can request a return within <strong>7 days</strong> from the Orders page.')}
