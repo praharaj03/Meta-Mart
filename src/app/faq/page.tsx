@@ -22,7 +22,11 @@ const FAQPage = () => {
     },
     {
       question: "What are your shipping options?",
+<<<<<<< HEAD
       answer: "We offer free standard shipping on orders over ₹499. Standard delivery takes 3–7 business days, with express delivery available for select pincodes.",
+=======
+      answer: "We offer free standard shipping on orders over Rs. 50, express shipping (2-3 days), and overnight delivery. International shipping is available to 50+ countries.",
+>>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
       icon: "🚚",
       id: "shipping"
     },

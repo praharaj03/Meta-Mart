@@ -178,10 +178,17 @@ export default function ShopPage() {
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-2xl font-bold text-white">
+<<<<<<< HEAD
                       {formatINR(product.price)}
                     </span>
                     <span className="text-lg text-zinc-500 line-through">
                       {formatINR(product.originalPrice)}
+=======
+                      Rs. {product.price}
+                    </span>
+                    <span className="text-lg text-zinc-500 line-through">
+                      Rs. {product.originalPrice}
+>>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
                     </span>
                     <span className="text-sm text-green-600 font-semibold">
                       {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF

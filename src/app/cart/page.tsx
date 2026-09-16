@@ -127,7 +127,11 @@ const CartPage = () => {
                   </div>
                   <div className="summary-row">
                     <span>Shipping</span>
+<<<<<<< HEAD
                     <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
+=======
+                    <span>{shipping === 0 ? 'Free' : `Rs. ${shipping.toFixed(2)}`}</span>
+>>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
                   </div>
                   <div className="summary-row">
                     <span>Tax</span>
@@ -151,7 +155,11 @@ const CartPage = () => {
                 <div className="security-badges">
                   <div className="badge">🔒 Secure Checkout</div>
                   <div className="badge">✅ 30-Day Returns</div>
+<<<<<<< HEAD
                   <div className="badge">🚚 Free Shipping on ₹499+</div>
+=======
+                  <div className="badge">🚚 Free Shipping Rs. 100+</div>
+>>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
                 </div>
               </div>
             </div>
@@ -227,14 +235,14 @@ const CartPage = () => {
           -webkit-text-fill-color: transparent;
           background-clip: text;
           margin-bottom: 16px;
-          animation: slideUp 0.8s ease-out;
+          animation: slideUp 0.3s ease-out;
         }
 
         .cart-subtitle {
           font-size: 1.25rem;
           color: #b7aec8;
           margin-bottom: 32px;
-          animation: slideUp 0.8s ease-out 0.2s both;
+          animation: slideUp 0.3s ease-out 0.1s both;
         }
 
         .empty-cart {
@@ -290,7 +298,7 @@ const CartPage = () => {
         }
 
         .cart-items {
-          animation: slideUp 0.8s ease-out 0.4s both;
+          animation: slideUp 0.3s ease-out 0.15s both;
         }
 
         .section-title {
@@ -464,7 +472,7 @@ const CartPage = () => {
           height: fit-content;
           position: sticky;
           top: 120px;
-          animation: slideUp 0.8s ease-out 0.6s both;
+          animation: slideUp 0.3s ease-out 0.2s both;
         }
 
         .summary-title {

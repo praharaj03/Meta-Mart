@@ -121,9 +121,15 @@ export function generateReceipt(order: Order): jsPDF {
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(10);
     doc.text(String(item.quantity), cols.qty, y + 20);
+<<<<<<< HEAD
     doc.text(`₹${item.price.toFixed(2)}`, cols.unit, y + 20);
     doc.setFont('helvetica', 'bold');
     doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, cols.total, y + 20, { align: 'right' });
+=======
+    doc.text(`Rs. ${item.price.toFixed(2)}`, cols.unit, y + 20);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Rs. ${(item.price * item.quantity).toFixed(2)}`, cols.total, y + 20, { align: 'right' });
+>>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
 
     y += rowH;
   });
@@ -151,9 +157,15 @@ export function generateReceipt(order: Order): jsPDF {
     y += bold ? 20 : 18;
   };
 
+<<<<<<< HEAD
   addRow('Subtotal', `₹${subtotal.toFixed(2)}`);
   addRow('Shipping', shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`);
   addRow('Tax (8%)', `₹${tax.toFixed(2)}`);
+=======
+  addRow('Subtotal', `Rs. ${subtotal.toFixed(2)}`);
+  addRow('Shipping', shipping === 0 ? 'FREE' : `Rs. ${shipping.toFixed(2)}`);
+  addRow('Tax (8%)', `Rs. ${tax.toFixed(2)}`);
+>>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
 
   y += 4;
   doc.setFillColor(59, 130, 246);
@@ -162,7 +174,11 @@ export function generateReceipt(order: Order): jsPDF {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
   doc.text('TOTAL', totalsX, y + 8);
+<<<<<<< HEAD
   doc.text(`₹${order.total.toFixed(2)}`, valX, y + 8, { align: 'right' });
+=======
+  doc.text(`Rs. ${order.total.toFixed(2)}`, valX, y + 8, { align: 'right' });
+>>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
   y += 40;
 
   // ── Delivery info ─────────────────────────────────────────────
