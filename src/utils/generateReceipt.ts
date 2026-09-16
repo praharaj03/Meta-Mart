@@ -121,9 +121,9 @@ export function generateReceipt(order: Order): jsPDF {
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(10);
     doc.text(String(item.quantity), cols.qty, y + 20);
-    doc.text(`$${item.price.toFixed(2)}`, cols.unit, y + 20);
+    doc.text(`₹${item.price.toFixed(2)}`, cols.unit, y + 20);
     doc.setFont('helvetica', 'bold');
-    doc.text(`$${(item.price * item.quantity).toFixed(2)}`, cols.total, y + 20, { align: 'right' });
+    doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, cols.total, y + 20, { align: 'right' });
 
     y += rowH;
   });
@@ -135,7 +135,7 @@ export function generateReceipt(order: Order): jsPDF {
 
   // ── Totals block ─────────────────────────────────────────────
   const subtotal = order.items.reduce((s, i) => s + i.price * i.quantity, 0);
-  const shipping = subtotal > 100 ? 0 : 15;
+  const shipping = subtotal >= 499 ? 0 : 99;
   const tax = subtotal * 0.08;
 
   const totalsX = W - margin - 200;
@@ -151,9 +151,9 @@ export function generateReceipt(order: Order): jsPDF {
     y += bold ? 20 : 18;
   };
 
-  addRow('Subtotal', `$${subtotal.toFixed(2)}`);
-  addRow('Shipping', shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`);
-  addRow('Tax (8%)', `$${tax.toFixed(2)}`);
+  addRow('Subtotal', `₹${subtotal.toFixed(2)}`);
+  addRow('Shipping', shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`);
+  addRow('Tax (8%)', `₹${tax.toFixed(2)}`);
 
   y += 4;
   doc.setFillColor(59, 130, 246);
@@ -162,7 +162,7 @@ export function generateReceipt(order: Order): jsPDF {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
   doc.text('TOTAL', totalsX, y + 8);
-  doc.text(`$${order.total.toFixed(2)}`, valX, y + 8, { align: 'right' });
+  doc.text(`₹${order.total.toFixed(2)}`, valX, y + 8, { align: 'right' });
   y += 40;
 
   // ── Delivery info ─────────────────────────────────────────────

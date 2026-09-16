@@ -55,4 +55,8 @@ main .bg-gradient-to-br, main .bg-gradient-to-r { border-color: rgba(192,132,252
   .contact-grid { grid-template-columns: 1fr !important; }
   .checkout-form-grid { grid-template-columns: 1fr !important; }
   .orders-detail-grid { grid-template-columns: 1fr !important; }
+  main { overflow-x: clip; }
+  main :is(button, a) { max-width: 100%; }
+  main table { display: block; max-width: 100%; overflow-x: auto; }
+  main [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
 }

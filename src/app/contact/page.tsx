@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import emailjs from "@emailjs/browser";
+import { useUser } from '@clerk/nextjs';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const ContactPage = () => {
     subject: "",
     message: ""
   });
+  const { user } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -26,18 +28,16 @@ const ContactPage = () => {
     e.preventDefault();
     setStatus('sending');
     try {
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          to_email: 'devopspraharaj25@gmail.com',
-        },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
+      const saved = await fetch('/api/complaints', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, userId: user?.id ?? 'guest' }),
+      });
+      if (!saved.ok) throw new Error('Unable to save message');
+      if (process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID && process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID && process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY) {
+        await emailjs.send(process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID, process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID, {
+          from_name: formData.name, from_email: formData.email, subject: formData.subject, message: formData.message, to_email: 'devopspraharaj25@gmail.com',
+        }, process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY).catch(() => undefined);
+      }
       setStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch {

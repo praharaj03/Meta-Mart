@@ -7,13 +7,14 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useCart } from '../../context/CartContext';
+import { SHIPPING_FREE_THRESHOLD, STANDARD_SHIPPING } from '@/lib/currency';
 
 const CartPage = () => {
   const { items: cartItems, updateQuantity, removeItem } = useCart();
   const router = useRouter();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = subtotal > 100 ? 0 : 15;
+  const shipping = subtotal >= SHIPPING_FREE_THRESHOLD ? 0 : STANDARD_SHIPPING;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
@@ -72,7 +73,7 @@ const CartPage = () => {
                         <span>Color: {item.color}</span>
                         <span>Size: {item.size}</span>
                       </div>
-                      <div className="item-price">${item.price}</div>
+                      <div className="item-price">₹{item.price}</div>
                     </div>
                     
                     <div className="item-controls">
@@ -122,20 +123,20 @@ const CartPage = () => {
                 <div className="summary-details">
                   <div className="summary-row">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>₹{subtotal.toFixed(2)}</span>
                   </div>
                   <div className="summary-row">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
                   </div>
                   <div className="summary-row">
                     <span>Tax</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>₹{tax.toFixed(2)}</span>
                   </div>
                   <div className="summary-divider"></div>
                   <div className="summary-row total">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>₹{total.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -150,7 +151,7 @@ const CartPage = () => {
                 <div className="security-badges">
                   <div className="badge">🔒 Secure Checkout</div>
                   <div className="badge">✅ 30-Day Returns</div>
-                  <div className="badge">🚚 Free Shipping $100+</div>
+                  <div className="badge">🚚 Free Shipping on ₹499+</div>
                 </div>
               </div>
             </div>

@@ -103,7 +103,7 @@ export default function TermsPage() {
             <h3>4.1 Product Descriptions</h3>
             <p>We make every effort to display products accurately. However, we do not warrant that product descriptions, images, pricing, or other content is accurate, complete, or error-free. Product images are for illustrative purposes and may differ slightly from the actual product.</p>
             <h3>4.2 Pricing</h3>
-            <p>All prices are displayed in <strong>US Dollars (USD)</strong> and are inclusive of applicable taxes unless stated otherwise. We reserve the right to change prices at any time without prior notice. Price changes will not affect orders already confirmed.</p>
+            <p>All prices are displayed in <strong>Indian Rupees (INR)</strong> and are inclusive of applicable taxes unless stated otherwise. We reserve the right to change prices at any time without prior notice. Price changes will not affect orders already confirmed.</p>
             <h3>4.3 Availability</h3>
             <p>All products are subject to availability. We reserve the right to limit quantities, discontinue products, or refuse orders at our discretion. If a product becomes unavailable after your order is placed, we will notify you and offer a full refund.</p>
             <Callout>Prices shown during checkout are final. Any discrepancy between listed and charged prices should be reported to us within 7 days.</Callout>
@@ -126,9 +126,9 @@ export default function TermsPage() {
 
           <Section id="shipping" title="6. Shipping & Delivery">
             <Table headers={['Shipping Type', 'Estimated Time', 'Cost']} rows={[
-              ['Standard Shipping', '5–7 business days', 'Free on orders over $100; $15 otherwise'],
-              ['Express Shipping', '2–3 business days', '$25'],
-              ['Overnight Delivery', 'Next business day', '$45'],
+              ['Standard Shipping', '3–7 business days', 'Free on orders over ₹499; ₹99 otherwise'],
+              ['Express Shipping', '1–2 business days', '₹199'],
+              ['Overnight Delivery', 'Next business day', '₹349'],
               ['International', '10–21 business days', 'Calculated at checkout'],
             ]} />
             <p>Delivery times are estimates and not guaranteed. We are not responsible for delays caused by customs, weather, carrier issues, or other circumstances beyond our control.</p>
@@ -208,7 +208,7 @@ export default function TermsPage() {
               <li>Damages resulting from unauthorised access to or alteration of your data.</li>
               <li>Damages resulting from any third-party conduct on the Service.</li>
             </ul>
-            <p>In no event shall our total liability to you for all claims exceed the greater of <strong>$100 USD</strong> or the amount you paid to MetaMart in the <strong>12 months</strong> preceding the claim.</p>
+            <p>In no event shall our total liability to you for all claims exceed the greater of <strong>₹10,000</strong> or the amount you paid to MetaMart in the <strong>12 months</strong> preceding the claim.</p>
             <p>Some jurisdictions do not allow the exclusion of certain warranties or limitation of liability, so some of the above limitations may not apply to you.</p>
           </Section>
 

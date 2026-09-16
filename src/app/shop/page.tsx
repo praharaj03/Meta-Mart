@@ -6,13 +6,17 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import Link from 'next/link';
+import { formatINR } from '@/lib/currency';
 
 const CATEGORIES = ['All','Electronics','Wearables','Fashion','Home','Gaming','Photography','Books','Sports','Beauty','Kitchen','Travel'];
 
-interface Product { _id: string; name: string; price: number; originalPrice: number; image: string; rating: number; reviews: number; category: string; badge: string; }
+interface Product { _id: string; name: string; price: number; originalPrice: number; image: string; images?: string[]; description?: string; rating: number; reviews: number; category: string; badge: string; }
+const PAGE_SIZE = 12;
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [selectedCategory, setSelectedCategory] = useState(
     () => typeof window !== 'undefined' ? (sessionStorage.getItem('shop_category') ?? 'All') : 'All'
   );
@@ -24,7 +28,7 @@ export default function ShopPage() {
   const { toggle: toggleWishlist, has: inWishlist } = useWishlist();
 
   useEffect(() => {
-    fetch('/api/products').then(r => r.json()).then(setProducts).catch(() => setProducts([]));
+    fetch('/api/products').then(r => r.json()).then(data => setProducts(data.products ?? data)).catch(() => setProducts([]));
   }, []);
 
   const handleAddToCart = (product: Product) => {
@@ -47,6 +51,8 @@ export default function ShopPage() {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
+  useEffect(() => setVisibleCount(PAGE_SIZE), [selectedCategory, searchTerm]);
 
   const toggleFavorite = (product: Product) => handleToggleWishlist(product);
 
@@ -109,7 +115,7 @@ export default function ShopPage() {
             {filteredProducts.length === 0 && products.length === 0 && (
               <div className="col-span-3 text-center py-20 text-zinc-400">Loading products...</div>
             )}
-            {filteredProducts.map((product, index) => (
+            {visibleProducts.map((product, index) => (
               <div
                 key={product._id}
                 className="group bg-[#13111b] border border-white/10 rounded-2xl shadow-lg hover:shadow-2xl hover:border-purple-400/60 transition-all duration-500 transform hover:-translate-y-2 animate-fade-in-up"
@@ -118,11 +124,13 @@ export default function ShopPage() {
                 
                 {/* Product Image */}
                 <div className="relative overflow-hidden rounded-t-2xl">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-64 object-cover"
-                  />
+                  <Link href={`/products/${product._id}`} aria-label={`View ${product.name}`} className="block">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </Link>
 
                   {/* Badge */}
                   <div className="absolute top-4 left-4">
@@ -144,23 +152,11 @@ export default function ShopPage() {
                       <FiHeart className={`w-5 h-5 ${inWishlist(product._id) ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
                   </button>
 
-                  {/* Quick Add to Cart */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <button 
-                      onClick={() => handleAddToCart(product)}
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300"
-                    >
-                      <FiShoppingCart className="w-4 h-4" />
-                      Quick Add
-                    </button>
-                  </div>
                 </div>
 
                 {/* Product Info */}
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors duration-300">
-                    {product.name}
-                  </h3>
+                  <Link href={`/products/${product._id}`} className="block text-lg font-semibold text-white mb-2 group-hover:text-purple-300 transition-colors duration-300">{product.name}</Link>
 
                   {/* Rating */}
                   <div className="flex items-center gap-2 mb-3">
@@ -182,10 +178,10 @@ export default function ShopPage() {
                   {/* Price */}
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-2xl font-bold text-white">
-                      ₹{product.price}
+                      {formatINR(product.price)}
                     </span>
                     <span className="text-lg text-zinc-500 line-through">
-                      ₹{product.originalPrice}
+                      {formatINR(product.originalPrice)}
                     </span>
                     <span className="text-sm text-green-600 font-semibold">
                       {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
@@ -205,11 +201,11 @@ export default function ShopPage() {
           </div>
 
           {/* Load More Button */}
-          <div className="text-center mt-12">
-            <button className="px-8 py-4 bg-gradient-to-r from-purple-800 to-purple-900 text-white rounded-xl hover:from-purple-900 hover:to-indigo-900 transition-all duration-300 transform hover:scale-105 font-semibold">
+          {visibleCount < filteredProducts.length && <div className="text-center mt-12">
+            <button onClick={() => setVisibleCount(count => count + PAGE_SIZE)} className="px-8 py-4 bg-gradient-to-r from-purple-800 to-purple-900 text-white rounded-xl hover:from-purple-900 hover:to-indigo-900 transition-all duration-300 transform hover:scale-105 font-semibold">
               Load More Products
             </button>
-          </div>
+          </div>}
         </div>
       </div>
       

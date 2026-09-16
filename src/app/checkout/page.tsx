@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { useCart } from '../../context/CartContext';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
+import { SHIPPING_FREE_THRESHOLD, STANDARD_SHIPPING } from '@/lib/currency';
 
 const fields = [
   { name: 'name', placeholder: 'Full Name', type: 'text', icon: '👤' },
@@ -83,7 +84,7 @@ export default function CheckoutPage() {
   }, [user]);
 
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
-  const shipping = subtotal > 100 ? 0 : 15;
+  const shipping = subtotal >= SHIPPING_FREE_THRESHOLD ? 0 : STANDARD_SHIPPING;
   const tax = subtotal * 0.08;
   const total = Math.max(0, subtotal + shipping + tax - couponDiscount);
 
@@ -91,7 +92,7 @@ export default function CheckoutPage() {
     if (e) e.preventDefault();
     if (!couponCode.trim()) return;
     const orderTotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
-    const ship = orderTotal > 100 ? 0 : 15;
+    const ship = orderTotal >= SHIPPING_FREE_THRESHOLD ? 0 : STANDARD_SHIPPING;
     const taxAmt = orderTotal * 0.08;
     const rawTotal = orderTotal + ship + taxAmt;
     setCouponLoading(true); setCouponError('');

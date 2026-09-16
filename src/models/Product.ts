@@ -5,6 +5,8 @@ const ProductSchema = new Schema({
   price: { type: Number, required: true },
   originalPrice: { type: Number, required: true },
   image: { type: String, required: true },
+  images: { type: [String], default: [] },
+  description: { type: String, default: '' },
   rating: { type: Number, default: 4.5 },
   reviews: { type: Number, default: 0 },
   category: { type: String, required: true },

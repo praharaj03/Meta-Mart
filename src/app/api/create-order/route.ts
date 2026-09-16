@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { connectDB } from '@/lib/db';
 import { Order } from '@/models/Order';
 import { BlockedUser } from '@/models/BlockedUser';
+import { SHIPPING_FREE_THRESHOLD, STANDARD_SHIPPING } from '@/lib/currency';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   const orderId = `ORD${Date.now()}`;
   const total = items.reduce((s: number, i: { price: number; quantity: number }) => s + i.price * i.quantity, 0);
-  const shipping = total > 100 ? 0 : 15;
+  const shipping = total >= SHIPPING_FREE_THRESHOLD ? 0 : STANDARD_SHIPPING;
   const tax = total * 0.08;
   const finalTotal = total + shipping + tax;
   const addressStr = `${address.address}, ${address.city} - ${address.pincode}`;
@@ -21,8 +22,9 @@ export async function POST(req: NextRequest) {
     mode: 'payment',
     line_items: items.map((item: { name: string; price: number; quantity: number; image: string }) => ({
       price_data: {
-        currency: 'usd',
+        currency: 'inr',
         product_data: { name: item.name, images: [item.image] },
+        // Stripe accepts INR in paise; product prices are stored in rupees.
         unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,

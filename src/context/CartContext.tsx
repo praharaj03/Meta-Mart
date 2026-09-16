@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useCookieConsent } from "./useCookieConsent";
 
 interface CartItem {
-  id: number;
+  id: string | number;
   name: string;
   price: number;
   image: string;
@@ -16,8 +16,8 @@ interface CartItem {
 const CartContext = createContext<{
   items: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity">) => void;
-  updateQuantity: (id: number, quantity: number) => void;
-  removeItem: (id: number) => void;
+  updateQuantity: (id: string | number, quantity: number) => void;
+  removeItem: (id: string | number) => void;
   clearCart: () => void;
   hydrated: boolean;
 }>({
@@ -63,7 +63,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string | number, quantity: number) => {
     if (quantity <= 0) {
       setItems((prev) => prev.filter((item) => item.id !== id));
     } else {
@@ -73,7 +73,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const removeItem = (id: number) => {
+  const removeItem = (id: string | number) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
