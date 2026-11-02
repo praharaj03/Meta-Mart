@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useAppAuth } from '@/context/AppAuthContext';
 
 function decodeKey(value: string) {
   const padded = value + '='.repeat((4 - value.length % 4) % 4);
@@ -7,13 +8,30 @@ function decodeKey(value: string) {
 }
 
 export default function PushOptIn() {
+  const { user, isLoaded, isSignedIn } = useAppAuth();
   const [state, setState] = useState<'hidden' | 'ready' | 'enabled'>('hidden');
   const [error, setError] = useState('');
   useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window && Notification.permission !== 'denied') {
-      navigator.serviceWorker.register('/sw.js').then(registration => registration.pushManager.getSubscription()).then(subscription => setState(subscription ? 'enabled' : 'ready')).catch(() => setState('ready'));
+    if (!isLoaded || !isSignedIn || !user?.id) {
+      setState('hidden');
+      return;
     }
-  }, []);
+    if ('serviceWorker' in navigator && 'PushManager' in window && Notification.permission !== 'denied') {
+      navigator.serviceWorker.register('/sw.js').then(registration => registration.pushManager.getSubscription()).then(async subscription => {
+        if (subscription) {
+          const response = await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subscription),
+          });
+          if (!response.ok) throw new Error('Could not link notifications to your account.');
+          setState('enabled');
+        } else {
+          setState('ready');
+        }
+      }).catch(() => setState('ready'));
+    }
+  }, [isLoaded, isSignedIn, user?.id]);
   async function enable() {
     setError('');
     try {

@@ -9,6 +9,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import ClerkAuthBridge from './ClerkAuthBridge';
 import { AppAuthProvider } from '@/context/AppAuthContext';
 import { CLERK_ENABLED } from '@/config/clerk';
+import PushOptIn from './PushOptIn';
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
   const app = (
@@ -17,6 +18,7 @@ export default function ClientProviders({ children }: { children: React.ReactNod
         {children}
         <CookieConsent />
         <LiveChat />
+        <PushOptIn />
       </WishlistProvider>
     </CartProvider>
   );
