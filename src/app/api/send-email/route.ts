@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendMail, baseTemplate, detailsTable, infoBox, stepsList } from '@/lib/mailer';
+import { mailConfigurationError } from '@/lib/mailer';
 
 function buildCancelHtml(name: string, orderId: string, reason: string, total: number) {
   const body = `
@@ -53,9 +54,8 @@ export async function POST(req: NextRequest) {
   try {
     const { type, to_email, to_name, order_id, reason, return_type, total } = await req.json();
 
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      return NextResponse.json({ error: 'Email service not configured' }, { status: 503 });
-    }
+    const configError = mailConfigurationError();
+    if (configError) return NextResponse.json({ error: configError }, { status: 503 });
 
     let subject = '';
     let html = '';

@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { Order } from '@/models/Order';
 import { sendDeliveryEmail } from '@/lib/email';
+import { mailConfigurationError } from '@/lib/mailer';
 
 // Called by Vercel Cron — secured by CRON_SECRET
 export async function GET(req: NextRequest) {
+  const configError = mailConfigurationError();
+  if (configError) return NextResponse.json({ error: configError }, { status: 503 });
   const auth = req.headers.get('authorization');
-  if (process.env.CRON_SECRET && auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

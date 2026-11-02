@@ -143,14 +143,14 @@ export default function LiveChat() {
       <div className="fixed bottom-20 right-6 z-40 group">
         <button
           disabled
-          className="w-12 h-12 rounded-full bg-[#13111b] border border-purple-400/20 flex items-center justify-center text-purple-400/40 cursor-not-allowed shadow-lg"
+          className="w-12 h-12 rounded-full bg-[#101610] border border-green-400/20 flex items-center justify-center text-green-400/40 cursor-not-allowed shadow-lg"
           aria-label="Live chat coming soon"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
           </svg>
         </button>
-        <div className="absolute bottom-14 right-0 bg-[#13111b] border border-purple-400/20 text-zinc-300 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
+        <div className="absolute bottom-14 right-0 bg-[#101610] border border-green-400/20 text-zinc-300 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
           Live chat coming soon
         </div>
       </div>
@@ -180,11 +180,11 @@ export default function LiveChat() {
 
       {/* Chat window */}
       {open && (
-        <div className="absolute bottom-16 right-0 w-[340px] sm:w-[380px] bg-[#0f0d18] border border-purple-400/25 rounded-2xl shadow-2xl shadow-black/60 flex flex-col overflow-hidden"
+        <div className="absolute bottom-16 right-0 w-[340px] sm:w-[380px] bg-[#0b100c] border border-green-400/25 rounded-2xl shadow-2xl shadow-black/60 flex flex-col overflow-hidden"
           style={{ height: '480px' }}>
 
           {/* Header */}
-          <div className="flex items-center gap-3 px-4 py-3 border-b border-white/8 bg-[#13111b]">
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-white/8 bg-[#101610]">
             <div className="w-8 h-8 rounded-full glow-button flex items-center justify-center flex-shrink-0">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -210,8 +210,8 @@ export default function LiveChat() {
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
                   m.role === 'user'
-                    ? 'bg-purple-600 text-white rounded-br-sm'
-                    : 'bg-[#1e1a2e] text-zinc-200 border border-white/8 rounded-bl-sm'
+                    ? 'bg-green-700 text-white rounded-br-sm'
+                    : 'bg-[#171e18] text-zinc-200 border border-white/8 rounded-bl-sm'
                 }`}>
                   {m.content}
                 </div>
@@ -221,9 +221,9 @@ export default function LiveChat() {
             {/* Typing indicator */}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-[#1e1a2e] border border-white/8 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1 items-center">
+                <div className="bg-[#171e18] border border-white/8 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1 items-center">
                   {[0, 1, 2].map(i => (
-                    <span key={i} className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-bounce"
+                    <span key={i} className="w-1.5 h-1.5 rounded-full bg-green-400 animate-bounce"
                       style={{ animationDelay: `${i * 150}ms` }} />
                   ))}
                 </div>
@@ -243,7 +243,7 @@ export default function LiveChat() {
             <div className="px-4 pb-2 flex flex-wrap gap-1.5">
               {SUGGESTIONS.map(s => (
                 <button key={s} onClick={() => send(s)}
-                  className="text-xs px-3 py-1.5 rounded-full bg-purple-500/15 border border-purple-400/25 text-purple-300 hover:bg-purple-500/30 transition-colors">
+                  className="text-xs px-3 py-1.5 rounded-full bg-green-500/15 border border-green-400/25 text-green-300 hover:bg-green-500/30 transition-colors">
                   {s}
                 </button>
               ))}
@@ -252,7 +252,7 @@ export default function LiveChat() {
 
           {/* Input */}
           <div className="px-3 pb-3 pt-2 border-t border-white/8">
-            <div className="flex gap-2 items-center bg-[#1e1a2e] border border-white/10 rounded-xl px-3 py-2 focus-within:border-purple-400/50 transition-colors">
+            <div className="flex gap-2 items-center bg-[#171e18] border border-white/10 rounded-xl px-3 py-2 focus-within:border-green-400/50 transition-colors">
               <input
                 ref={inputRef}
                 type="text"

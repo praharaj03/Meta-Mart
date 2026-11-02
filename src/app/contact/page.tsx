@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import emailjs from "@emailjs/browser";
-import { useUser } from '@clerk/nextjs';
+import { useAppAuth } from '@/context/AppAuthContext';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +13,7 @@ const ContactPage = () => {
     subject: "",
     message: ""
   });
-  const { user } = useUser();
+  const { user } = useAppAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -251,7 +251,7 @@ const ContactPage = () => {
 
         .element {
           position: absolute;
-          background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+          background: linear-gradient(45deg, rgba(34, 197, 94, 0.1), rgba(147, 51, 234, 0.1));
           border-radius: 50%;
           animation: float 8s ease-in-out infinite;
         }
@@ -291,8 +291,8 @@ const ContactPage = () => {
         .hero-badge {
           display: inline-block;
           padding: 10px 24px;
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
-          border: 1px solid rgba(59, 130, 246, 0.2);
+          background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(147, 51, 234, 0.1));
+          border: 1px solid rgba(74, 222, 128, 0.2);
           border-radius: 50px;
           margin-bottom: 24px;
           animation: pulse 2s infinite;
@@ -301,13 +301,13 @@ const ContactPage = () => {
         .hero-badge span {
           font-size: 14px;
           font-weight: 600;
-          color: #c084fc;
+          color: #86efac;
         }
 
         .contact-title {
           font-size: clamp(3rem, 6vw, 5rem);
           font-weight: 900;
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #4ade80, #15803d);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -317,7 +317,7 @@ const ContactPage = () => {
 
         .contact-subtitle {
           font-size: 1.25rem;
-          color: #b7aec8;
+          color: #a1a1aa;
           margin-bottom: 32px;
           max-width: 600px;
           margin-left: auto;
@@ -339,13 +339,13 @@ const ContactPage = () => {
         .info-title {
           font-size: 2.5rem;
           font-weight: 800;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 16px;
         }
 
         .info-subtitle {
           font-size: 1.125rem;
-          color: #b7aec8;
+          color: #a1a1aa;
           margin-bottom: 40px;
           line-height: 1.6;
         }
@@ -362,22 +362,22 @@ const ContactPage = () => {
           align-items: flex-start;
           gap: 20px;
           padding: 24px;
-          background: #13111b;
+          background: #101610;
           border-radius: 16px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-          border: 1px solid rgba(192,132,252,.15);
+          border: 1px solid rgba(74,222,128,.15);
           transition: all 0.3s ease;
         }
 
         .contact-method:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(168,85,247,.2);
+          box-shadow: 0 8px 30px rgba(34,197,94,.2);
         }
 
         .method-icon {
           width: 56px;
           height: 56px;
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #4ade80, #15803d);
           border-radius: 12px;
           display: flex;
           align-items: center;
@@ -389,19 +389,19 @@ const ContactPage = () => {
         .method-content h3 {
           font-size: 1.125rem;
           font-weight: 600;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 4px;
         }
 
         .method-content p {
-          color: #b7aec8;
+          color: #a1a1aa;
           line-height: 1.5;
         }
 
         .social-links h3 {
           font-size: 1.25rem;
           font-weight: 600;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 16px;
         }
 
@@ -413,7 +413,7 @@ const ContactPage = () => {
         .social-icon {
           width: 48px;
           height: 48px;
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #4ade80, #15803d);
           border-radius: 12px;
           display: flex;
           align-items: center;
@@ -426,30 +426,27 @@ const ContactPage = () => {
 
         .social-icon:hover {
           transform: translateY(-2px) scale(1.05);
-          box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+          box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
         }
 
-        .social-github:hover  { background: #181717; box-shadow: 0 8px 20px rgba(24,23,23,0.4); }
-        .social-instagram:hover { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); box-shadow: 0 8px 20px rgba(214,36,159,0.4); }
-        .social-x:hover { background: #000000; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-        .social-linkedin:hover { background: #0A66C2; box-shadow: 0 8px 20px rgba(10,102,194,0.4); }
+        .social-github:hover, .social-instagram:hover, .social-x:hover, .social-linkedin:hover { background: #15803d; box-shadow: 0 8px 20px rgba(34,197,94,0.4); }
 
         .contact-form-container {
           animation: slideUp 0.8s ease-out 0.6s both;
         }
 
         .contact-form {
-          background: #13111b;
+          background: #101610;
           padding: 40px;
           border-radius: 24px;
           box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(192,132,252,.15);
+          border: 1px solid rgba(74,222,128,.15);
         }
 
         .form-title {
           font-size: 2rem;
           font-weight: 800;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 32px;
           text-align: center;
         }
@@ -468,7 +465,7 @@ const ContactPage = () => {
           display: block;
           font-size: 14px;
           font-weight: 600;
-          color: #d8b4fe;
+          color: #86efac;
           margin-bottom: 8px;
         }
 
@@ -476,20 +473,20 @@ const ContactPage = () => {
         .form-group textarea {
           width: 100%;
           padding: 16px;
-          border: 2px solid rgba(192,132,252,.2);
+          border: 2px solid rgba(74,222,128,.2);
           border-radius: 12px;
           font-size: 16px;
-          color: #f7f4ff;
+          color: #f4f8f4;
           transition: all 0.3s ease;
-          background: #171522;
+          background: #151a16;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
           outline: none;
-          border-color: #c084fc;
-          background: #1e1a2e;
-          box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.18);
+          border-color: #4ade80;
+          background: #171e18;
+          box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
         }
 
         .form-group textarea {
@@ -500,7 +497,7 @@ const ContactPage = () => {
         .submit-btn {
           width: 100%;
           padding: 18px 32px;
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #4ade80, #15803d);
           color: white;
           border: none;
           border-radius: 12px;
@@ -516,7 +513,7 @@ const ContactPage = () => {
 
         .submit-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+          box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
         }
 
         @keyframes float {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useAppAuth } from '@/context/AppAuthContext';
 import { useCart } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -76,7 +76,7 @@ function Confetti({ active }: { active: boolean }) {
     canvas.width = window.innerWidth; canvas.height = window.innerHeight;
     const pieces = Array.from({ length: 120 }, () => ({
       x: Math.random() * canvas.width, y: -20, r: Math.random() * 8 + 4, d: Math.random() * 80 + 20,
-      color: ['#3b82f6','#9333ea','#10b981','#f59e0b','#ef4444'][Math.floor(Math.random() * 5)],
+      color: ['#4ade80','#22c55e','#16a34a','#15803d','#86efac'][Math.floor(Math.random() * 5)],
       tilt: Math.random() * 10 - 10, tiltAngle: 0, tiltSpeed: Math.random() * 0.1 + 0.05,
     }));
     let frame: number; let angle = 0;
@@ -128,7 +128,7 @@ function buildReturnEmail(name: string, orderId: string, type: string, reason: s
 }
 
 export default function OrdersPage() {
-  const { user, isLoaded } = useUser();
+  const { user, isLoaded } = useAppAuth();
   const { clearCart } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -160,11 +160,8 @@ export default function OrdersPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Failed');
-      await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'return', to_email: returnModal.email, to_name: returnModal.name, order_id: returnModal.orderRef, reason, return_type: returnType, total: returnModal.total }),
-      });
+      if (!data.notificationSent) throw new Error('Your request was saved, but the email could not be sent. Check the mail provider setup.');
+      if (!data.notificationSent) throw new Error('Your request was saved, but the email could not be sent. Check the mail provider setup and try again.');
       setReturnSuccess(returnModal.orderRef);
       setReturnModal(null);
       setReturnType('');
@@ -190,12 +187,10 @@ export default function OrdersPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId: cancelModal.orderRef, cancelReason: reason }),
       });
-      if (!res.ok) throw new Error();
-      await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'cancel', to_email: cancelModal.email, to_name: cancelModal.name, order_id: cancelModal.orderRef, reason, total: cancelModal.total }),
-      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Failed to cancel order.');
+      if (!data.notificationSent) throw new Error('Your order was cancelled, but the email could not be sent. Check the mail provider setup.');
+      if (!data.notificationSent) throw new Error('Your order was cancelled, but the email could not be sent. Check the mail provider setup.');
       setOrders(prev => prev.map(o => o.orderId === cancelModal.orderRef ? { ...o, status: 'cancelled' } : o));
       setCancelSuccess(cancelModal.orderRef);
       setCancelModal(null);
@@ -203,8 +198,8 @@ export default function OrdersPage() {
       setCustomReason('');
       const email = user?.primaryEmailAddress?.emailAddress;
       if (email) fetchOrders(email);
-    } catch {
-      alert('Failed to cancel order. Please try again.');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to cancel order. Please try again.');
     } finally {
       setCancelling(false);
     }
@@ -239,15 +234,15 @@ export default function OrdersPage() {
   if (!isLoaded || loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#08070d' }}>
       <Navbar />
-      <div style={{ fontSize: '14px', color: '#b7aec8' }}>Loading orders...</div>
+      <div style={{ fontSize: '14px', color: '#a1a1aa' }}>Loading orders...</div>
     </div>
   );
 
   if (!user) return (
     <div style={{ minHeight: '100vh', background: '#08070d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <Navbar />
-      <p style={{ color: '#b7aec8', marginBottom: '16px' }}>Please sign in to view your orders.</p>
-      <Link href="/login" style={{ background: 'linear-gradient(135deg,#c084fc,#7c3aed)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
+      <p style={{ color: '#a1a1aa', marginBottom: '16px' }}>Please sign in to view your orders.</p>
+      <Link href="/login" style={{ background: 'linear-gradient(135deg,#86efac,#16a34a)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none' }}>Sign In</Link>
     </div>
   );
 
@@ -264,16 +259,16 @@ export default function OrdersPage() {
 
       <div style={{ paddingTop: isNew ? '90px' : '110px', paddingBottom: '80px', maxWidth: '860px', margin: '0 auto' }} className="px-4 sm:px-6">
         <div style={{ marginBottom: '32px' }}>
-          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, background: 'linear-gradient(135deg,#3b82f6,#9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '6px' }}>My Orders</h1>
-          <p style={{ color: '#b7aec8', fontSize: '15px' }}>{orders.length} order{orders.length !== 1 ? 's' : ''} for {user.primaryEmailAddress?.emailAddress}</p>
+          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, background: 'linear-gradient(135deg,#22c55e,#15803d)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '6px' }}>My Orders</h1>
+          <p style={{ color: '#a1a1aa', fontSize: '15px' }}>{orders.length} order{orders.length !== 1 ? 's' : ''} for {user.primaryEmailAddress?.emailAddress}</p>
         </div>
 
         {orders.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '80px 20px', background: '#13111b', borderRadius: '24px', boxShadow: '0 8px 40px rgba(0,0,0,0.3)', border: '1px solid rgba(192,132,252,.15)' }}>
+          <div style={{ textAlign: 'center', padding: '80px 20px', background: '#101610', borderRadius: '24px', boxShadow: '0 8px 40px rgba(0,0,0,0.3)', border: '1px solid rgba(74,222,128,.15)' }}>
             <div style={{ fontSize: '5rem', marginBottom: '16px' }}>📦</div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f7f4ff', marginBottom: '8px' }}>No orders yet</h2>
-            <p style={{ color: '#b7aec8', marginBottom: '28px' }}>Start shopping to see your orders here</p>
-            <Link href="/shop" style={{ background: 'linear-gradient(135deg,#c084fc,#7c3aed)', color: 'white', padding: '14px 36px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '15px' }}>Shop Now</Link>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f4f8f4', marginBottom: '8px' }}>No orders yet</h2>
+            <p style={{ color: '#a1a1aa', marginBottom: '28px' }}>Start shopping to see your orders here</p>
+            <Link href="/shop" style={{ background: 'linear-gradient(135deg,#86efac,#16a34a)', color: 'white', padding: '14px 36px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '15px' }}>Shop Now</Link>
           </div>
         ) : (
           orders.map((order, idx) => {
@@ -287,7 +282,7 @@ export default function OrdersPage() {
             const isOpen = expanded === order._id;
             const receiptData = { id: order.orderId, items: order.items, total: order.total, address: order.address, name: order.userName, email: order.userEmail, date: order.createdAt, status: order.status };
             return (
-              <div key={order._id} style={{ background: isCancelled ? '#1a0f0f' : '#13111b', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.2)', marginBottom: '16px', border: isCancelled ? '1.5px solid rgba(239,68,68,0.3)' : isOpen ? '1.5px solid #c084fc' : '1px solid rgba(192,132,252,.15)', animation: `fadeUp 0.5s ease-out ${idx * 80}ms both` }}>
+              <div key={order._id} style={{ background: isCancelled ? '#1a0f0f' : '#101610', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.2)', marginBottom: '16px', border: isCancelled ? '1.5px solid rgba(239,68,68,0.3)' : isOpen ? '1.5px solid #86efac' : '1px solid rgba(74,222,128,.15)', animation: `fadeUp 0.5s ease-out ${idx * 80}ms both` }}>
 
                 {/* Return success banner — shown briefly after submitting */}
                 {returnSuccess === order.orderId && (
@@ -306,7 +301,7 @@ export default function OrdersPage() {
                   <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '10px', padding: '10px 14px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '16px' }}>❌</span>
                     <span style={{ color: '#f87171', fontWeight: 600, fontSize: '14px' }}>Order Cancelled</span>
-                    <span style={{ color: '#94a3b8', fontSize: '13px', marginLeft: 'auto' }}>Refund within 24 hrs</span>
+                    <span style={{ color: '#a1a1aa', fontSize: '13px', marginLeft: 'auto' }}>Refund within 24 hrs</span>
                   </div>
                 )}
 
@@ -319,11 +314,11 @@ export default function OrdersPage() {
                 )}
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
-                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>ORDER ID</span><br /><span style={{ fontWeight: 700, color: '#f7f4ff', fontSize: '14px' }}>{order.orderId}</span></div>
-                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>PLACED ON</span><br /><span style={{ fontWeight: 600, color: '#f7f4ff', fontSize: '14px' }}>{new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
-                  <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>TOTAL</span><br /><span style={{ fontWeight: 800, color: isCancelled ? '#f87171' : '#c084fc', fontSize: '1.1rem' }}>Rs. {order.total.toFixed(2)}</span></div>
-                  {!isCancelled && <div><span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>DELIVERY BY</span><br /><span style={{ fontWeight: 700, color: '#10b981', fontSize: '14px' }}>🚚 {getArrival(order.createdAt)}</span></div>}
-                  <button onClick={() => setExpanded(isOpen ? null : order._id)} style={{ background: isOpen ? '#f1f5f9' : 'linear-gradient(135deg,#3b82f6,#9333ea)', color: isOpen ? '#64748b' : 'white', border: 'none', padding: '8px 22px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>{isOpen ? '▲ Hide' : '▼ Details'}</button>
+                  <div><span style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 500 }}>ORDER ID</span><br /><span style={{ fontWeight: 700, color: '#f4f8f4', fontSize: '14px' }}>{order.orderId}</span></div>
+                  <div><span style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 500 }}>PLACED ON</span><br /><span style={{ fontWeight: 600, color: '#f4f8f4', fontSize: '14px' }}>{new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
+                  <div><span style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 500 }}>TOTAL</span><br /><span style={{ fontWeight: 800, color: isCancelled ? '#f87171' : '#86efac', fontSize: '1.1rem' }}>Rs. {order.total.toFixed(2)}</span></div>
+                  {!isCancelled && <div><span style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 500 }}>DELIVERY BY</span><br /><span style={{ fontWeight: 700, color: '#10b981', fontSize: '14px' }}>🚚 {getArrival(order.createdAt)}</span></div>}
+                  <button onClick={() => setExpanded(isOpen ? null : order._id)} style={{ background: isOpen ? '#f1f5f9' : 'linear-gradient(135deg,#22c55e,#15803d)', color: isOpen ? '#a1a1aa' : 'white', border: 'none', padding: '8px 22px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>{isOpen ? '▲ Hide' : '▼ Details'}</button>
                   <button onClick={() => downloadReceipt(receiptData)} style={{ background: 'linear-gradient(135deg,#10b981,#059669)', color: 'white', border: 'none', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>⬇ Receipt</button>
                   {!isCancelled && !isDelivered && (
                     <button onClick={() => { setCancelModal({ orderId: order._id, orderRef: order.orderId, email: order.userEmail, name: order.userName, total: order.total }); setCancelReason(''); setCustomReason(''); }}
@@ -333,7 +328,7 @@ export default function OrdersPage() {
                   )}
                   {canReturn && (
                     <button onClick={() => { setReturnModal({ orderId: order._id, orderRef: order.orderId, email: order.userEmail, name: order.userName, total: order.total, createdAt: order.createdAt }); setReturnType(''); setReturnReason(''); setCustomReturnReason(''); }}
-                      style={{ background: 'rgba(245,158,11,0.1)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.3)', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>
+                      style={{ background: 'rgba(34,197,94,0.1)', color: '#86efac', border: '1px solid rgba(34,197,94,0.3)', padding: '8px 18px', borderRadius: '50px', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>
                       🔄 Return · {daysLeft}d left
                     </button>
                   )}
@@ -345,12 +340,12 @@ export default function OrdersPage() {
                     {STEPS.map((s, i) => (
                       <div key={s} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: i <= step ? 'linear-gradient(135deg,#3b82f6,#9333ea)' : '#1e1a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= step ? '18px' : '14px', fontWeight: 700, color: i <= step ? 'white' : '#94a3b8', boxShadow: i === step ? '0 0 0 4px rgba(59,130,246,0.2)' : 'none', flexShrink: 0 }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: i <= step ? 'linear-gradient(135deg,#22c55e,#15803d)' : '#171e18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= step ? '18px' : '14px', fontWeight: 700, color: i <= step ? 'white' : '#a1a1aa', boxShadow: i === step ? '0 0 0 4px rgba(34,197,94,0.2)' : 'none', flexShrink: 0 }}>
                             {i < step ? '✓' : STEP_ICONS[i]}
                           </div>
-                          <span style={{ fontSize: '10px', color: i <= step ? '#3b82f6' : '#94a3b8', fontWeight: i <= step ? 700 : 400, textAlign: 'center', width: '64px', lineHeight: 1.3 }}>{s}</span>
+                          <span style={{ fontSize: '10px', color: i <= step ? '#22c55e' : '#a1a1aa', fontWeight: i <= step ? 700 : 400, textAlign: 'center', width: '64px', lineHeight: 1.3 }}>{s}</span>
                         </div>
-                        {i < STEPS.length - 1 && <div style={{ flex: 1, height: '3px', background: i < step ? 'linear-gradient(90deg,#3b82f6,#9333ea)' : '#1e1a2e', margin: '0 4px', marginBottom: '28px', borderRadius: '2px' }} />}
+                        {i < STEPS.length - 1 && <div style={{ flex: 1, height: '3px', background: i < step ? 'linear-gradient(90deg,#22c55e,#15803d)' : '#171e18', margin: '0 4px', marginBottom: '28px', borderRadius: '2px' }} />}
                       </div>
                     ))}
                   </div>
@@ -361,10 +356,10 @@ export default function OrdersPage() {
                   const rStep = getReturnStep(order.returnRequestedAt!);
                   const steps = isReplacement ? REPLACEMENT_STEPS : RETURN_STEPS;
                   const icons = isReplacement ? REPLACEMENT_STEP_ICONS : RETURN_STEP_ICONS;
-                  const accentColor = isReplacement ? '#3b82f6' : '#f59e0b';
-                  const accentGlow = isReplacement ? 'rgba(59,130,246,0.25)' : 'rgba(245,158,11,0.25)';
-                  const gradientBar = isReplacement ? 'linear-gradient(90deg,#3b82f6,#6366f1)' : 'linear-gradient(90deg,#f59e0b,#d97706)';
-                  const gradientCircle = isReplacement ? 'linear-gradient(135deg,#3b82f6,#6366f1)' : 'linear-gradient(135deg,#f59e0b,#d97706)';
+                  const accentColor = isReplacement ? '#22c55e' : '#86efac';
+                  const accentGlow = isReplacement ? 'rgba(34,197,94,0.25)' : 'rgba(74,222,128,0.25)';
+                  const gradientBar = isReplacement ? 'linear-gradient(90deg,#22c55e,#15803d)' : 'linear-gradient(90deg,#4ade80,#16a34a)';
+                  const gradientCircle = isReplacement ? 'linear-gradient(135deg,#22c55e,#15803d)' : 'linear-gradient(135deg,#4ade80,#16a34a)';
                   return (
                     <div>
                       <p style={{ fontSize: '11px', color: accentColor, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', marginTop: '4px' }}>
@@ -374,12 +369,12 @@ export default function OrdersPage() {
                         {steps.map((s, i) => (
                           <div key={s} style={{ display: 'flex', alignItems: 'center', flex: i < steps.length - 1 ? 1 : 'none' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                              <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: i <= rStep ? gradientCircle : '#1e1a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= rStep ? '16px' : '13px', fontWeight: 700, color: i <= rStep ? 'white' : '#94a3b8', boxShadow: i === rStep ? `0 0 0 4px ${accentGlow}` : 'none', flexShrink: 0 }}>
+                              <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: i <= rStep ? gradientCircle : '#171e18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: i <= rStep ? '16px' : '13px', fontWeight: 700, color: i <= rStep ? 'white' : '#a1a1aa', boxShadow: i === rStep ? `0 0 0 4px ${accentGlow}` : 'none', flexShrink: 0 }}>
                                 {i < rStep ? '✓' : icons[i]}
                               </div>
-                              <span style={{ fontSize: '9px', color: i <= rStep ? accentColor : '#94a3b8', fontWeight: i <= rStep ? 700 : 400, textAlign: 'center', width: '60px', lineHeight: 1.3 }}>{s}</span>
+                              <span style={{ fontSize: '9px', color: i <= rStep ? accentColor : '#a1a1aa', fontWeight: i <= rStep ? 700 : 400, textAlign: 'center', width: '60px', lineHeight: 1.3 }}>{s}</span>
                             </div>
-                            {i < steps.length - 1 && <div style={{ flex: 1, height: '3px', background: i < rStep ? gradientBar : '#1e1a2e', margin: '0 4px', marginBottom: '26px', borderRadius: '2px' }} />}
+                            {i < steps.length - 1 && <div style={{ flex: 1, height: '3px', background: i < rStep ? gradientBar : '#171e18', margin: '0 4px', marginBottom: '26px', borderRadius: '2px' }} />}
                           </div>
                         ))}
                       </div>
@@ -397,19 +392,19 @@ export default function OrdersPage() {
                 {isOpen && (
                   <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
                     <div className="orders-detail-grid">
-                      <div style={{ background: '#1e1a2e', borderRadius: '14px', padding: '18px' }}>
-                        <p style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '8px', textTransform: 'uppercase' }}>📍 Delivery Address</p>
-                        <p style={{ fontWeight: 700, color: '#f7f4ff', fontSize: '14px', marginBottom: '4px' }}>{order.userName}</p>
-                        <p style={{ color: '#b7aec8', fontSize: '13px' }}>{order.address}</p>
+                      <div style={{ background: '#171e18', borderRadius: '14px', padding: '18px' }}>
+                        <p style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 600, marginBottom: '8px', textTransform: 'uppercase' }}>📍 Delivery Address</p>
+                        <p style={{ fontWeight: 700, color: '#f4f8f4', fontSize: '14px', marginBottom: '4px' }}>{order.userName}</p>
+                        <p style={{ color: '#a1a1aa', fontSize: '13px' }}>{order.address}</p>
                       </div>
-                      <div style={{ background: '#1e1a2e', borderRadius: '14px', padding: '18px' }}>
-                        <p style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '10px', textTransform: 'uppercase' }}>🛍️ Items</p>
+                      <div style={{ background: '#171e18', borderRadius: '14px', padding: '18px' }}>
+                        <p style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 600, marginBottom: '10px', textTransform: 'uppercase' }}>🛍️ Items</p>
                         {order.items.map((item, i) => (
                           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                             <img src={item.image} alt={item.name} style={{ width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }} />
                             <div>
-                              <p style={{ fontSize: '13px', fontWeight: 600, color: '#f7f4ff', marginBottom: '2px' }}>{item.name}</p>
-                              <p style={{ fontSize: '12px', color: '#b7aec8' }}>Qty: {item.quantity} · <span style={{ color: '#c084fc', fontWeight: 600 }}>Rs. {(item.price * item.quantity).toFixed(2)}</span></p>
+                              <p style={{ fontSize: '13px', fontWeight: 600, color: '#f4f8f4', marginBottom: '2px' }}>{item.name}</p>
+                              <p style={{ fontSize: '12px', color: '#a1a1aa' }}>Qty: {item.quantity} · <span style={{ color: '#86efac', fontWeight: 600 }}>Rs. {(item.price * item.quantity).toFixed(2)}</span></p>
                             </div>
                           </div>
                         ))}
@@ -428,16 +423,16 @@ export default function OrdersPage() {
       {returnModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
           onClick={e => { if (e.target === e.currentTarget) setReturnModal(null); }}>
-          <div style={{ background: '#13111b', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff', marginBottom: '6px' }}>🔄 Return Order</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{returnModal.orderRef} · Rs. {returnModal.total.toFixed(2)} · {daysLeftToReturn(returnModal.createdAt)} days left</p>
+          <div style={{ background: '#101610', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f4f8f4', marginBottom: '6px' }}>🔄 Return Order</h2>
+            <p style={{ color: '#a1a1aa', fontSize: '13px', marginBottom: '20px' }}>Order #{returnModal.orderRef} · Rs. {returnModal.total.toFixed(2)} · {daysLeftToReturn(returnModal.createdAt)} days left</p>
 
             {/* Step 1 — Refund or Replacement */}
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>What would you like?</p>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#a1a1aa', marginBottom: '10px' }}>What would you like?</p>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               {(['refund', 'replacement'] as const).map(t => (
                 <button key={t} onClick={() => { setReturnType(t); setReturnReason(''); setCustomReturnReason(''); }}
-                  style={{ flex: 1, padding: '14px', borderRadius: '12px', border: returnType === t ? '2px solid #f59e0b' : '1px solid rgba(255,255,255,0.08)', background: returnType === t ? 'rgba(245,158,11,0.12)' : '#1e1a2e', color: returnType === t ? '#fbbf24' : '#94a3b8', fontWeight: 700, cursor: 'pointer', fontSize: '14px', textTransform: 'capitalize' }}>
+                  style={{ flex: 1, padding: '14px', borderRadius: '12px', border: returnType === t ? '2px solid #22c55e' : '1px solid rgba(255,255,255,0.08)', background: returnType === t ? 'rgba(34,197,94,0.12)' : '#171e18', color: returnType === t ? '#86efac' : '#a1a1aa', fontWeight: 700, cursor: 'pointer', fontSize: '14px', textTransform: 'capitalize' }}>
                   {t === 'refund' ? '💰 Refund' : '🔁 Replacement'}
                 </button>
               ))}
@@ -446,12 +441,12 @@ export default function OrdersPage() {
             {/* Step 2 — Reason (shown after type selected) */}
             {returnType && (
               <>
-                <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>Why are you returning?</p>
+                <p style={{ fontSize: '13px', fontWeight: 600, color: '#a1a1aa', marginBottom: '10px' }}>Why are you returning?</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
                   {RETURN_REASONS.map(r => (
-                    <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '10px', background: returnReason === r ? 'rgba(245,158,11,0.1)' : '#1e1a2e', border: returnReason === r ? '1px solid rgba(245,158,11,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
-                      <input type="radio" name="returnReason" value={r} checked={returnReason === r} onChange={() => setReturnReason(r)} style={{ accentColor: '#f59e0b' }} />
-                      <span style={{ fontSize: '13px', color: '#f7f4ff' }}>{r}</span>
+                    <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '10px', background: returnReason === r ? 'rgba(34,197,94,0.1)' : '#171e18', border: returnReason === r ? '1px solid rgba(34,197,94,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
+                      <input type="radio" name="returnReason" value={r} checked={returnReason === r} onChange={() => setReturnReason(r)} style={{ accentColor: '#22c55e' }} />
+                      <span style={{ fontSize: '13px', color: '#f4f8f4' }}>{r}</span>
                     </label>
                   ))}
                 </div>
@@ -459,7 +454,7 @@ export default function OrdersPage() {
                   <textarea value={customReturnReason} onChange={e => setCustomReturnReason(e.target.value)}
                     placeholder="Please describe your reason..."
                     rows={3}
-                    style={{ width: '100%', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 12px', color: '#f7f4ff', fontSize: '13px', resize: 'none', outline: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', background: '#171e18', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 12px', color: '#f4f8f4', fontSize: '13px', resize: 'none', outline: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
                   />
                 )}
                 <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '20px', fontSize: '13px', color: '#34d399' }}>
@@ -470,12 +465,12 @@ export default function OrdersPage() {
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={() => setReturnModal(null)}
-                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>
+                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: '#171e18', border: '1px solid rgba(255,255,255,0.1)', color: '#a1a1aa', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>
                 Keep Item
               </button>
               <button onClick={handleReturn}
                 disabled={returning || !returnType || !returnReason || (returnReason === 'Other' && !customReturnReason.trim())}
-                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: returning ? '#78350f' : 'linear-gradient(135deg,#f59e0b,#d97706)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '14px', opacity: (!returnType || !returnReason || (returnReason === 'Other' && !customReturnReason.trim())) ? 0.5 : 1 }}>
+                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: returning ? '#14532d' : 'linear-gradient(135deg,#4ade80,#15803d)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '14px', opacity: (!returnType || !returnReason || (returnReason === 'Other' && !customReturnReason.trim())) ? 0.5 : 1 }}>
                 {returning ? 'Submitting...' : `Confirm ${returnType === 'replacement' ? 'Replacement' : 'Return'}`}
               </button>
             </div>
@@ -487,16 +482,16 @@ export default function OrdersPage() {
       {cancelModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
           onClick={e => { if (e.target === e.currentTarget) setCancelModal(null); }}>
-          <div style={{ background: '#13111b', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f7f4ff', marginBottom: '6px' }}>❌ Cancel Order</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>Order #{cancelModal.orderRef} · Rs. {cancelModal.total.toFixed(2)}</p>
+          <div style={{ background: '#101610', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '440px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f4f8f4', marginBottom: '6px' }}>❌ Cancel Order</h2>
+            <p style={{ color: '#a1a1aa', fontSize: '13px', marginBottom: '20px' }}>Order #{cancelModal.orderRef} · Rs. {cancelModal.total.toFixed(2)}</p>
 
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#b7aec8', marginBottom: '10px' }}>Why are you cancelling?</p>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#a1a1aa', marginBottom: '10px' }}>Why are you cancelling?</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
               {CANCEL_REASONS.map(r => (
-                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '10px', background: cancelReason === r ? 'rgba(239,68,68,0.1)' : '#1e1a2e', border: cancelReason === r ? '1px solid rgba(239,68,68,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
+                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '10px', background: cancelReason === r ? 'rgba(239,68,68,0.1)' : '#171e18', border: cancelReason === r ? '1px solid rgba(239,68,68,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' }}>
                   <input type="radio" name="reason" value={r} checked={cancelReason === r} onChange={() => setCancelReason(r)} style={{ accentColor: '#ef4444' }} />
-                  <span style={{ fontSize: '13px', color: '#f7f4ff' }}>{r}</span>
+                  <span style={{ fontSize: '13px', color: '#f4f8f4' }}>{r}</span>
                 </label>
               ))}
             </div>
@@ -505,7 +500,7 @@ export default function OrdersPage() {
               <textarea value={customReason} onChange={e => setCustomReason(e.target.value)}
                 placeholder="Please describe your reason..."
                 rows={3}
-                style={{ width: '100%', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 12px', color: '#f7f4ff', fontSize: '13px', resize: 'none', outline: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
+                style={{ width: '100%', background: '#171e18', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 12px', color: '#f4f8f4', fontSize: '13px', resize: 'none', outline: 'none', marginBottom: '16px', boxSizing: 'border-box' }}
               />
             )}
 
@@ -515,7 +510,7 @@ export default function OrdersPage() {
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={() => setCancelModal(null)}
-                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: '#1e1a2e', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>
+                style={{ flex: 1, padding: '12px', borderRadius: '50px', background: '#171e18', border: '1px solid rgba(255,255,255,0.1)', color: '#a1a1aa', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>
                 Keep Order
               </button>
               <button onClick={handleCancel}

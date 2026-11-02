@@ -347,3 +347,11 @@ Made with ❤️ by [Abhisek Praharaj](https://github.com/praharaj03)
 ⭐ Star this repo if you found it helpful!
 
 </div>
+
+## Email and browser notifications setup
+
+The storefront and admin both send mail through Resend. Verify a domain in Resend, create an API key, then set `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in both local environment files and both deployment projects. Use an address on the verified domain, such as `MetaMart <orders@yourdomain.com>`. The Resend test sender is restricted and cannot reliably deliver to customer addresses. Stripe order confirmations are sent only after the `checkout.session.completed` webhook; configure Stripe to call `https://YOUR_STORE_DOMAIN/api/webhook` and set its signing secret as `STRIPE_WEBHOOK_SECRET`.
+
+Browser push requires a VAPID key pair, HTTPS in production, and a customer opting in from the store. Generate keys with a VAPID key generator, then set the same `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, and `VAPID_SUBJECT` values in both deployments. `VAPID_SUBJECT` should be a `mailto:` contact or an HTTPS URL. Customers must enable notifications on each browser/device. Admins can send push campaigns from Announcements ? Browser push. Push subscriptions are stored in the shared MongoDB database.
+
+See `.env.example` for the required variable names. Do not commit real secrets; rotate any credentials that have been exposed in a shared environment.

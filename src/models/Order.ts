@@ -6,6 +6,8 @@ const OrderSchema = new Schema({
   userName: { type: String },
   items: [{ id: String, name: String, price: Number, image: String, quantity: Number }],
   total: { type: Number, required: true },
+  couponCode: { type: String },
+  couponDiscount: { type: Number, default: 0 },
   address: { type: String },
   status: { type: String, default: 'confirmed' },
   cancelReason: { type: String },

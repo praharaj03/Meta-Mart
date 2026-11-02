@@ -22,11 +22,7 @@ const FAQPage = () => {
     },
     {
       question: "What are your shipping options?",
-<<<<<<< HEAD
       answer: "We offer free standard shipping on orders over ₹499. Standard delivery takes 3–7 business days, with express delivery available for select pincodes.",
-=======
-      answer: "We offer free standard shipping on orders over Rs. 50, express shipping (2-3 days), and overnight delivery. International shipping is available to 50+ countries.",
->>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
       icon: "🚚",
       id: "shipping"
     },
@@ -155,7 +151,7 @@ const FAQPage = () => {
         .shape {
           position: absolute;
           border-radius: 50%;
-          background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+          background: linear-gradient(45deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.1));
           animation: float 6s ease-in-out infinite;
         }
 
@@ -186,8 +182,8 @@ const FAQPage = () => {
         .hero-badge {
           display: inline-block;
           padding: 8px 20px;
-          background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
-          border: 1px solid rgba(139, 92, 246, 0.2);
+          background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.1));
+          border: 1px solid rgba(34, 197, 94, 0.2);
           border-radius: 50px;
           margin-bottom: 24px;
           animation: pulse 2s infinite;
@@ -196,13 +192,13 @@ const FAQPage = () => {
         .hero-badge span {
           font-size: 14px;
           font-weight: 600;
-          color: #7c3aed;
+          color: #86efac;
         }
 
         .faq-title {
           font-size: clamp(2.5rem, 5vw, 4rem);
           font-weight: 900;
-          background: linear-gradient(135deg, #7c3aed, #3b82f6);
+          background: linear-gradient(135deg, #4ade80, #15803d);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -212,7 +208,7 @@ const FAQPage = () => {
 
         .faq-subtitle {
           font-size: 1.25rem;
-          color: #b7aec8;
+          color: #a1a1aa;
           margin-bottom: 32px;
           animation: slideUp 0.8s ease-out 0.2s both;
         }
@@ -224,23 +220,23 @@ const FAQPage = () => {
         }
 
         .faq-item {
-          background: #13111b;
+          background: #101610;
           border-radius: 20px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
           overflow: hidden;
           transition: all 0.3s ease;
           animation: slideUp 0.6s ease-out both;
-          border: 1px solid rgba(192,132,252,.15);
+          border: 1px solid rgba(74,222,128,.15);
         }
 
         .faq-item:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 30px rgba(168,85,247,.2);
+          box-shadow: 0 8px 30px rgba(34,197,94,.2);
         }
 
         .faq-item.active {
-          border-color: rgba(192,132,252,.4);
-          box-shadow: 0 8px 30px rgba(168,85,247,.25);
+          border-color: rgba(74,222,128,.4);
+          box-shadow: 0 8px 30px rgba(34,197,94,.25);
         }
 
         .faq-question {
@@ -257,7 +253,7 @@ const FAQPage = () => {
         }
 
         .faq-question:hover {
-          background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(59, 130, 246, 0.05));
+          background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(21, 128, 61, 0.05));
         }
 
         .question-content {
@@ -273,7 +269,7 @@ const FAQPage = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(135deg, #7c3aed, #3b82f6);
+          background: linear-gradient(135deg, #16a34a, #15803d);
           border-radius: 12px;
           animation: bounce 2s infinite;
         }
@@ -281,11 +277,11 @@ const FAQPage = () => {
         .question-text {
           font-size: 18px;
           font-weight: 600;
-          color: #f7f4ff;
+          color: #f4f8f4;
         }
 
         .faq-toggle {
-          color: #7c3aed;
+          color: #86efac;
           transition: transform 0.3s ease;
         }
 
@@ -308,13 +304,13 @@ const FAQPage = () => {
         }
 
         .answer-content p {
-          color: #b7aec8;
+          color: #a1a1aa;
           line-height: 1.6;
           font-size: 16px;
         }
 
         .contact-cta {
-          background: linear-gradient(135deg, #7c3aed, #3b82f6);
+          background: linear-gradient(135deg, #16a34a, #15803d);
           border-radius: 24px;
           padding: 48px;
           text-align: center;
@@ -372,8 +368,8 @@ const FAQPage = () => {
         }
 
         .btn-primary {
-          background: white;
-          color: #7c3aed;
+          background: #0b100c;
+          color: #86efac;
         }
 
         .btn-primary:hover {

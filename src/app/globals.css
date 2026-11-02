@@ -1,54 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
-:root { --background:#08070d; --foreground:#f7f4ff; --line:rgba(232,223,255,.12); }
+:root { --background:#080b09; --foreground:#f4f8f4; --line:rgba(220,255,226,.12); }
 @theme inline { --color-background:var(--background); --color-foreground:var(--foreground); --font-sans:"Manrope",Arial,sans-serif; }
-* { box-sizing:border-box; } html { scroll-behavior:smooth; background:var(--background); } body { margin:0; background:var(--background); color:var(--foreground); font-family:"Manrope",Arial,sans-serif; overflow-x:hidden; } button,input { font:inherit; } ::selection { background:#a855f7; color:white; }
+* { box-sizing:border-box; } html { scroll-behavior:smooth; background:var(--background); } body { margin:0; background:var(--background); color:var(--foreground); font-family:"Manrope",Arial,sans-serif; overflow-x:hidden; } button,input { font:inherit; } ::selection { background:#16a34a; color:white; }
 button, a, input, select, textarea { transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease; }
-.display-font { font-family:"Space Grotesk","Manrope",sans-serif; } .eyebrow { font-family:"DM Mono",monospace; letter-spacing:.13em; text-transform:uppercase; } .purple-grid { background-image:linear-gradient(rgba(168,85,247,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.08) 1px,transparent 1px); background-size:48px 48px; } .glow-button { background:linear-gradient(135deg,#c084fc,#7c3aed 55%,#5b21b6); box-shadow:0 12px 34px rgba(124,58,237,.3),inset 0 1px rgba(255,255,255,.25); } .glow-button:hover { box-shadow:0 16px 45px rgba(168,85,247,.48),inset 0 1px rgba(255,255,255,.25); } .glass-panel { background:rgba(23,21,34,.72); border:1px solid var(--line); box-shadow:0 20px 60px rgba(0,0,0,.25); }
+.display-font { font-family:"Space Grotesk","Manrope",sans-serif; } .eyebrow { font-family:"DM Mono",monospace; letter-spacing:.13em; text-transform:uppercase; } .purple-grid { background-image:linear-gradient(rgba(34,197,94,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,.08) 1px,transparent 1px); background-size:48px 48px; } .glow-button { background:linear-gradient(135deg,#4ade80,#16a34a 55%,#15803d); box-shadow:0 12px 34px rgba(22,163,74,.25),inset 0 1px rgba(255,255,255,.25); } .glow-button:hover { box-shadow:0 16px 45px rgba(34,197,94,.4),inset 0 1px rgba(255,255,255,.25); } .glass-panel { background:rgba(18,23,19,.8); border:1px solid var(--line); box-shadow:0 20px 60px rgba(0,0,0,.25); }
 
 /* Site-wide dark surfaces — also covers the earlier page-specific component styles. */
-main, main > div, main section { color: #f7f4ff; }
-main :is(h1,h2,h3,h4,h5,h6,p,span,label,li,dt,dd,td,th) { color: #f7f4ff !important; }
-main :is(input,textarea,select) { background: #171522 !important; border-color: rgba(232,223,255,.18) !important; color: #fff !important; }
-main :is(input,textarea,select)::placeholder { color: #b7aec8 !important; }
-main .bg-white, main .bg-gray-50, main .bg-gray-100, main .bg-blue-50, main .bg-indigo-50 { background-color: #15121d !important; }
-main .text-black, main .text-gray-900, main .text-gray-800, main .text-gray-700, main .text-gray-600, main .text-gray-500, main .text-gray-400, main .text-slate-900 { color: #f7f4ff !important; }
+main, main > div, main section { color: #f4f8f4; }
+main :is(h1,h2,h3,h4,h5,h6,p,span,label,li,dt,dd,td,th) { color: #f4f8f4 !important; }
+main :is(input,textarea,select) { background: #151a16 !important; border-color: rgba(220,255,226,.18) !important; color: #fff !important; }
+main :is(input,textarea,select)::placeholder { color: #a1a1aa !important; }
+main .bg-white, main .bg-gray-50, main .bg-gray-100, main .bg-blue-50, main .bg-indigo-50 { background-color: #151a16 !important; }
+main .text-black, main .text-gray-900, main .text-gray-800, main .text-gray-700, main .text-gray-600, main .text-gray-500, main .text-gray-400, main .text-slate-900 { color: #f4f8f4 !important; }
 main .border-gray-100, main .border-gray-200, main .border-blue-100 { border-color: rgba(232,223,255,.12) !important; }
-main [style*="background: white"], main [style*="background:white"], main [style*="background: rgb(255, 255, 255)"] { background: #15121d !important; border-color: rgba(232,223,255,.14) !important; }
-main [style*="background: #f8fafc"], main [style*="background: #f9fafb"], main [style*="background: #f1f5f9"] { background: #1a1625 !important; }
+main [style*="background: white"], main [style*="background:white"], main [style*="background: rgb(255, 255, 255)"] { background: #151a16 !important; border-color: rgba(220,255,226,.14) !important; }
+main [style*="background: #f8fafc"], main [style*="background: #f9fafb"], main [style*="background: #f1f5f9"] { background: #1a201b !important; }
 /* Utility and inline-style pages (cart, checkout, orders, receipts) use these shared guards. */
-.min-h-screen { background: #08070d !important; color: #f7f4ff !important; }
-body [style*="min-height: 100vh"] { background: #08070d !important; color: #f7f4ff !important; }
-body :is(h1,h2,h3,h4,h5,h6,p,label) { color: #f7f4ff; }
+.min-h-screen { background: #080b09 !important; color: #f4f8f4 !important; }
+body [style*="min-height: 100vh"] { background: #080b09 !important; color: #f4f8f4 !important; }
+body :is(h1,h2,h3,h4,h5,h6,p,label) { color: #f4f8f4; }
 
 /* Light-bg page overrides — shop, cart, checkout, contact, faq, orders all use gradient-from-gray/blue/purple light bgs */
-.min-h-screen[class*="bg-gradient"], div[class*="bg-gradient-to-br"][class*="from-gray"], div[class*="bg-gradient-to-br"][class*="from-slate"], div[class*="bg-gradient-to-br"][class*="from-purple-50"] { background: #08070d !important; color: #f7f4ff !important; }
+.min-h-screen[class*="bg-gradient"], div[class*="bg-gradient-to-br"][class*="from-gray"], div[class*="bg-gradient-to-br"][class*="from-slate"], div[class*="bg-gradient-to-br"][class*="from-purple-50"] { background: #080b09 !important; color: #f4f8f4 !important; }
 
-/* Purple is the site language: surfaces stay near-black while every affordance carries the accent. */
-a { color: #d8b4fe; }
-a:hover { color: #f3e8ff; }
-header { border-color: rgba(192,132,252,.28) !important; box-shadow: 0 8px 34px rgba(76,29,149,.16) !important; }
-footer { background: linear-gradient(135deg, #10091d 0%, #241043 52%, #10091d 100%) !important; border-top: 1px solid rgba(192,132,252,.25); }
-footer :is(h1,h2,h3,h4,a) { color: #e9d5ff !important; }
-footer :is(p,span,li) { color: #ddd6e9 !important; }
-button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #c084fc !important; outline-offset: 3px; }
-input:focus, textarea:focus, select:focus { border-color: #c084fc !important; box-shadow: 0 0 0 3px rgba(168,85,247,.18) !important; }
-main :is(button, [role="button"]) { border-color: rgba(192,132,252,.28); }
-main :is(button, [role="button"]):hover { border-color: #c084fc; }
-main .bg-blue-500, main .bg-blue-600, main .bg-blue-700, main .bg-indigo-700 { background: linear-gradient(135deg,#c084fc,#7c3aed) !important; }
-main .text-blue-600, main .text-blue-500 { color: #d8b4fe !important; }
-main .ring-blue-500 { --tw-ring-color: #a855f7 !important; }
-main button:hover { background-color: rgba(168,85,247,.16); }
-main .bg-gradient-to-br, main .bg-gradient-to-r { border-color: rgba(192,132,252,.18); }
-.cart-item, .order-summary, .empty-cart, .contact-card, .faq-item { border-color: rgba(192,132,252,.25) !important; box-shadow: 0 14px 35px rgba(61,20,100,.16) !important; }
+/* Black surfaces and green accents define the storefront palette. */
+a { color: #86efac; }
+a:hover { color: #dcfce7; }
+header { border-color: rgba(74,222,128,.24) !important; box-shadow: 0 8px 34px rgba(20,83,45,.16) !important; }
+footer { background: linear-gradient(135deg, #09120c 0%, #102418 52%, #09120c 100%) !important; border-top: 1px solid rgba(74,222,128,.22); }
+footer :is(h1,h2,h3,h4,a) { color: #dcfce7 !important; }
+footer :is(p,span,li) { color: #d1ded3 !important; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #4ade80 !important; outline-offset: 3px; }
+input:focus, textarea:focus, select:focus { border-color: #4ade80 !important; box-shadow: 0 0 0 3px rgba(34,197,94,.18) !important; }
+main :is(button, [role="button"]) { border-color: rgba(74,222,128,.24); }
+main :is(button, [role="button"]):hover { border-color: #4ade80; }
+main .bg-blue-500, main .bg-blue-600, main .bg-blue-700, main .bg-indigo-700 { background: linear-gradient(135deg,#4ade80,#16a34a) !important; }
+main .text-blue-600, main .text-blue-500 { color: #86efac !important; }
+main .ring-blue-500 { --tw-ring-color: #22c55e !important; }
+main button:hover { background-color: rgba(34,197,94,.12); }
+main .bg-gradient-to-br, main .bg-gradient-to-r { border-color: rgba(74,222,128,.16); }
+.cart-item, .order-summary, .empty-cart, .contact-card, .faq-item { border-color: rgba(74,222,128,.2) !important; box-shadow: 0 14px 35px rgba(20,83,45,.14) !important; }
 
 /* ── Legal pages prose ── */
-.prose-legal h3 { font-size: 1rem; font-weight: 700; color: #e9d5ff; margin-top: 1.5rem; margin-bottom: .5rem; }
+.prose-legal h3 { font-size: 1rem; font-weight: 700; color: #86efac; margin-top: 1.5rem; margin-bottom: .5rem; }
 .prose-legal ul { list-style: disc; padding-left: 1.5rem; space-y: .5rem; }
-.prose-legal ul li { color: #d4d0e0; margin-bottom: .35rem; }
+.prose-legal ul li { color: #d1ded3; margin-bottom: .35rem; }
 .prose-legal strong { color: #f7f4ff; }
-.prose-legal a { color: #d8b4fe; }
-.prose-legal a:hover { color: #f3e8ff; }
+.prose-legal a { color: #86efac; }
+.prose-legal a:hover { color: #dcfce7; }
 
 /* ── Responsive helpers ── */
 @media (max-width: 640px) {
@@ -60,4 +60,21 @@ main .bg-gradient-to-br, main .bg-gradient-to-r { border-color: rgba(192,132,252
   main :is(button, a) { max-width: 100%; }
   main table { display: block; max-width: 100%; overflow-x: auto; }
   main [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+/* Keep legacy utility colors aligned with the green-on-black store theme. */
+main [class*="text-pink-"], main [class*="text-purple-"], main [class*="text-violet-"], main [class*="text-indigo-"], main [class*="text-blue-"] {
+  color: #86efac !important;
+}
+main [class*="border-pink-"], main [class*="border-purple-"], main [class*="border-violet-"], main [class*="border-indigo-"], main [class*="border-blue-"] {
+  border-color: rgba(74, 222, 128, .3) !important;
+}
+main [class*="bg-pink-"], main [class*="bg-purple-"], main [class*="bg-violet-"], main [class*="bg-indigo-"], main [class*="bg-blue-"] {
+  background-color: rgba(34, 197, 94, .16) !important;
+}
+main [class*="bg-pink-500"], main [class*="bg-pink-600"], main [class*="bg-purple-600"], main [class*="bg-purple-700"], main [class*="bg-violet-600"], main [class*="bg-indigo-600"], main [class*="bg-blue-600"], main [class*="bg-blue-700"] {
+  background-color: #15803d !important;
+}
+main [class*="shadow-pink-"], main [class*="shadow-purple-"], main [class*="shadow-violet-"], main [class*="shadow-indigo-"], main [class*="shadow-blue-"] {
+  --tw-shadow-color: rgba(34, 197, 94, .2) !important;
 }

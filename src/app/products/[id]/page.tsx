@@ -7,12 +7,12 @@ import { FiHeart, FiShoppingCart, FiStar } from 'react-icons/fi';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
-import { useUser } from '@clerk/nextjs';
+import { useAppAuth } from '@/context/AppAuthContext';
 import { formatINR } from '@/lib/currency';
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useUser();
+  const { user } = useAppAuth();
   const { addToCart } = useCart();
   const [data, setData] = useState<any>();
   const [activeImage, setActiveImage] = useState(0);

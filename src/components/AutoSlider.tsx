@@ -19,7 +19,7 @@ const AutoSlider = () => {
   }, [slides.length]);
 
   return (
-    <div className="relative w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#14111d] shadow-2xl shadow-black/40">
+    <div className="relative w-full overflow-hidden rounded-[2rem] border border-green-400/15 bg-[#101610] shadow-2xl shadow-black/40">
       {/* Slides */}
       <div
         className="flex transition-transform duration-700 ease-in-out"

@@ -5,10 +5,11 @@ import Link from 'next/link'
 import { useCart } from '../context/CartContext'
 import { useWishlist } from '../context/WishlistContext'
 import { UserButton, SignInButton } from '@clerk/nextjs'
-import { useUser } from '@clerk/nextjs'
+import { useAppAuth } from '@/context/AppAuthContext'
+import { CLERK_ENABLED } from '@/config/clerk'
 
 const Navbar = () => {
-  const { isSignedIn } = useUser();
+  const { isSignedIn } = useAppAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
@@ -51,13 +52,13 @@ const Navbar = () => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b shadow-lg transition-all duration-300 ${
-      isScrolled ? 'bg-[#0b0911]/95 border-white/10' : 'bg-[#08070d]/70 border-white/10'
+      isScrolled ? 'bg-[#0d120e]/95 border-white/10' : 'bg-[#080b09]/70 border-white/10'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         {/* Left Navigation — desktop only */}
         <nav className="hidden md:flex items-center space-x-5 lg:space-x-7 font-inter">
           {navLinks.map(link => (
-            <Link key={link.href} href={link.href} className="font-semibold text-zinc-300 hover:text-purple-300 transition-all duration-300 text-sm lg:text-base">
+            <Link key={link.href} href={link.href} className="font-semibold text-zinc-300 hover:text-green-300 transition-all duration-300 text-sm lg:text-base">
               {link.label}
             </Link>
           ))}
@@ -80,7 +81,7 @@ const Navbar = () => {
         {/* Center Logo */}
         <div className="flex items-center justify-center flex-shrink-0">
           <h1 className="display-font text-2xl sm:text-3xl font-bold tracking-tight text-white">
-            Meta<span className="text-purple-400">Mart</span>
+            Meta<span className="text-green-400">Mart</span>
           </h1>
         </div>
 
@@ -88,18 +89,18 @@ const Navbar = () => {
         <div className="flex items-center space-x-2 sm:space-x-3">
           <button 
             onClick={toggleSearch}
-            className="p-2 hover:bg-purple-500/20 rounded-full transition-all duration-300 hover:scale-110"
+            className="p-2 hover:bg-green-500/20 rounded-full transition-all duration-300 hover:scale-110"
           >
             <svg className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <circle cx="11" cy="11" r="8"/>
               <path d="m21 21-4.35-4.35"/>
             </svg>
           </button>
-          {isSignedIn ? (
+          {CLERK_ENABLED && (isSignedIn ? (
             <UserButton />
           ) : (
             <SignInButton mode="redirect">
-              <button className="flex items-center space-x-1 hover:bg-purple-500/20 px-2 sm:px-3 py-2 rounded-lg transition-all duration-300">
+              <button className="flex items-center space-x-1 hover:bg-green-500/20 px-2 sm:px-3 py-2 rounded-lg transition-all duration-300">
                 <svg className="w-5 h-5 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
@@ -107,25 +108,25 @@ const Navbar = () => {
                 <span className="hidden sm:inline text-sm font-semibold text-zinc-200">Login</span>
               </button>
             </SignInButton>
-          )}
-          <Link href="/wishlist" className="relative p-2 hover:bg-pink-500/20 rounded-full transition-all duration-300 hover:scale-110">
+          ))}
+          <Link href="/wishlist" className="relative p-2 hover:bg-green-500/20 rounded-full transition-all duration-300 hover:scale-110">
             <svg className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
             {mounted && wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
                 {wishlistCount}
               </span>
             )}
           </Link>
-          <Link href="/cart" className="relative p-2 hover:bg-purple-500/20 rounded-full transition-all duration-300 hover:scale-110">
+          <Link href="/cart" className="relative p-2 hover:bg-green-500/20 rounded-full transition-all duration-300 hover:scale-110">
             <svg className="w-5 h-5 sm:w-6 sm:h-6 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <circle cx="8" cy="21" r="1"/>
               <circle cx="19" cy="21" r="1"/>
               <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
             </svg>
             {mounted && totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-pulse">
+              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-pulse">
                 {totalItems}
               </span>
             )}
@@ -135,14 +136,14 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-[#0d0b13]/95 backdrop-blur-md border-t border-white/10 px-4 py-4">
+        <div className="md:hidden bg-[#0f1510]/95 backdrop-blur-md border-t border-white/10 px-4 py-4">
           <nav className="flex flex-col space-y-1">
             {navLinks.map(link => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="font-semibold text-zinc-200 hover:text-purple-200 hover:bg-purple-500/15 px-4 py-3 rounded-lg transition-all duration-200"
+                className="font-semibold text-zinc-200 hover:text-green-200 hover:bg-green-500/15 px-4 py-3 rounded-lg transition-all duration-200"
               >
                 {link.label}
               </Link>
@@ -213,8 +214,8 @@ const Navbar = () => {
         .search-form {
           display: flex;
           align-items: center;
-          background: #171522;
-          border: 1px solid rgba(232, 223, 255, 0.16);
+          background: #111711;
+          border: 1px solid rgba(74, 222, 128, 0.2);
           border-radius: 50px;
           padding: 8px;
           box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -231,11 +232,11 @@ const Navbar = () => {
         }
         
         .search-input::placeholder {
-          color: #b7aec8;
+          color: #a1a1aa;
         }
         
         .search-submit {
-          background: linear-gradient(135deg, #c084fc, #7c3aed);
+          background: linear-gradient(135deg, #4ade80, #15803d);
           border: none;
           border-radius: 50%;
           width: 48px;
@@ -251,11 +252,12 @@ const Navbar = () => {
         
         .search-submit:hover {
           transform: scale(1.05);
-          box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+          box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
         }
         
         .search-close {
-          background: #ef4444;
+          background: #111711;
+          border: 1px solid rgba(74, 222, 128, 0.25);
           border: none;
           border-radius: 50%;
           width: 48px;
@@ -270,7 +272,7 @@ const Navbar = () => {
         
         .search-close:hover {
           transform: scale(1.05);
-          box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+          box-shadow: 0 4px 15px rgba(34, 197, 94, 0.25);
         }
       `}</style>
     </header>

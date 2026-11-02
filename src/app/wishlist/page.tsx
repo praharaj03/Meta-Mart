@@ -27,9 +27,9 @@ export default function WishlistPage() {
 
       <div style={{ paddingTop: '110px', paddingBottom: '80px', maxWidth: '1100px', margin: '0 auto' }} className="px-4 sm:px-6 wishlist-wrap">
         <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <FiHeart style={{ color: '#f43f5e', width: '28px', height: '28px', fill: '#f43f5e' }} />
+          <FiHeart style={{ color: '#4ade80', width: '28px', height: '28px', fill: '#4ade80' }} />
           <div>
-            <h1 style={{ fontSize: '2.2rem', fontWeight: 900, background: 'linear-gradient(135deg,#f43f5e,#9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '4px' }}>My Wishlist</h1>
+            <h1 style={{ fontSize: '2.2rem', fontWeight: 900, background: 'linear-gradient(135deg,#4ade80,#15803d)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '4px' }}>My Wishlist</h1>
             <p style={{ color: '#b7aec8', fontSize: '15px' }}>{items.length} saved item{items.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
@@ -39,7 +39,7 @@ export default function WishlistPage() {
             <div style={{ fontSize: '5rem', marginBottom: '16px' }}>🤍</div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f7f4ff', marginBottom: '8px' }}>Your wishlist is empty</h2>
             <p style={{ color: '#b7aec8', marginBottom: '28px' }}>Save items you love while browsing the shop</p>
-            <Link href="/shop" style={{ background: 'linear-gradient(135deg,#f43f5e,#9333ea)', color: 'white', padding: '14px 36px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '15px' }}>
+            <Link href="/shop" style={{ background: 'linear-gradient(135deg,#4ade80,#15803d)', color: 'white', padding: '14px 36px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '15px' }}>
               Browse Shop
             </Link>
           </div>
@@ -59,7 +59,7 @@ export default function WishlistPage() {
 
                 {/* Badge */}
                 <div style={{ position: 'absolute', top: '12px', left: '12px', zIndex: 10 }}>
-                  <span style={{ padding: '3px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 700, background: item.badge === 'Best Seller' ? '#ef4444' : item.badge === 'New' ? '#10b981' : item.badge === 'Pro' ? '#9333ea' : '#3b82f6', color: 'white' }}>
+                  <span style={{ padding: '3px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 700, background: '#15803d', color: 'white' }}>
                     {item.badge}
                   </span>
                 </div>
@@ -67,7 +67,7 @@ export default function WishlistPage() {
                 <img src={item.image} alt={item.name} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
 
                 <div style={{ padding: '16px' }}>
-                  <p style={{ fontSize: '11px', color: '#9333ea', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{item.category}</p>
+                  <p style={{ fontSize: '11px', color: '#86efac', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{item.category}</p>
                   <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#f7f4ff', marginBottom: '10px', lineHeight: 1.3 }}>{item.name}</h3>
 
                   {/* Stars */}
@@ -86,7 +86,7 @@ export default function WishlistPage() {
                   </div>
 
                   <button onClick={() => handleAddToCart(item)}
-                    style={{ width: '100%', padding: '11px', borderRadius: '12px', background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    style={{ width: '100%', padding: '11px', borderRadius: '12px', background: 'linear-gradient(135deg,#4ade80,#15803d)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                     <FiShoppingCart style={{ width: '16px', height: '16px' }} />
                     Add to Cart
                   </button>

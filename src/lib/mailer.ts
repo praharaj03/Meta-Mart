@@ -73,13 +73,13 @@ export function stepsList(steps: string[], accent: string) {
 }
 
 export async function sendMail(to: string, subject: string, html: string) {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('[sendMail] RESEND_API_KEY not set');
+  if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM_EMAIL) {
+    console.warn('[sendMail] RESEND_API_KEY or RESEND_FROM_EMAIL not set');
     return false;
   }
   try {
     const { error } = await getResend().emails.send({
-      from: 'MetaMart <onboarding@resend.dev>',
+      from: process.env.RESEND_FROM_EMAIL,
       to,
       subject,
       html,
@@ -90,4 +90,10 @@ export async function sendMail(to: string, subject: string, html: string) {
     console.error('[sendMail]', err?.message);
     return false;
   }
+}
+
+export function mailConfigurationError() {
+  if (!process.env.RESEND_API_KEY) return 'Email is not configured. Add RESEND_API_KEY to the storefront deployment environment.';
+  if (!process.env.RESEND_FROM_EMAIL) return 'Email sender is not configured. Add RESEND_FROM_EMAIL with a Resend-verified sender.';
+  return null;
 }

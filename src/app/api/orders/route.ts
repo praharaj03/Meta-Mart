@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { Order } from '@/models/Order';
+import { sendOrderStatusEmail } from '@/lib/email';
+import { mailConfigurationError } from '@/lib/mailer';
+
+export const runtime = 'nodejs';
 
 export async function GET(req: NextRequest) {
   await connectDB();
@@ -23,6 +27,8 @@ export async function PATCH(req: NextRequest) {
   if (!orderId) return NextResponse.json({ error: 'Missing orderId' }, { status: 400 });
 
   if (cancelReason) {
+    const configError = mailConfigurationError();
+    if (configError) return NextResponse.json({ error: configError }, { status: 503 });
     // Block cancel if already delivered (createdAt + 5 days)
     const order = await Order.findOne({ orderId });
     if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
@@ -30,14 +36,20 @@ export async function PATCH(req: NextRequest) {
     deliveredAt.setDate(deliveredAt.getDate() + 5);
     if (Date.now() >= deliveredAt.getTime()) return NextResponse.json({ error: 'Cannot cancel a delivered order' }, { status: 400 });
     if (['cancelled', 'return_requested'].includes(order.status)) return NextResponse.json({ error: 'Order cannot be cancelled' }, { status: 400 });
-    await Order.findOneAndUpdate({ orderId }, { status: 'cancelled', cancelReason });
-    return NextResponse.json({ success: true });
+    const updated = await Order.findOneAndUpdate({ orderId }, { status: 'cancelled', cancelReason }, { new: true });
+    if (!updated) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    const notificationSent = await sendOrderStatusEmail(updated, 'cancelled', cancelReason);
+    return NextResponse.json({ success: true, notificationSent });
   }
 
   if (returnReason) {
+    const configError = mailConfigurationError();
+    if (configError) return NextResponse.json({ error: configError }, { status: 503 });
     const newStatus = returnType === 'replacement' ? 'replacement_requested' : 'return_requested';
-    await Order.findOneAndUpdate({ orderId }, { status: newStatus, returnReason, returnType: returnType ?? 'refund', returnRequestedAt: new Date() });
-    return NextResponse.json({ success: true });
+    const updated = await Order.findOneAndUpdate({ orderId }, { status: newStatus, returnReason, returnType: returnType ?? 'refund', returnRequestedAt: new Date() }, { new: true });
+    if (!updated) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    const notificationSent = await sendOrderStatusEmail(updated, newStatus, returnReason);
+    return NextResponse.json({ success: true, notificationSent });
   }
 
   return NextResponse.json({ error: 'Missing reason' }, { status: 400 });

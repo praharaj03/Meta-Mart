@@ -82,3 +82,13 @@ export async function sendDeliveryEmail(order: EmailOrder) {
 
   return sendMail(order.userEmail, `Delivered â€” #${order.orderId} | MetaMart`, html);
 }
+
+export async function sendOrderStatusEmail(order: EmailOrder, status: 'cancelled' | 'return_requested' | 'replacement_requested', reason?: string) {
+  const titles = { cancelled: 'Order Cancelled', return_requested: 'Return Request Received', replacement_requested: 'Replacement Requested' };
+  const isCancelled = status === 'cancelled';
+  const isReplacement = status === 'replacement_requested';
+  const rows: [string, string, string?][] = [['Order ID', `#${order.orderId}`], ['Request', titles[status]]];
+  if (isCancelled || !isReplacement) rows.push(['Amount', `Rs. ${order.total.toFixed(2)}`, '#16a34a']);
+  const body = `<p style="color:#374151;font-size:15px;margin:0 0 18px;">Hi <strong>${order.userName || 'there'}</strong>,</p><p style="color:#6b7280;font-size:14px;margin:0 0 22px;line-height:1.6;">${isCancelled ? `Your order has been cancelled. Reason: ${reason || 'Not provided'}.` : `We received your ${isReplacement ? 'replacement' : 'return and refund'} request. Reason: ${reason || 'Not provided'}.`}</p>${detailsTable(rows)}${infoBox('#f0fdf4', '#86efac', '#166534', '#15803d', isCancelled ? 'Cancellation received' : 'Next steps', isCancelled ? 'If your payment was captured, the refund will be processed to your original payment method.' : isReplacement ? 'Our team will arrange pickup and dispatch the replacement after checking the returned item.' : 'Our team will arrange pickup and process the refund after checking the returned item.')}`;
+  return sendMail(order.userEmail, `${titles[status]} — #${order.orderId} | MetaMart`, baseTemplate('linear-gradient(135deg,#052e16,#166534)', '&#128230;', titles[status], `Update for order #${order.orderId}`, body));
+}

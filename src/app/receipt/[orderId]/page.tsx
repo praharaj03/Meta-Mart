@@ -32,7 +32,7 @@ export default function ReceiptPage() {
             <div style={{ fontSize: '3rem', marginBottom: '16px' }}>✅</div>
             <h2 style={{ color: '#1e293b', fontWeight: 800, marginBottom: '8px' }}>Receipt Downloaded!</h2>
             <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '24px' }}>Check your downloads folder for <strong>MetaMart-Receipt-{orderId}.pdf</strong></p>
-            <Link href="/orders" style={{ background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '14px' }}>
+            <Link href="/orders" style={{ background: 'linear-gradient(135deg,#4ade80,#15803d)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '14px' }}>
               View My Orders
             </Link>
           </>
@@ -42,7 +42,7 @@ export default function ReceiptPage() {
             <div style={{ fontSize: '3rem', marginBottom: '16px' }}>❌</div>
             <h2 style={{ color: '#1e293b', fontWeight: 800, marginBottom: '8px' }}>Order Not Found</h2>
             <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '24px' }}>This receipt link only works on the device where the order was placed.</p>
-            <Link href="/orders" style={{ background: 'linear-gradient(135deg,#3b82f6,#9333ea)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '14px' }}>
+            <Link href="/orders" style={{ background: 'linear-gradient(135deg,#4ade80,#15803d)', color: 'white', padding: '12px 28px', borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '14px' }}>
               View My Orders
             </Link>
           </>

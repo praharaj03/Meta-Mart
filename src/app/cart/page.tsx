@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -8,15 +8,65 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useCart } from '../../context/CartContext';
 import { SHIPPING_FREE_THRESHOLD, STANDARD_SHIPPING } from '@/lib/currency';
+import { APPLIED_COUPON_STORAGE_KEY } from '@/lib/coupon-constants';
 
 const CartPage = () => {
-  const { items: cartItems, updateQuantity, removeItem } = useCart();
+  const { items: cartItems, updateQuantity, removeItem, hydrated } = useCart();
   const router = useRouter();
+  const [couponCode, setCouponCode] = useState('');
+  const [couponApplied, setCouponApplied] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = subtotal >= SHIPPING_FREE_THRESHOLD ? 0 : STANDARD_SHIPPING;
   const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
+  const orderTotal = subtotal + shipping + tax;
+  const total = Math.max(0, orderTotal - couponDiscount);
+
+  const applyCoupon = async (code = couponCode) => {
+    if (!code.trim()) return;
+    setCouponLoading(true);
+    setCouponError('');
+    try {
+      const response = await fetch('/api/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, orderTotal }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Unable to apply coupon');
+      setCouponCode(data.code);
+      setCouponApplied(data.code);
+      setCouponDiscount(data.discount);
+      localStorage.setItem(APPLIED_COUPON_STORAGE_KEY, data.code);
+    } catch (error) {
+      setCouponApplied('');
+      setCouponDiscount(0);
+      localStorage.removeItem(APPLIED_COUPON_STORAGE_KEY);
+      setCouponError(error instanceof Error ? error.message : 'Unable to apply coupon');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const savedCode = localStorage.getItem(APPLIED_COUPON_STORAGE_KEY);
+    if (savedCode) {
+      setCouponCode(savedCode);
+      void applyCoupon(savedCode);
+    }
+  }, [hydrated, orderTotal]);
+
+  const removeCoupon = () => {
+    setCouponCode('');
+    setCouponApplied('');
+    setCouponDiscount(0);
+    setCouponError('');
+    localStorage.removeItem(APPLIED_COUPON_STORAGE_KEY);
+  };
 
   return (
     <div className="min-h-screen bg-[#08070d]">
@@ -127,21 +177,62 @@ const CartPage = () => {
                   </div>
                   <div className="summary-row">
                     <span>Shipping</span>
-<<<<<<< HEAD
                     <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
-=======
-                    <span>{shipping === 0 ? 'Free' : `Rs. ${shipping.toFixed(2)}`}</span>
->>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
                   </div>
                   <div className="summary-row">
                     <span>Tax</span>
                     <span>₹{tax.toFixed(2)}</span>
                   </div>
+                  {couponApplied && (
+                    <div className="summary-row coupon-discount">
+                      <span>Coupon ({couponApplied})</span>
+                      <span>−₹{couponDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="summary-divider"></div>
                   <div className="summary-row total">
                     <span>Total</span>
                     <span>₹{total.toFixed(2)}</span>
                   </div>
+                </div>
+
+                <div className="coupon-box">
+                  <label htmlFor="cart-coupon" className="coupon-label">🎟️ Have a coupon?</label>
+                  {couponApplied ? (
+                    <div className="coupon-applied">
+                      <span>{couponApplied} applied</span>
+                      <button type="button" onClick={removeCoupon} aria-label="Remove coupon">Remove</button>
+                    </div>
+                  ) : (
+                    <div className="coupon-form">
+                      <input
+                        id="cart-coupon"
+                        type="text"
+                        value={couponCode}
+                        onChange={(event) => {
+                          setCouponCode(event.target.value.toUpperCase());
+                          setCouponError('');
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            event.preventDefault();
+                            void applyCoupon();
+                          }
+                        }}
+                        placeholder="Enter coupon code"
+                        autoComplete="off"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void applyCoupon()}
+                        disabled={couponLoading || !couponCode.trim()}
+                      >
+                        {couponLoading ? 'Applying…' : 'Apply'}
+                      </button>
+                    </div>
+                  )}
+                  {couponError && <p className="coupon-error" role="alert">{couponError}</p>}
+                  {couponApplied && <p className="coupon-success">You save ₹{couponDiscount.toFixed(2)} on this order.</p>}
                 </div>
 
                 <button className="checkout-btn" onClick={() => router.push('/checkout')}>
@@ -155,11 +246,7 @@ const CartPage = () => {
                 <div className="security-badges">
                   <div className="badge">🔒 Secure Checkout</div>
                   <div className="badge">✅ 30-Day Returns</div>
-<<<<<<< HEAD
                   <div className="badge">🚚 Free Shipping on ₹499+</div>
-=======
-                  <div className="badge">🚚 Free Shipping Rs. 100+</div>
->>>>>>> f3e2978e5f10eb8e497081058d3395663a9ec890
                 </div>
               </div>
             </div>
@@ -182,7 +269,7 @@ const CartPage = () => {
 
         .cart-element {
           position: absolute;
-          background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+          background: linear-gradient(45deg, rgba(34, 197, 94, 0.1), rgba(147, 51, 234, 0.1));
           border-radius: 50%;
           animation: cartFloat 10s ease-in-out infinite;
         }
@@ -214,8 +301,8 @@ const CartPage = () => {
         .cart-badge {
           display: inline-block;
           padding: 12px 24px;
-          background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
-          border: 1px solid rgba(59, 130, 246, 0.2);
+          background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(147, 51, 234, 0.1));
+          border: 1px solid rgba(34, 197, 94, 0.2);
           border-radius: 50px;
           margin-bottom: 24px;
           animation: pulse 2s infinite;
@@ -224,13 +311,13 @@ const CartPage = () => {
         .cart-badge span {
           font-size: 16px;
           font-weight: 600;
-          color: #c084fc;
+          color: #86efac;
         }
 
         .cart-title {
           font-size: clamp(3rem, 6vw, 5rem);
           font-weight: 900;
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #22c55e, #15803d);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -240,7 +327,7 @@ const CartPage = () => {
 
         .cart-subtitle {
           font-size: 1.25rem;
-          color: #b7aec8;
+          color: #a1a1aa;
           margin-bottom: 32px;
           animation: slideUp 0.3s ease-out 0.1s both;
         }
@@ -248,10 +335,10 @@ const CartPage = () => {
         .empty-cart {
           text-align: center;
           padding: 80px 20px;
-          background: #13111b;
+          background: #101610;
           border-radius: 24px;
           box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(192,132,252,.2);
+          border: 1px solid rgba(74,222,128,.2);
           animation: slideUp 0.8s ease-out;
         }
 
@@ -263,18 +350,18 @@ const CartPage = () => {
         .empty-cart h2 {
           font-size: 2rem;
           font-weight: 800;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 16px;
         }
 
         .empty-cart p {
-          color: #b7aec8;
+          color: #a1a1aa;
           font-size: 1.125rem;
           margin-bottom: 32px;
         }
 
         .shop-now-btn {
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #22c55e, #15803d);
           color: white;
           border: none;
           padding: 16px 32px;
@@ -287,7 +374,7 @@ const CartPage = () => {
 
         .shop-now-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+          box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
         }
 
         .cart-grid {
@@ -304,7 +391,7 @@ const CartPage = () => {
         .section-title {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 24px;
         }
 
@@ -313,17 +400,17 @@ const CartPage = () => {
           align-items: center;
           gap: 20px;
           padding: 24px;
-          background: #13111b;
+          background: #101610;
           border-radius: 20px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-          border: 1px solid rgba(192,132,252,.15);
+          border: 1px solid rgba(74,222,128,.15);
           margin-bottom: 20px;
           transition: all 0.3s ease;
         }
 
         .cart-item:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(168,85,247,.2);
+          box-shadow: 0 8px 30px rgba(34,197,94,.2);
         }
 
         .item-image {
@@ -351,7 +438,7 @@ const CartPage = () => {
         .item-name {
           font-size: 1.25rem;
           font-weight: 600;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 8px;
         }
 
@@ -363,8 +450,8 @@ const CartPage = () => {
 
         .item-specs span {
           font-size: 14px;
-          color: #b7aec8;
-          background: #1e1a2e;
+          color: #a1a1aa;
+          background: #171e18;
           padding: 4px 12px;
           border-radius: 20px;
         }
@@ -372,7 +459,7 @@ const CartPage = () => {
         .item-price {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #c084fc;
+          color: #86efac;
         }
 
         .item-controls {
@@ -386,8 +473,8 @@ const CartPage = () => {
           display: flex;
           align-items: center;
           gap: 0;
-          background: #1e1a2e;
-          border: 2px solid rgba(192,132,252,.2);
+          background: #171e18;
+          border: 2px solid rgba(74,222,128,.2);
           border-radius: 8px;
           overflow: hidden;
         }
@@ -396,23 +483,23 @@ const CartPage = () => {
           width: 32px;
           height: 32px;
           border: none;
-          background: #13111b;
-          color: #b7aec8;
+          background: #101610;
+          color: #a1a1aa;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
           transition: all 0.2s ease;
-          border-right: 1px solid rgba(192,132,252,.15);
+          border-right: 1px solid rgba(74,222,128,.15);
         }
 
         .qty-btn:last-child {
           border-right: none;
-          border-left: 1px solid rgba(192,132,252,.15);
+          border-left: 1px solid rgba(74,222,128,.15);
         }
 
         .qty-btn:hover:not(:disabled) {
-          background: #3b82f6;
+          background: #22c55e;
           color: white;
         }
 
@@ -432,13 +519,13 @@ const CartPage = () => {
         .quantity {
           font-size: 14px;
           font-weight: 600;
-          color: #f7f4ff;
+          color: #f4f8f4;
           min-width: 40px;
           text-align: center;
           padding: 8px 12px;
-          background: #13111b;
-          border-top: 1px solid rgba(192,132,252,.15);
-          border-bottom: 1px solid rgba(192,132,252,.15);
+          background: #101610;
+          border-top: 1px solid rgba(74,222,128,.15);
+          border-bottom: 1px solid rgba(74,222,128,.15);
         }
 
         .remove-btn {
@@ -464,11 +551,11 @@ const CartPage = () => {
         }
 
         .order-summary {
-          background: #13111b;
+          background: #101610;
           border-radius: 24px;
           padding: 32px;
           box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(192,132,252,.2);
+          border: 1px solid rgba(74,222,128,.2);
           height: fit-content;
           position: sticky;
           top: 120px;
@@ -478,13 +565,105 @@ const CartPage = () => {
         .summary-title {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #f7f4ff;
+          color: #f4f8f4;
           margin-bottom: 24px;
           text-align: center;
         }
 
         .summary-details {
           margin-bottom: 24px;
+        }
+
+        .coupon-discount span:last-child {
+          color: #86efac;
+        }
+
+        .coupon-box {
+          padding: 16px;
+          margin: 0 0 20px;
+          border: 1px solid rgba(74, 222, 128, .2);
+          border-radius: 14px;
+          background: #0c120d;
+        }
+
+        .coupon-label {
+          display: block;
+          margin-bottom: 10px;
+          color: #d1fae5;
+          font-size: 13px;
+          font-weight: 700;
+        }
+
+        .coupon-form {
+          display: flex;
+          gap: 8px;
+        }
+
+        .coupon-form input {
+          min-width: 0;
+          flex: 1;
+          padding: 11px 12px;
+          border: 1px solid rgba(74, 222, 128, .25);
+          border-radius: 9px;
+          outline: none;
+          color: #f4f8f4;
+          background: #151a16;
+          font-size: 13px;
+        }
+
+        .coupon-form input:focus {
+          border-color: #4ade80;
+          box-shadow: 0 0 0 3px rgba(34, 197, 94, .12);
+        }
+
+        .coupon-form button {
+          flex-shrink: 0;
+          padding: 0 15px;
+          border: 0;
+          border-radius: 9px;
+          color: #052e16;
+          background: linear-gradient(135deg, #86efac, #22c55e);
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .coupon-form button:disabled {
+          cursor: not-allowed;
+          opacity: .55;
+        }
+
+        .coupon-applied {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          color: #86efac;
+          font-size: 13px;
+          font-weight: 700;
+        }
+
+        .coupon-applied button {
+          padding: 5px 8px;
+          border: 1px solid rgba(248, 113, 113, .35);
+          border-radius: 7px;
+          color: #fca5a5;
+          background: transparent;
+          cursor: pointer;
+        }
+
+        .coupon-error,
+        .coupon-success {
+          margin: 8px 0 0;
+          font-size: 12px;
+        }
+
+        .coupon-error {
+          color: #f87171;
+        }
+
+        .coupon-success {
+          color: #86efac;
         }
 
         .summary-row {
@@ -496,12 +675,12 @@ const CartPage = () => {
         }
 
         .summary-row span:first-child {
-          color: #b7aec8;
+          color: #a1a1aa;
         }
 
         .summary-row span:last-child {
           font-weight: 600;
-          color: #f7f4ff;
+          color: #f4f8f4;
         }
 
         .summary-row.total {
@@ -510,18 +689,18 @@ const CartPage = () => {
         }
 
         .summary-row.total span {
-          color: #c084fc;
+          color: #86efac;
         }
 
         .summary-divider {
           height: 1px;
-          background: rgba(192,132,252,.15);
+          background: rgba(74,222,128,.15);
           margin: 16px 0;
         }
 
         .checkout-btn {
           width: 100%;
-          background: linear-gradient(135deg, #3b82f6, #9333ea);
+          background: linear-gradient(135deg, #22c55e, #15803d);
           color: white;
           border: none;
           padding: 18px 24px;
@@ -539,7 +718,7 @@ const CartPage = () => {
 
         .checkout-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+          box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
         }
 
         .security-badges {
@@ -550,10 +729,10 @@ const CartPage = () => {
 
         .badge {
           font-size: 12px;
-          color: #b7aec8;
+          color: #a1a1aa;
           text-align: center;
           padding: 8px;
-          background: #1e1a2e;
+          background: #171e18;
           border-radius: 8px;
         }
 

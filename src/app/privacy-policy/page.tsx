@@ -119,7 +119,7 @@ export default function PrivacyPolicyPage() {
           </Section>
 
           <Section id="cookies" title="5. Cookies & Tracking">
-            <p>We use cookies and similar tracking technologies. You can manage your preferences at any time via the cookie banner or the <strong>Cookies</strong> link in our footer.</p>
+            <p>We use cookies and similar tracking technologies. You can manage your preferences at any time using the <strong>Cookies</strong> link in our footer.</p>
             <Table headers={['Category', 'Examples', 'Can be declined?']} rows={[
               ['Functional', 'Cart contents (mm_cart), session token, cookie consent (mm_cookie_consent)', 'No — required for the site to work'],
               ['Analytics', 'Page view counts, navigation paths (anonymised)', 'Yes'],
