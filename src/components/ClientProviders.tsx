@@ -9,16 +9,47 @@ import { ClerkProvider } from '@clerk/nextjs';
 import ClerkAuthBridge from './ClerkAuthBridge';
 import { AppAuthProvider } from '@/context/AppAuthContext';
 import { CLERK_ENABLED } from '@/config/clerk';
-import PushOptIn from './PushOptIn';
+import { useEffect } from 'react';
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.getRegistrations().then(async registrations => {
+      for (const registration of registrations) {
+        const workerUrl = registration.active?.scriptURL ?? registration.waiting?.scriptURL ?? registration.installing?.scriptURL;
+        if (!workerUrl || new URL(workerUrl).pathname !== '/sw.js') continue;
+
+        try {
+          const subscription = await registration.pushManager.getSubscription();
+          if (subscription) {
+            try {
+              const response = await fetch('/api/push/subscribe', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ endpoint: subscription.endpoint }),
+              });
+              if (!response.ok && response.status !== 401) {
+                console.error('[push cleanup] Could not remove stored subscription:', response.status);
+              }
+            } catch (error) {
+              console.error('[push cleanup] Could not remove stored subscription:', error);
+            }
+            await subscription.unsubscribe();
+          }
+          await registration.unregister();
+        } catch (error) {
+          console.error('[push cleanup] Could not unregister service worker:', error);
+        }
+      }
+    }).catch(error => console.error('[push cleanup] Could not inspect service workers:', error));
+  }, []);
+
   const app = (
     <CartProvider>
       <WishlistProvider>
         {children}
         <CookieConsent />
         <LiveChat />
-        <PushOptIn />
       </WishlistProvider>
     </CartProvider>
   );
